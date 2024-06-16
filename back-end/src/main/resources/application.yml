@@ -1,0 +1,21 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: BookMarky
+    devtools:
+      livereload:
+        enabled: true
+
+  profiles:
+    active: db # ?????? ?? ??
+
+  jpa:
+    show-sql: true
+    hibernate:
+      #ddl-auto: create
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
