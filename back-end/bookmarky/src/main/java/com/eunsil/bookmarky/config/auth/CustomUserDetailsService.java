@@ -37,7 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     public String join(UserDTO userDTO) {
-<<<<<<< HEAD
         if (!userRepository.existsByUsername(userDTO.getUsername())) { // 유저 아이디 중복 체크
             User user = User.builder()
                     .username(userDTO.getUsername())
@@ -52,17 +51,4 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return "fail";
     }
-
-=======
-        User user = User.builder()
-                .username(userDTO.getUsername())
-                .password(bCryptpasswordEncoder.encode(userDTO.getPassword()))
-                .nickname(userDTO.getNickname())
-                .role("ROLE_USER")
-                .build();
-
-        userRepository.save(user);
-        return "ok";
-    }
->>>>>>> b8be00a12e1c3b4474d2fcc67acb25247964b174
 }
