@@ -1,24 +1,19 @@
 package com.eunsil.bookmarky.config.auth;
 
-import com.eunsil.bookmarky.domain.dto.UserDTO;
-import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptpasswordEncoder;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository, BCryptPasswordEncoder bCryptpasswordEncoder) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.bCryptpasswordEncoder = bCryptpasswordEncoder;
     }
 
     /**
@@ -33,22 +28,5 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(userRepository.findByUsername(username));
         }
         throw new UsernameNotFoundException("User not found with username: " + username);
-    }
-
-
-    public String join(UserDTO userDTO) {
-        if (!userRepository.existsByUsername(userDTO.getUsername())) { // 유저 아이디 중복 체크
-            User user = User.builder()
-                    .username(userDTO.getUsername())
-                    .password(bCryptpasswordEncoder.encode(userDTO.getPassword()))
-                    .nickname(userDTO.getNickname())
-                    .role("ROLE_USER")
-                    .build();
-
-            userRepository.save(user);
-            return "ok";
-        }
-
-        return "fail";
     }
 }
