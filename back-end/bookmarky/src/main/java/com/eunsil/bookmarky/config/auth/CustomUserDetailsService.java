@@ -37,14 +37,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     public String join(UserDTO userDTO) {
-        User user = User.builder()
-                .username(userDTO.getUsername())
-                .password(bCryptpasswordEncoder.encode(userDTO.getPassword()))
-                .nickname(userDTO.getNickname())
-                .role("ROLE_USER")
-                .build();
+        if (!userRepository.existsByUsername(userDTO.getUsername())) { // 유저 아이디 중복 체크
+            User user = User.builder()
+                    .username(userDTO.getUsername())
+                    .password(bCryptpasswordEncoder.encode(userDTO.getPassword()))
+                    .nickname(userDTO.getNickname())
+                    .role("ROLE_USER")
+                    .build();
 
-        userRepository.save(user);
-        return "ok";
+            userRepository.save(user);
+            return "ok";
+        }
+
+        return "fail";
     }
+
 }
