@@ -39,7 +39,7 @@ public class MailService {
         String uuid = resetTokenService.generateToken(username); // 일회용 토큰 생성
 
         String title = "[북마키] 비밀번호 재설정 링크입니다.";
-        String content = "아래 링크에 접속하여 비밀번호를 재설정 해주세요.<br>"
+        String content = "아래 링크에 접속하여 비밀번호를 재설정 해주세요.<br><br>"
                 + "<a href=\"" + resetPwUrl + "/" + uuid + "\"> "
                 + resetPwUrl + "/" + uuid + "</a>"
                 + "<br><br>해당 링크는 24시간 동안 유효하며, 1회 변경 가능합니다.<br>"; // 임시 주소
