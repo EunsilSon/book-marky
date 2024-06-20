@@ -41,4 +41,15 @@ public class UserController {
         return userService.sendResetEmail(username);
     }
 
+
+    /**
+     * 비밀번호 변경
+     * @param passwordResetReq 이메일, 비밀번호, 토큰
+     * @return 변경 여부
+     */
+    @PutMapping("/")
+    public boolean resetPw(@RequestBody PasswordResetReq passwordResetReq) {
+        return userService.resetPw(passwordResetReq);
+    }
+
 }

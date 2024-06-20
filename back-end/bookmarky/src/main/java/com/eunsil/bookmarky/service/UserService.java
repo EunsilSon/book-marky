@@ -68,4 +68,34 @@ public class UserService {
         throw new Exception("Not Existed User");
     }
 
+
+    /**
+     * 비밀번호 변경
+     * @param passwordResetReq
+     * @return 변경 여부
+     */
+    @Transactional
+    public boolean resetPw(PasswordResetReq passwordResetReq) {
+
+        String token = passwordResetReq.getToken();
+
+        // 토큰 유효성 검사
+        if (resetTokenService.isValidToken(token)) {
+
+            // 비밀번호 재설정
+            User user = userRepository.findByUsername(passwordResetReq.getUsername());
+            user.setPassword(bCryptPasswordEncoder.encode(passwordResetReq.getPassword()));
+            userRepository.save(user);
+
+            // 토큰 무효화
+            resetTokenService.invalidateToken(token);
+            System.out.println("[Password Reset Success]");
+
+            return true;
+        }
+
+        System.out.println("[Password Reset Failed]: Invalid or expired token");
+        return false;
+    }
+
 }
