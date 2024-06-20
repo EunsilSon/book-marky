@@ -5,11 +5,12 @@ import com.eunsil.bookmarky.domain.dto.PasswordResetRes;
 import com.eunsil.bookmarky.service.UserService;
 import com.eunsil.bookmarky.domain.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping(value = "/users")
 public class UserController {
 
     private final UserService userService;
@@ -37,7 +38,7 @@ public class UserController {
      * @throws Exception 존재하지 않는 사용자
      */
     @GetMapping("/{username}")
-    public PasswordResetRes sendResetEmail(@PathVariable String username) throws Exception {
+    public ResponseEntity<PasswordResetRes> sendResetEmail(@PathVariable String username) throws Exception {
         return userService.sendResetEmail(username);
     }
 

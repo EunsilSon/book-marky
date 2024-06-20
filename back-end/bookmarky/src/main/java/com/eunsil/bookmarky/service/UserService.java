@@ -7,6 +7,7 @@ import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,15 +58,17 @@ public class UserService {
      * @throws Exception 존재하지 않는 사용자
      */
     @Transactional
-    public PasswordResetRes sendResetEmail(String username) throws Exception {
+    public ResponseEntity<PasswordResetRes> sendResetEmail(String username) throws Exception {
 
         if (userRepository.existsByUsername(username)) {
             String uuid = mailService.generateResetEmail(username); // 메일 생성 및 전송
-            return new PasswordResetRes(username, uuid);
+            PasswordResetRes passwordResetRes = new PasswordResetRes(username, uuid);
+
+            return ResponseEntity.ok(passwordResetRes);
         }
 
         System.out.println("[Not Existed User]: " + username);
-        throw new Exception("Not Existed User");
+        return ResponseEntity.notFound().build(); // 404
     }
 
 
