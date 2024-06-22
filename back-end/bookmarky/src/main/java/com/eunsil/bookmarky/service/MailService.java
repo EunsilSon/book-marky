@@ -31,8 +31,8 @@ public class MailService {
 
     /**
      * 이메일 생성
-     * @param username
-     * @return
+     * @param username 로그인에 사용한 이메일
+     * @return 토큰
      */
     @Transactional
     public String generateResetEmail(String username) {
@@ -50,9 +50,9 @@ public class MailService {
 
     /**
      * 이메일 전송
-     * @param username
-     * @param title
-     * @param content
+     * @param username 로그인에 사용한 이메일
+     * @param title 메일 제목
+     * @param content 메일 내용
      */
     public void sendMail(String username, String title, String content) {
         MimeMessage message = mailSender.createMimeMessage();
