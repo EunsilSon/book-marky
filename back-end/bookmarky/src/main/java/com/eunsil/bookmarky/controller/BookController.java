@@ -28,9 +28,9 @@ public class BookController {
      * @param title 책 제목
      * @return 제목과 관련성이 높은 책 정보 10개
      */
-    @GetMapping("/{title}")
-    public String search(@PathVariable String title) {
-        return naverOpenApiSearchBook.callApi(title);
+    @GetMapping("/{title}/{page}")
+    public String search(@PathVariable String title, @PathVariable int page) {
+        return naverOpenApiSearchBook.callApi(title, page);
     }
 
 }
