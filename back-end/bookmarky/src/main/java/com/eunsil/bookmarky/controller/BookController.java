@@ -1,6 +1,7 @@
 package com.eunsil.bookmarky.controller;
 
 import com.eunsil.bookmarky.domain.entity.Book;
+import com.eunsil.bookmarky.service.BookService;
 import com.eunsil.bookmarky.service.api.NaverOpenApiSearchBook;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.bson.json.JsonObject;
@@ -16,11 +17,11 @@ import java.util.List;
 @RequestMapping(value = "/books")
 public class BookController {
 
-    private final NaverOpenApiSearchBook naverOpenApiSearchBook;
+    private final BookService bookService;
 
     @Autowired
-    public BookController(NaverOpenApiSearchBook naverOpenApiSearchBook) {
-        this.naverOpenApiSearchBook = naverOpenApiSearchBook;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     /**
@@ -29,8 +30,8 @@ public class BookController {
      * @return 제목과 관련성이 높은 책 정보 10개
      */
     @GetMapping("/{title}/{page}")
-    public String search(@PathVariable String title, @PathVariable int page) {
-        return naverOpenApiSearchBook.callApi(title, page);
+    public List<Book> search(@PathVariable String title, @PathVariable int page) {
+        return bookService.search(title, page);
     }
 
 }
