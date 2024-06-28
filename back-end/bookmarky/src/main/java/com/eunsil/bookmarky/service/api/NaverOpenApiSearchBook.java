@@ -17,10 +17,38 @@ public class NaverOpenApiSearchBook {
     @Value("${spring.props.client-secret}")
     private String clientSecret;
 
-    public String callApi(String title, int page) {
+    /**
+     * 책 검색
+     * @param title 제목
+     * @param page 가져올 페이지 번호
+     * @return JSON 형태의 검색 결과 10개
+     */
+    public String book(String title, int page) {
 
         String text = URLEncoder.encode(title, StandardCharsets.UTF_8); // 검색 키워드와 인코딩 형식
-        String apiURL = "https://openapi.naver.com/v1/search/book.json?display=10&query=" + text +"&start=" + page;    // JSON 결과
+        String apiURL = "https://openapi.naver.com/v1/search/book.json?display=10"
+                + "&query=" + text
+                + "&start=" + page;
+
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("X-Naver-Client-Id", clientId);
+        requestHeaders.put("X-Naver-Client-Secret", clientSecret);
+
+        return get(apiURL, requestHeaders); // 결과 반환
+    }
+
+    /**
+     * 책 상세 정보 검색
+     * @param title 제목
+     * @param isbn 고유 바코드 번호
+     * @return JSON 형태의 책 정보
+     */
+    public String bookDetail(String title, String isbn) {
+
+        String text = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String apiURL = "https://openapi.naver.com/v1/search/book_adv.xml?"
+                + "d_titl=" + text
+                + "&d_isbn=" + isbn;
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);
