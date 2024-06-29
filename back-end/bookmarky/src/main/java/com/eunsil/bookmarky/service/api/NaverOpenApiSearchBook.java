@@ -39,16 +39,13 @@ public class NaverOpenApiSearchBook {
 
     /**
      * 책 상세 정보 검색
-     * @param title 제목
      * @param isbn 고유 바코드 번호
      * @return JSON 형태의 책 정보
      */
-    public String bookDetail(String title, String isbn) {
+    public String bookDetail(String isbn) {
 
-        String text = URLEncoder.encode(title, StandardCharsets.UTF_8);
         String apiURL = "https://openapi.naver.com/v1/search/book_adv.xml?"
-                + "d_titl=" + text
-                + "&d_isbn=" + isbn;
+                + "d_isbn=" + isbn;
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);
