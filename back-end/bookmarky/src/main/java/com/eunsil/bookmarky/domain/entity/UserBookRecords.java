@@ -1,11 +1,18 @@
 package com.eunsil.bookmarky.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
-public class UserBookRecords {
+public class UserBookRecords { // 사용자가 읽은 책 저장
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +26,7 @@ public class UserBookRecords {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    private LocalDateTime date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate date;
+
 }
