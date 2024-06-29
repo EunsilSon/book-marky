@@ -86,8 +86,7 @@ public class BookService {
      */
     public boolean add(AddBookReq addBookReq) throws ParserConfigurationException, IOException, SAXException {
         Book book = getOrCreateBook(addBookReq.getIsbn()); // 저장할 책
-        saveUserBookRecord(addBookReq.getUsername(), book); // 사용자의 책 기록
-        return true;
+        return saveUserBookRecord(addBookReq.getUsername(), book); // 사용자의 책 기록
     }
 
 
@@ -119,18 +118,24 @@ public class BookService {
      * 사용자의 책 기록 저장
      * @param username
      * @param book
+     * @return 저장 유무
      */
-    private void saveUserBookRecord(String username, Book book) {
+    private boolean saveUserBookRecord(String username, Book book) {
 
         User user = userRepository.findByUsername(username);
 
-        UserBookRecords userBookRecords = UserBookRecords.builder()
-                .user(user)
-                .book(book)
-                .date(LocalDate.now())
-                .build();
-        userBookRecordsRepository.save(userBookRecords);
+        if (!userBookRecordsRepository.existsByBookId(book.getId())) { // 책 존재 유무 확인
+            UserBookRecords userBookRecords = UserBookRecords.builder()
+                    .user(user)
+                    .book(book)
+                    .date(LocalDate.now())
+                    .build();
 
+            userBookRecordsRepository.save(userBookRecords);
+            return true;
+        }
+
+        return false;
     }
 
 
