@@ -1,5 +1,5 @@
 # 북마키 (BookMarky)
-마지막 업데이트 일자는 **24.06.24**이며, 현재 개발 진행 중인 프로젝트 입니다.  
+마지막 업데이트 일자는 **24.07.01**이며, 현재 개발 진행 중인 프로젝트 입니다.  
 
 <br>
 
@@ -54,17 +54,19 @@
 | 사용자 인증 | 로그인 | [[Spring Security] Form Login 인증 구현하기](https://velog.io/@eunsilson/Spring-Security-Form-Login%EC%9D%84-%EC%BB%A4%EC%8A%A4%ED%85%80%ED%95%B4-%EC%9D%B8%EC%A6%9D-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
 |  |  | [[Security] Form Login 인증 Handler 구현하기](https://velog.io/@eunsilson/Security-Form-Login-%EC%9D%B8%EC%A6%9D-Handler-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
 |  | 회원가입 |  |
-|  | 비밀번호 변경 | [[Spring] 비밀번호 재설정 링크를 이메일로 전송하기 (Redis, UUID 토큰)](https://velog.io/@eunsilson/Spring-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%9E%AC%EC%84%A4%EC%A0%95-%EB%A7%81%ED%81%AC%EB%A5%BC-%EC%9D%B4%EB%A9%94%EC%9D%BC%EB%A1%9C-%EC%A0%84%EC%86%A1%ED%95%98%EA%B8%B0-Redis-UUID-%ED%86%A0%ED%81%B0) |
+|  | 비밀번호 변경 | [[Spring] 비밀번호 재설정 링크를 이메일로 전송하기 (Redis, UUID 토큰)](https://velog.io/@eunsilson/Spring-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%9E%AC%EC%84%A4%EC%A0%95-%EB%A7%81%ED%81%AC%EB%A5%BC-%EC%9D%B4%EB%A9%94%EC%9D%BC%EB%A1%9C-%EC%A0%84%EC%86%A1%ED%95%98%EA%B8%B0-Redis-UUID-%ED%86%A0%ED%81%B0) |  
+| 책 | 책 검색 |  |
+|  |  책 조회  |  |  
 
 <br>
 
 ## API 명세
-![image](https://github.com/EunsilSon/book-marky/assets/46162801/28336ddd-4be5-4f36-b52d-9cc68b4119b9)
+![api](https://github.com/EunsilSon/book-marky/assets/46162801/cb3d4039-773e-439f-9f12-b3a12eccea7d)
 
 <br>
 
 ## ERD
-![erd](https://github.com/EunsilSon/book-marky/assets/46162801/c19a1a21-28dd-4adb-b0ac-7663912c4074)
+![erd](https://github.com/EunsilSon/book-marky/assets/46162801/abcbfed2-1999-4f96-b70f-9032eef75df8)
 
 <br>
 
@@ -78,18 +80,27 @@
 │ │ ├── CustomAuthenticationSuccessHandler  
 │ │ └── CustomAuthenticationFailureHandler  
 │ └── SecurityConfig  
-├── controller/   
+├── controller/
+│ ├── BookController     
 │ └── UserController  
 ├── domain/   
 │ ├── dto/   
-│ │ ├── PasswordResetResq  
+│ │ ├── AddBookReq  
+│ │ ├── PasswordResetReq  
 │ │ ├── PasswordResetRes  
 │ │ └── UserDTO  
-│ └──entity/   
-│    └── User  
+│ └──entity/ 
+│    ├── User     
+│    ├── Book   
+│    └── UserBookRecords  
 ├── repository/   
-│ └── UserRepository  
+│ ├── UserRepository   
+│ ├── BookRepository   
+│ └── UserBookRecordsRepository  
 └── service/  
+  ├── api/   
+  │  └── NaverOpenApiSearchBook  
+  ├── BookService 
   ├── UserService  
   ├── MailService  
   └── ResetTokenService  
