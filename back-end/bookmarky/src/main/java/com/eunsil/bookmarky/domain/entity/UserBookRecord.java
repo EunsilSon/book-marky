@@ -3,6 +3,7 @@ package com.eunsil.bookmarky.domain.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -10,9 +11,10 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Builder
 @Entity
-public class UserBookRecords { // 사용자가 읽은 책 저장
+public class UserBookRecord { // 사용자가 읽은 책 저장
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
