@@ -56,5 +56,15 @@ public class BookController {
         return bookService.get(username);
     }
 
+    /**
+     * 책 삭제
+     * @param bookReq 사용자 이름, 책 isbn
+     * @return 삭제 여부
+     */
+    @DeleteMapping("/")
+    public boolean delete(@RequestBody BookReq bookReq) {
+        return bookService.delete(bookReq);
+    }
+
 
 }

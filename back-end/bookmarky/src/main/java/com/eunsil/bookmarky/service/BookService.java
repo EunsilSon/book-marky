@@ -205,4 +205,22 @@ public class BookService {
         return bookList;
     }
 
+
+    /**
+     * 책 삭제
+     * @param bookReq 사용자 이름, 책 isbn
+     * @return 삭제 여부
+     */
+    @Transactional
+    public boolean delete(BookReq bookReq) {
+
+        User user = userRepository.findByUsername(bookReq.getUsername());
+        Book book = bookRepository.findByIsbn(bookReq.getIsbn());
+
+        userBookRecordRepository.deleteByBookId(book.getId());
+        bookRepository.delete(book);
+
+        return true;
+    }
+
 }
