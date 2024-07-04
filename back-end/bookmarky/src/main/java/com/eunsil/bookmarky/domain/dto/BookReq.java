@@ -3,7 +3,7 @@ package com.eunsil.bookmarky.domain.dto;
 import lombok.Getter;
 
 @Getter
-public class AddBookReq {
+public class BookReq {
 
     private String username;
     private String isbn;
