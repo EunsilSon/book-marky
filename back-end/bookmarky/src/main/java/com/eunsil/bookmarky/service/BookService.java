@@ -1,15 +1,16 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.domain.dto.AddBookReq;
+import com.eunsil.bookmarky.domain.dto.BookReq;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.User;
-import com.eunsil.bookmarky.domain.entity.UserBookRecords;
+import com.eunsil.bookmarky.domain.entity.UserBookRecord;
 import com.eunsil.bookmarky.repository.BookRepository;
-import com.eunsil.bookmarky.repository.UserBookRecordsRepository;
+import com.eunsil.bookmarky.repository.UserBookRecordRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
 import com.eunsil.bookmarky.service.api.NaverOpenApiSearchBook;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -19,6 +20,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDate;
@@ -33,17 +35,17 @@ public class BookService {
     private final NaverOpenApiSearchBook naverOpenApiSearchBook;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final UserBookRecordsRepository userBookRecordsRepository;
+    private final UserBookRecordRepository userBookRecordRepository;
 
     @Autowired
     public BookService(NaverOpenApiSearchBook naverOpenApiSearchBook
             , BookRepository bookRepository
             , UserRepository userRepository
-            , UserBookRecordsRepository userBookRecordsRepository) {
+            , UserBookRecordRepository userBookRecordRepository) {
         this.naverOpenApiSearchBook = naverOpenApiSearchBook;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        this.userBookRecordsRepository = userBookRecordsRepository;
+        this.userBookRecordRepository = userBookRecordRepository;
     }
 
     /**
@@ -78,15 +80,15 @@ public class BookService {
 
     /**
      * 책 저장
-     * @param addBookReq 사용자 이름, 책 isbn
+     * @param bookReq 사용자 이름, 책 isbn
      * @return 저장 유무
      * @throws ParserConfigurationException
      * @throws IOException
      * @throws SAXException
      */
-    public boolean add(AddBookReq addBookReq) throws ParserConfigurationException, IOException, SAXException {
-        Book book = getOrCreateBook(addBookReq.getIsbn()); // 저장할 책
-        return saveUserBookRecord(addBookReq.getUsername(), book); // 사용자의 책 기록
+    public boolean add(BookReq bookReq) throws ParserConfigurationException, IOException, SAXException {
+        Book book = getOrCreateBook(bookReq.getIsbn()); // 저장할 책
+        return saveUserBookRecord(bookReq.getUsername(), book); // 사용자의 책 기록
     }
 
 
@@ -124,14 +126,14 @@ public class BookService {
 
         User user = userRepository.findByUsername(username);
 
-        if (!userBookRecordsRepository.existsByBookId(book.getId())) { // 책 존재 유무 확인
-            UserBookRecords userBookRecords = UserBookRecords.builder()
+        if (!userBookRecordRepository.existsByBookId(book.getId())) { // 책 존재 유무 확인
+            UserBookRecord userBookRecord = UserBookRecord.builder()
                     .user(user)
                     .book(book)
                     .date(LocalDate.now())
                     .build();
 
-            userBookRecordsRepository.save(userBookRecords);
+            userBookRecordRepository.save(userBookRecord);
             return true;
         }
 
@@ -147,7 +149,7 @@ public class BookService {
      * @throws IOException
      * @throws SAXException
      */
-    public Book xmlToBook(String xml) throws ParserConfigurationException, IOException, SAXException {
+    private Book xmlToBook(String xml) throws ParserConfigurationException, IOException, SAXException {
 
         // xml 파싱 -> 함수로 빼기
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -182,6 +184,25 @@ public class BookService {
                 .isbn(bookInfo.get(5))
                 .description(bookInfo.get(6))
                 .build();
+    }
+
+
+    /**
+     * 책 조회
+     * @param username
+     * @return Book 리스트
+     */
+    public List<Book> get(String username) {
+
+        User user = userRepository.findByUsername(username);
+        List<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserId(user.getId()); // Pageable
+
+        List<Book> bookList = new ArrayList<>(); // book 객체만 담은 리스트
+        for (UserBookRecord userBookRecord : userBookRecords) {
+            bookList.add(userBookRecord.getBook());
+        }
+
+        return bookList;
     }
 
 }
