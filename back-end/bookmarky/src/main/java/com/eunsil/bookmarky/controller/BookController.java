@@ -42,7 +42,7 @@ public class BookController {
      * @throws SAXException
      */
     @PostMapping("/")
-    public boolean add(@RequestBody BookReq bookReq) throws ParserConfigurationException, IOException, SAXException {
+    public boolean add(@RequestBody BookReq bookReq) throws Exception {
         return bookService.add(bookReq);
     }
 

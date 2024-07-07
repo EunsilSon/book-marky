@@ -60,14 +60,16 @@ public class BookService {
 
         // Book 객체로 변환 후 리스트에 담음
         try {
+            // JSON 을 Java 로 변환하고 원하는 속성의 값만 추출
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode node = objectMapper.readTree(responseBody);
             JsonNode items = node.path("items");
 
+            // 추출한 값을 순차적으로 접근
             Iterator<JsonNode> elements = items.elements();
             while (elements.hasNext()) {
                 JsonNode bookNode = elements.next();
-                Book book = objectMapper.treeToValue(bookNode, Book.class);
+                Book book = objectMapper.treeToValue(bookNode, Book.class); // Book 객체로 변환
                 bookList.add(book);
             }
         } catch(Exception e) {
@@ -86,7 +88,7 @@ public class BookService {
      * @throws IOException
      * @throws SAXException
      */
-    public boolean add(BookReq bookReq) throws ParserConfigurationException, IOException, SAXException {
+    public boolean add(BookReq bookReq) throws Exception {
         Book book = getOrCreateBook(bookReq.getIsbn()); // 저장할 책
         return saveUserBookRecord(bookReq.getUsername(), book); // 사용자의 책 기록
     }
@@ -100,7 +102,7 @@ public class BookService {
      * @throws IOException
      * @throws SAXException
      */
-    private Book getOrCreateBook(String isbn) throws ParserConfigurationException, IOException, SAXException {
+    private Book getOrCreateBook(String isbn) throws Exception {
 
         // DB에 책 정보가 있을 때
         if (bookRepository.existsByIsbn(isbn)) {
@@ -149,7 +151,7 @@ public class BookService {
      * @throws IOException
      * @throws SAXException
      */
-    private Book xmlToBook(String xml) throws ParserConfigurationException, IOException, SAXException {
+    private Book xmlToBook(String xml) throws Exception {
 
         // xml 파싱 -> 함수로 빼기
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
