@@ -4,6 +4,7 @@ import com.eunsil.bookmarky.domain.dto.BookReq;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xml.sax.SAXException;
 
@@ -55,6 +56,26 @@ public class BookController {
     public List<Book> get(@PathVariable String username) {
         return bookService.get(username);
     }
+
+
+    /**
+     * 책 상세 정보 조회
+     * @param id Book Id
+     * @return Book 객체
+     */
+    @GetMapping("/info/{id}")
+    public ResponseEntity<Book> getInfo(@PathVariable long id) {
+
+        Book book = bookService.getInfo(id);
+
+        if (book == null) {
+            return ResponseEntity.notFound().build(); // 404
+        } else {
+            return ResponseEntity.ok().body(book);
+        }
+
+    }
+
 
     /**
      * 책 삭제
