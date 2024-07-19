@@ -12,7 +12,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -21,7 +23,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDate;
@@ -196,14 +197,16 @@ public class BookService {
      * @param username
      * @return Book 리스트
      */
-    public List<Book> get(String username) {
+    public List<Book> get(String username, int page) {
 
         User user = userRepository.findByUsername(username);
-        List<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserIdOrderByDateDesc(user.getId()); // TODO: Pageable 기능 추가
 
-        List<Book> bookList = new ArrayList<>(); // book 객체만 담은 리스트
+        Pageable pageable = PageRequest.of(page, 6); // pageable 객체 생성
+        Page<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserIdOrderByDateDesc(user.getId(), pageable); // TODO: Pageable 기능 추가
+
+        List<Book> bookList = new ArrayList<>();
         for (UserBookRecord userBookRecord : userBookRecords) {
-            bookList.add(userBookRecord.getBook());
+            bookList.add(bookRepository.findByIsbn(userBookRecord.getBook().getIsbn()));
         }
 
         return bookList;
