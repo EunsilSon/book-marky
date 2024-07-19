@@ -240,9 +240,7 @@ public class BookService {
         User user = userRepository.findByUsername(bookReq.getUsername());
         Book book = bookRepository.findByIsbn(bookReq.getIsbn());
 
-        userBookRecordRepository.deleteByBookId(book.getId());
-        bookRepository.delete(book);
-
+        userBookRecordRepository.deleteByBookIdAndUserId(book.getId(), user.getId());
         return true;
     }
 
