@@ -4,12 +4,12 @@ import com.eunsil.bookmarky.domain.dto.BookReq;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.util.List;
 
@@ -53,8 +53,11 @@ public class BookController {
      * @return book 리스트
      */
     @GetMapping("/{username}")
-    public List<Book> get(@PathVariable String username) {
-        return bookService.get(username);
+    public ResponseEntity<List<Book>> get(
+            @PathVariable String username,
+            @RequestParam(defaultValue = "0") int page) {
+
+        return new ResponseEntity<>(bookService.get(username, page), HttpStatus.OK);
     }
 
 
