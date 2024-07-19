@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -201,8 +202,8 @@ public class BookService {
 
         User user = userRepository.findByUsername(username);
 
-        Pageable pageable = PageRequest.of(page, 6); // pageable 객체 생성
-        Page<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserIdOrderByDateDesc(user.getId(), pageable); // TODO: Pageable 기능 추가
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("date").descending()); // pageable 객체 생성
+        Page<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserId(user.getId(), pageable); // TODO: Pageable 기능 추가
 
         List<Book> bookList = new ArrayList<>();
         for (UserBookRecord userBookRecord : userBookRecords) {
