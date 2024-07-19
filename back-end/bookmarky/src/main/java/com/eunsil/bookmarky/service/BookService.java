@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -60,14 +62,16 @@ public class BookService {
 
         // Book 객체로 변환 후 리스트에 담음
         try {
+            // JSON 을 Java 로 변환하고 원하는 속성의 값만 추출
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode node = objectMapper.readTree(responseBody);
             JsonNode items = node.path("items");
 
+            // 추출한 값을 순차적으로 접근
             Iterator<JsonNode> elements = items.elements();
             while (elements.hasNext()) {
                 JsonNode bookNode = elements.next();
-                Book book = objectMapper.treeToValue(bookNode, Book.class);
+                Book book = objectMapper.treeToValue(bookNode, Book.class); // Book 객체로 변환
                 bookList.add(book);
             }
         } catch(Exception e) {
@@ -86,7 +90,7 @@ public class BookService {
      * @throws IOException
      * @throws SAXException
      */
-    public boolean add(BookReq bookReq) throws ParserConfigurationException, IOException, SAXException {
+    public boolean add(BookReq bookReq) throws Exception {
         Book book = getOrCreateBook(bookReq.getIsbn()); // 저장할 책
         return saveUserBookRecord(bookReq.getUsername(), book); // 사용자의 책 기록
     }
@@ -100,7 +104,7 @@ public class BookService {
      * @throws IOException
      * @throws SAXException
      */
-    private Book getOrCreateBook(String isbn) throws ParserConfigurationException, IOException, SAXException {
+    private Book getOrCreateBook(String isbn) throws Exception {
 
         // DB에 책 정보가 있을 때
         if (bookRepository.existsByIsbn(isbn)) {
@@ -149,7 +153,7 @@ public class BookService {
      * @throws IOException
      * @throws SAXException
      */
-    private Book xmlToBook(String xml) throws ParserConfigurationException, IOException, SAXException {
+    private Book xmlToBook(String xml) throws Exception {
 
         // xml 파싱 -> 함수로 빼기
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -188,14 +192,14 @@ public class BookService {
 
 
     /**
-     * 책 조회
+     * 책 기록 조회
      * @param username
      * @return Book 리스트
      */
     public List<Book> get(String username) {
 
         User user = userRepository.findByUsername(username);
-        List<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserId(user.getId()); // Pageable
+        List<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserId(user.getId()); // TODO: Pageable 기능 추가
 
         List<Book> bookList = new ArrayList<>(); // book 객체만 담은 리스트
         for (UserBookRecord userBookRecord : userBookRecords) {
@@ -203,6 +207,25 @@ public class BookService {
         }
 
         return bookList;
+    }
+
+
+    /**
+     * 책 상세 정보 조회
+     * @param id Book Id
+     * @return Book 객체
+     */
+    public Book getInfo(long id) {
+
+        Optional<Book> book = bookRepository.findById(id);
+
+        if (!book.isEmpty()) {
+            return book.get();
+        } else {
+            System.out.println("[BookController]: Book not found");
+            return null;
+        }
+
     }
 
 
@@ -217,9 +240,7 @@ public class BookService {
         User user = userRepository.findByUsername(bookReq.getUsername());
         Book book = bookRepository.findByIsbn(bookReq.getIsbn());
 
-        userBookRecordRepository.deleteByBookId(book.getId());
-        bookRepository.delete(book);
-
+        userBookRecordRepository.deleteByBookIdAndUserId(book.getId(), user.getId());
         return true;
     }
 
