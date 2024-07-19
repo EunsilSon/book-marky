@@ -14,5 +14,5 @@ public interface UserBookRecordRepository extends JpaRepository<UserBookRecord, 
 
     int deleteByBookIdAndUserId(Long bookId, Long userId);
 
-    Page<UserBookRecord> findByUserIdOrderByDateDesc(Long userId, Pageable pageable);
+    Page<UserBookRecord> findByUserId(Long userId, Pageable pageable);
 }
