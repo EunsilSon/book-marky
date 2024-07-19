@@ -199,7 +199,7 @@ public class BookService {
     public List<Book> get(String username) {
 
         User user = userRepository.findByUsername(username);
-        List<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserId(user.getId()); // TODO: Pageable 기능 추가
+        List<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserIdOrderByDateDesc(user.getId()); // TODO: Pageable 기능 추가
 
         List<Book> bookList = new ArrayList<>(); // book 객체만 담은 리스트
         for (UserBookRecord userBookRecord : userBookRecords) {
