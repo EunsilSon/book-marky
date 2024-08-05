@@ -22,7 +22,7 @@ public class UserController {
 
     /**
      * 회원 가입
-     * @param userDTO 이메일, 비밀번호, 닉네임
+     * @param userDTO 유저 이메일, 비밀번호, 닉네임
      * @return 성공 여부
      */
     @PostMapping("/")
@@ -33,8 +33,8 @@ public class UserController {
 
     /**
      * 비밀번호 변경 메일 요청
-     * @param username 로그인에 사용한 이메일
-     * @return 유저 이름, 일회용 토큰
+     * @param username 유저 이메일
+     * @return 유저 이메일, 일회용 토큰
      * @throws Exception 존재하지 않는 사용자
      */
     @GetMapping("/{username}")
@@ -44,8 +44,8 @@ public class UserController {
 
 
     /**
-     * 비밀번호 변경
-     * @param passwordResetReq 이메일, 비밀번호, 토큰
+     * 유효한 링크로 접속 후 비밀번호 변경
+     * @param passwordResetReq 유저 이메일, 비밀번호, 토큰
      * @return 변경 여부
      */
     @PutMapping("/")
