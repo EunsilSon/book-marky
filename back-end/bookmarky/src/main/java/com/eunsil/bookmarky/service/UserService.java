@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.domain.dto.PasswordResetReq;
-import com.eunsil.bookmarky.domain.dto.PasswordResetRes;
+import com.eunsil.bookmarky.domain.request.PasswordResetReq;
+import com.eunsil.bookmarky.domain.response.PasswordResetRes;
 import com.eunsil.bookmarky.domain.dto.UserDTO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.UserRepository;

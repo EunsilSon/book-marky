@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.controller;
 
-import com.eunsil.bookmarky.domain.dto.PasswordResetReq;
-import com.eunsil.bookmarky.domain.dto.PasswordResetRes;
+import com.eunsil.bookmarky.domain.request.PasswordResetReq;
+import com.eunsil.bookmarky.domain.response.PasswordResetRes;
 import com.eunsil.bookmarky.service.UserService;
 import com.eunsil.bookmarky.domain.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
