@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @Entity
-public class UserBookRecord { // 사용자가 읽은 책 저장
+public class BookRecord { // 사용자가 읽은 책 저장
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

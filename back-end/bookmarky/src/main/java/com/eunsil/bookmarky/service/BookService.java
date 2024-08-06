@@ -1,11 +1,11 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.domain.dto.BookReq;
+import com.eunsil.bookmarky.domain.request.BookReq;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.User;
-import com.eunsil.bookmarky.domain.entity.UserBookRecord;
+import com.eunsil.bookmarky.domain.entity.BookRecord;
 import com.eunsil.bookmarky.repository.BookRepository;
-import com.eunsil.bookmarky.repository.UserBookRecordRepository;
+import com.eunsil.bookmarky.repository.BookRecordRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
 import com.eunsil.bookmarky.service.api.NaverOpenApiSearchBook;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,17 +39,17 @@ public class BookService {
     private final NaverOpenApiSearchBook naverOpenApiSearchBook;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final UserBookRecordRepository userBookRecordRepository;
+    private final BookRecordRepository bookRecordRepository;
 
     @Autowired
     public BookService(NaverOpenApiSearchBook naverOpenApiSearchBook
             , BookRepository bookRepository
             , UserRepository userRepository
-            , UserBookRecordRepository userBookRecordRepository) {
+            , BookRecordRepository bookRecordRepository) {
         this.naverOpenApiSearchBook = naverOpenApiSearchBook;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        this.userBookRecordRepository = userBookRecordRepository;
+        this.bookRecordRepository = bookRecordRepository;
     }
 
     /**
@@ -132,14 +132,14 @@ public class BookService {
 
         User user = userRepository.findByUsername(username);
 
-        if (!userBookRecordRepository.existsByBookId(book.getId())) { // 책 존재 유무 확인
-            UserBookRecord userBookRecord = UserBookRecord.builder()
+        if (!bookRecordRepository.existsByBookId(book.getId())) { // 책 존재 유무 확인
+            BookRecord bookRecord = BookRecord.builder()
                     .user(user)
                     .book(book)
                     .date(LocalDate.now())
                     .build();
 
-            userBookRecordRepository.save(userBookRecord);
+            bookRecordRepository.save(bookRecord);
             return true;
         }
 
@@ -203,11 +203,11 @@ public class BookService {
         User user = userRepository.findByUsername(username);
 
         Pageable pageable = PageRequest.of(page, 6, Sort.by("date").descending()); // pageable 객체 생성
-        Page<UserBookRecord> userBookRecords = userBookRecordRepository.findByUserId(user.getId(), pageable); // TODO: Pageable 기능 추가
+        Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable); // TODO: Pageable 기능 추가
 
         List<Book> bookList = new ArrayList<>();
-        for (UserBookRecord userBookRecord : userBookRecords) {
-            bookList.add(bookRepository.findByIsbn(userBookRecord.getBook().getIsbn()));
+        for (BookRecord bookRecord : userBookRecords) {
+            bookList.add(bookRepository.findByIsbn(bookRecord.getBook().getIsbn()));
         }
 
         return bookList;
@@ -244,7 +244,7 @@ public class BookService {
         User user = userRepository.findByUsername(bookReq.getUsername());
         Book book = bookRepository.findByIsbn(bookReq.getIsbn());
 
-        userBookRecordRepository.deleteByBookIdAndUserId(book.getId(), user.getId());
+        bookRecordRepository.deleteByBookIdAndUserId(book.getId(), user.getId());
         return true;
     }
 

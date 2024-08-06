@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.controller;
 
-import com.eunsil.bookmarky.domain.dto.BookReq;
+import com.eunsil.bookmarky.domain.request.BookReq;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;

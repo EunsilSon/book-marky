@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.domain.dto;
+package com.eunsil.bookmarky.domain.response;
 
 import lombok.Getter;
 
