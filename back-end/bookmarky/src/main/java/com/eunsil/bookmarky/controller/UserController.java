@@ -39,7 +39,7 @@ public class UserController {
      * @throws Exception 존재하지 않는 사용자
      */
     @GetMapping("/{username}")
-    public ResponseEntity<PasswordResetRes> sendResetEmail(@PathVariable String username) throws Exception {
+    public ResponseEntity<PasswordResetRes> sendResetEmail(@PathVariable String username) {
         return userService.sendResetEmail(username);
     }
 
@@ -50,7 +50,7 @@ public class UserController {
      * @return 변경 여부
      */
     @PutMapping("/")
-    public boolean resetPw(@RequestBody PasswordResetReq passwordResetReq) {
+    public boolean resetPw(@Valid @RequestBody PasswordResetReq passwordResetReq) {
         return userService.resetPw(passwordResetReq);
     }
 

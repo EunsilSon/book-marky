@@ -61,7 +61,7 @@ public class UserService {
      * @throws Exception 존재하지 않는 사용자
      */
     @Transactional
-    public ResponseEntity<PasswordResetRes> sendResetEmail(String username) throws Exception {
+    public ResponseEntity<PasswordResetRes> sendResetEmail(String username) {
 
         if (userRepository.existsByUsername(username)) {
             String uuid = mailService.generateResetEmail(username); // 메일 생성 및 전송
