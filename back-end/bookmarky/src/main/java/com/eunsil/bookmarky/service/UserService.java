@@ -35,6 +35,7 @@ public class UserService {
      * @param userDTO 유저 이메일, 비밀번호, 닉네임
      * @return 성공 여부
      */
+    @Transactional
     public boolean join(UserDTO userDTO) {
         if (!userRepository.existsByUsername(userDTO.getUsername())) { // 유저 아이디 중복 체크
 
@@ -42,6 +43,7 @@ public class UserService {
                     .username(userDTO.getUsername())
                     .password(bCryptPasswordEncoder.encode(userDTO.getPassword()))
                     .nickname(userDTO.getNickname())
+                    .telephone(userDTO.getTelephone())
                     .role("ROLE_USER")
                     .build();
 
