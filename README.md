@@ -51,12 +51,12 @@
 
 | 기능 | 설명 | 비고 |
 | --- | --- | --- |
-| 사용자 인증 | 로그인 | [[Spring Security] Form Login 인증 구현하기](https://velog.io/@eunsilson/Spring-Security-Form-Login%EC%9D%84-%EC%BB%A4%EC%8A%A4%ED%85%80%ED%95%B4-%EC%9D%B8%EC%A6%9D-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
-|  |  | [[Security] Form Login 인증 Handler 구현하기](https://velog.io/@eunsilson/Security-Form-Login-%EC%9D%B8%EC%A6%9D-Handler-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
+| 사용자 인증 | 로그인 | [[Security] Form Login 인증](https://velog.io/@eunsilson/Security-Form-Login-%EC%9D%B8%EC%A6%9D-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
+|  |  | [[Security] Form Login 인증 Handler](https://velog.io/@eunsilson/Security-Form-Login-%EC%9D%B8%EC%A6%9D-Handler-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
 |  | 회원가입 |  |
-|  | 비밀번호 변경 | [[Spring] 비밀번호 재설정 링크를 이메일로 전송하기 (Redis, UUID 토큰)](https://velog.io/@eunsilson/Spring-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%9E%AC%EC%84%A4%EC%A0%95-%EB%A7%81%ED%81%AC%EB%A5%BC-%EC%9D%B4%EB%A9%94%EC%9D%BC%EB%A1%9C-%EC%A0%84%EC%86%A1%ED%95%98%EA%B8%B0-Redis-UUID-%ED%86%A0%ED%81%B0) |  
+|  | 비밀번호 변경 | [[Spring Boot] 비밀번호 재설정 링크를 이메일로 전송 (Redis 토큰)](https://velog.io/@eunsilson/Spring-Boot-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%9E%AC%EC%84%A4%EC%A0%95-%EB%A7%81%ED%81%AC%EB%A5%BC-%EC%9D%B4%EB%A9%94%EC%9D%BC%EB%A1%9C-%EC%A0%84%EC%86%A1%ED%95%98%EA%B8%B0-Redis-%ED%86%A0%ED%81%B0) |  
 | 책 | 책 검색 | [[Java] JSON, XML을 파싱해 원하는 값만 추출하는 방법](https://velog.io/@eunsilson/Java-JSON-XML%EC%9D%84-%ED%8C%8C%EC%8B%B1%ED%95%B4-%EC%9B%90%ED%95%98%EB%8A%94-%EA%B0%92%EB%A7%8C-%EC%B6%94%EC%B6%9C%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-Open-API-%EA%B2%B0%EA%B3%BC%EA%B0%92) |
-|  |  저장한 책 조회  | [[Spring] JPA 페이징 구현하기 (Pageable 객체 사용)](https://velog.io/@eunsilson/Spring-JPA-%ED%8E%98%EC%9D%B4%EC%A7%95-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-Pageable-%EA%B0%9D%EC%B2%B4-%EC%82%AC%EC%9A%A9) |  
+|  |  저장한 책 조회  | [[Spring Boot] JPA 페이징 (Pageable 객체)](https://velog.io/@eunsilson/Spring-Boot-JPA-%ED%8E%98%EC%9D%B4%EC%A7%95-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-Pageable-%EA%B0%9D%EC%B2%B4) |  
 |  |  책 상세 정보 조회  |  |  
 |  |  책 삭제  |  | 
 
