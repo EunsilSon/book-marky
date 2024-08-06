@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.domain.dto;
+package com.eunsil.bookmarky.domain.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class UserDTO {
+public class UserVO {
 
     @NotBlank
     @Pattern(regexp = "^[a-z\\d._]+@[a-z._]+\\.[a-z]{2,6}$") // 이메일

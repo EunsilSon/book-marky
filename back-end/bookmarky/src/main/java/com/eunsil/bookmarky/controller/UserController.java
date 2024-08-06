@@ -3,7 +3,7 @@ package com.eunsil.bookmarky.controller;
 import com.eunsil.bookmarky.domain.request.PasswordResetReq;
 import com.eunsil.bookmarky.domain.response.PasswordResetRes;
 import com.eunsil.bookmarky.service.UserService;
-import com.eunsil.bookmarky.domain.dto.UserDTO;
+import com.eunsil.bookmarky.domain.vo.UserVO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +23,12 @@ public class UserController {
 
     /**
      * 회원 가입
-     * @param userDTO 유저 이메일, 비밀번호, 닉네임
+     * @param userVO 유저 이메일, 비밀번호, 닉네임
      * @return 성공 여부
      */
     @PostMapping("/")
-    public boolean join(@Valid @RequestBody UserDTO userDTO) {
-        return userService.join(userDTO);
+    public boolean join(@Valid @RequestBody UserVO userVO) {
+        return userService.join(userVO);
     }
 
 
