@@ -9,7 +9,6 @@
 3. [개발 완료된 기능](#개발-완료된-기능)
 4. [API 명세](#API-명세)
 5. [ERD](#ERD)
-6. [디렉터리 구조](#디렉터리-구조)
 
 
 <br>
@@ -69,41 +68,3 @@
 
 ## ERD
 <img width="60%" alt="erd" src="https://github.com/user-attachments/assets/7c2def26-9fff-483b-a180-cdb2684cf2f0">
-
-<br>
-
-## 디렉터리 구조
-```
-┌── config/   
-│ ├── auth/   
-│ │ ├── CustomUserDetails  
-│ │ └── CustomUserDetailsService   
-│ ├──handler/  
-│ │ ├── CustomAuthenticationSuccessHandler  
-│ │ └── CustomAuthenticationFailureHandler  
-│ └── SecurityConfig  
-├── controller/
-│ ├── BookController     
-│ └── UserController  
-├── domain/   
-│ ├── dto/   
-│ │ ├── AddBookReq  
-│ │ ├── PasswordResetReq  
-│ │ ├── PasswordResetRes  
-│ │ └── UserDTO  
-│ └──entity/ 
-│    ├── User     
-│    ├── Book   
-│    └── UserBookRecords  
-├── repository/   
-│ ├── UserRepository   
-│ ├── BookRepository   
-│ └── UserBookRecordsRepository  
-└── service/  
-  ├── api/   
-  │  └── NaverOpenApiSearchBook  
-  ├── BookService 
-  ├── UserService  
-  ├── MailService  
-  └── ResetTokenService  
-```
