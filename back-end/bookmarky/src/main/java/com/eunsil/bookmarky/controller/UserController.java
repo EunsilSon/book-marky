@@ -4,6 +4,7 @@ import com.eunsil.bookmarky.domain.request.PasswordResetReq;
 import com.eunsil.bookmarky.domain.response.PasswordResetRes;
 import com.eunsil.bookmarky.service.UserService;
 import com.eunsil.bookmarky.domain.dto.UserDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class UserController {
      * @return 성공 여부
      */
     @PostMapping("/")
-    public boolean join(@RequestBody UserDTO userDTO) {
+    public boolean join(@Valid @RequestBody UserDTO userDTO) {
         return userService.join(userDTO);
     }
 
