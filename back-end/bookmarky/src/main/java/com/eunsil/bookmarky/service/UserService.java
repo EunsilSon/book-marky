@@ -2,7 +2,7 @@ package com.eunsil.bookmarky.service;
 
 import com.eunsil.bookmarky.domain.request.PasswordResetReq;
 import com.eunsil.bookmarky.domain.response.PasswordResetRes;
-import com.eunsil.bookmarky.domain.dto.UserDTO;
+import com.eunsil.bookmarky.domain.vo.UserVO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -32,16 +32,18 @@ public class UserService {
 
     /**
      * 회원가입
-     * @param userDTO 유저 이메일, 비밀번호, 닉네임
+     * @param userVO 유저 이메일, 비밀번호, 닉네임
      * @return 성공 여부
      */
-    public boolean join(UserDTO userDTO) {
-        if (!userRepository.existsByUsername(userDTO.getUsername())) { // 유저 아이디 중복 체크
+    @Transactional
+    public boolean join(UserVO userVO) {
+        if (!userRepository.existsByUsername(userVO.getUsername())) { // 유저 아이디 중복 체크
 
             User user = User.builder()
-                    .username(userDTO.getUsername())
-                    .password(bCryptPasswordEncoder.encode(userDTO.getPassword()))
-                    .nickname(userDTO.getNickname())
+                    .username(userVO.getUsername())
+                    .password(bCryptPasswordEncoder.encode(userVO.getPassword()))
+                    .nickname(userVO.getNickname())
+                    .telephone(userVO.getTelephone())
                     .role("ROLE_USER")
                     .build();
 
@@ -56,10 +58,9 @@ public class UserService {
      * 비밀번호 변경 메일 생성 및 전송
      * @param username 유저 이메일
      * @return 유저 이메일, 일회용 토큰
-     * @throws Exception 존재하지 않는 사용자
      */
     @Transactional
-    public ResponseEntity<PasswordResetRes> sendResetEmail(String username) throws Exception {
+    public ResponseEntity<PasswordResetRes> sendResetEmail(String username) {
 
         if (userRepository.existsByUsername(username)) {
             String uuid = mailService.generateResetEmail(username); // 메일 생성 및 전송
