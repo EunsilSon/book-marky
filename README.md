@@ -51,7 +51,7 @@
 | 기능 | 설명 | 비고 |
 | --- | --- | --- |
 | 사용자 인증 | 로그인 | [[Security] Form Login 인증](https://velog.io/@eunsilson/Security-Form-Login-%EC%9D%B8%EC%A6%9D-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
-|  |  | [[Security] Form Login 인증 Handler](https://velog.io/@eunsilson/Security-Form-Login-%EC%9D%B8%EC%A6%9D-Handler-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
+|  |  | [[Security] Form Login 성공/실패 Handler](https://velog.io/@eunsilson/Security-Form-Login-%EC%9D%B8%EC%A6%9D-Handler-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0) |
 |  | 회원가입 | [[Spring Boot] Validation+@Valid를 적용한 값의 유효성 검증](https://velog.io/@eunsilson/Spring-Boot-Validation-%EC%9C%A0%ED%9A%A8%EC%84%B1-%EA%B2%80%EC%A6%9D) |
 |  | 비밀번호 변경 | [[Spring Boot] 비밀번호 재설정 링크를 이메일로 전송 (Redis 토큰)](https://velog.io/@eunsilson/Spring-Boot-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%9E%AC%EC%84%A4%EC%A0%95-%EB%A7%81%ED%81%AC%EB%A5%BC-%EC%9D%B4%EB%A9%94%EC%9D%BC%EB%A1%9C-%EC%A0%84%EC%86%A1%ED%95%98%EA%B8%B0-Redis-%ED%86%A0%ED%81%B0) |  
 | 책 | 책 검색 | [[Java] JSON, XML을 파싱해 원하는 값만 추출하는 방법](https://velog.io/@eunsilson/Java-JSON-XML%EC%9D%84-%ED%8C%8C%EC%8B%B1%ED%95%B4-%EC%9B%90%ED%95%98%EB%8A%94-%EA%B0%92%EB%A7%8C-%EC%B6%94%EC%B6%9C%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-Open-API-%EA%B2%B0%EA%B3%BC%EA%B0%92) |
