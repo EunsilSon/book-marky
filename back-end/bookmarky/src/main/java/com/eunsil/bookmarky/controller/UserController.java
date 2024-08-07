@@ -36,7 +36,6 @@ public class UserController {
      * 비밀번호 변경 메일 요청
      * @param username 유저 이메일
      * @return 유저 이메일, 일회용 토큰
-     * @throws Exception 존재하지 않는 사용자
      */
     @GetMapping("/{username}")
     public ResponseEntity<PasswordResetRes> sendResetEmail(@PathVariable String username) {
