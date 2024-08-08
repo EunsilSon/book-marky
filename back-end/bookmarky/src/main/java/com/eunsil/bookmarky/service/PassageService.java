@@ -30,7 +30,7 @@ public class PassageService {
      * - DB에 없는 책의 경우, 구절 생성 시 새로운 책 정보가 함께 DB에 저장됨
      * @param passageReq
      * @return
-     * @throws Exception
+     * @throws Exception 책 정보가 없을 때 검색을 위해 open api 호출 후 응답 값을 XML 로 변환하는 과정에서 발생 가능
      */
     public ResponseEntity add(PassageReq passageReq) throws Exception {
 
