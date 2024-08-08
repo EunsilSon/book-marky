@@ -203,7 +203,7 @@ public class BookService {
         User user = userRepository.findByUsername(username);
 
         Pageable pageable = PageRequest.of(page, 6, Sort.by("date").descending()); // pageable 객체 생성
-        Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable); // TODO: Pageable 기능 추가
+        Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
 
         List<Book> bookList = new ArrayList<>();
         for (BookRecord bookRecord : userBookRecords) {
