@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRecordRepository extends JpaRepository<BookRecord, Long> {
 
-    boolean existsByBookId(Long bookId);
-
-    int deleteByBookIdAndUserId(Long bookId, Long userId);
+    void deleteByBookIdAndUserId(Long bookId, Long userId);
 
     Page<BookRecord> findByUserId(Long userId, Pageable pageable);
 }

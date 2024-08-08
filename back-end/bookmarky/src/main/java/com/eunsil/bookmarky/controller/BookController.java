@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/books")
@@ -24,6 +22,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
+
     /**
      * 책 검색
      * @param title 책 제목
@@ -34,30 +33,27 @@ public class BookController {
         return bookService.search(title, page);
     }
 
-    /**
-     * 책 기록 저장
-     * @param bookReq
-     * @return
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    @PostMapping("/")
-    public boolean add(@RequestBody BookReq bookReq) throws Exception {
-        return bookService.add(bookReq);
-    }
 
     /**
-     * 책 기록 조회
+     * 저장한 책의 제목만 조회
+     * @param username
+     * @param page
+     * @return
+     */
+    @GetMapping("/title/{username}")
+    public ResponseEntity<Map<Long, String>> getByTitle(@PathVariable String username, @RequestParam(defaultValue = "0") int page) {
+        return new ResponseEntity<>(bookService.getTitleList(username, page), HttpStatus.OK);
+    }
+
+
+    /**
+     * 저장한 책 목록 조회
      * @param username
      * @return book 리스트
      */
     @GetMapping("/{username}")
-    public ResponseEntity<List<Book>> get(
-            @PathVariable String username,
-            @RequestParam(defaultValue = "0") int page) {
-
-        return new ResponseEntity<>(bookService.get(username, page), HttpStatus.OK);
+    public ResponseEntity<List<Book>> get(@PathVariable String username, @RequestParam(defaultValue = "0") int page) {
+        return new ResponseEntity<>(bookService.getList(username, page, 6), HttpStatus.OK);
     }
 
 

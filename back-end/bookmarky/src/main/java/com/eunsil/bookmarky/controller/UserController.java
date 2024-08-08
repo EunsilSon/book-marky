@@ -39,7 +39,7 @@ public class UserController {
      */
     @GetMapping("/{username}")
     public ResponseEntity<PasswordResetRes> sendResetEmail(@PathVariable String username) {
-        return userService.sendResetEmail(username);
+        return userService.sendResetEmailWithToken(username);
     }
 
 
@@ -50,7 +50,7 @@ public class UserController {
      */
     @PutMapping("/")
     public boolean resetPw(@Valid @RequestBody PasswordResetReq passwordResetReq) {
-        return userService.resetPw(passwordResetReq);
+        return userService.resetPwWithTokenValidation(passwordResetReq);
     }
 
 }
