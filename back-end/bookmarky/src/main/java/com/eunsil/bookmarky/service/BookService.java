@@ -63,71 +63,40 @@ public class BookService {
      * @return Book 을 담은 리스트
      */
     public List<Book> search(String title, int page) {
-        String responseBody = naverOpenApiSearchBook.book(title, page); // 오픈 API 응답 결과
-        return parsingService.jsonToBookList(responseBody);
+        String response = naverOpenApiSearchBook.book(title, page); // 오픈 API 응답 결과
+        return parsingService.jsonToBookList(response);
     }
 
 
     /**
-     * 책 저장
-     * @param bookReq 사용자 이름, 책 isbn
+     * 저장한 이력이 없는 책 등록
+     * - 구절 등록할 때 새로운 책 정보가 함께 등록됨
+     * @param
      * @return 저장 유무
      * @throws ParserConfigurationException
      * @throws IOException
      * @throws SAXException
      */
-    public boolean add(BookReq bookReq) throws Exception {
-        Book book = getOrCreateBook(bookReq.getIsbn()); // 저장할 책
-        return saveUserBookRecord(bookReq.getUsername(), book); // 사용자의 책 기록
-    }
-
-
-    /**
-     * DB 에서 책 조회 또는 Open API 검색
-     * @param isbn
-     * @return 책 정보를 담은 Book
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    private Book getOrCreateBook(String isbn) throws Exception {
-
-        // DB에 책 정보가 있을 때
-        if (bookRepository.existsByIsbn(isbn)) {
-            return bookRepository.findByIsbn(isbn);
-        }
-
-        // DB에 책 정보가 없을 때
-        String response = naverOpenApiSearchBook.bookDetail(isbn); // 네이버 오픈 api 책 상세 조회
-        Book book = parsingService.xmlToBook(response);
-        bookRepository.save(book); // DB 저장
-
-        return book;
-    }
-
-
-    /**
-     * 사용자의 책 기록 저장
-     * @param username
-     * @param book
-     * @return 저장 유무
-     */
-    private boolean saveUserBookRecord(String username, Book book) {
+    @Transactional
+    public boolean add(String username, String isbn) throws Exception {
 
         User user = userRepository.findByUsername(username);
 
-        if (!bookRecordRepository.existsByBookId(book.getId())) { // 책 존재 유무 확인
-            BookRecord bookRecord = BookRecord.builder()
-                    .user(user)
-                    .book(book)
-                    .date(LocalDate.now())
-                    .build();
+        // 오픈 API 를 통해 책 상세 조회
+        String response = naverOpenApiSearchBook.bookDetail(isbn);
+        Book book = parsingService.xmlToBook(response);
+        bookRepository.save(book); // 책 정보 저장
 
-            bookRecordRepository.save(bookRecord);
-            return true;
-        }
 
-        return false;
+        // 책 기록 등록
+        BookRecord bookRecord = BookRecord.builder()
+                .user(user)
+                .book(book)
+                .date(LocalDate.now())
+                .build();
+        bookRecordRepository.save(bookRecord);
+
+        return true;
     }
 
 

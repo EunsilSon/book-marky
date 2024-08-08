@@ -34,18 +34,6 @@ public class BookController {
         return bookService.search(title, page);
     }
 
-    /**
-     * 책 기록 저장
-     * @param bookReq
-     * @return
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    @PostMapping("/")
-    public boolean add(@RequestBody BookReq bookReq) throws Exception {
-        return bookService.add(bookReq);
-    }
 
     /**
      * 책 기록 조회
