@@ -59,26 +59,30 @@ public class BookService {
 
 
     /**
+     * 오픈 API 를 통해 isbn 으로 책 검색
+     * @param isbn
+     * @return
+     */
+    public Book searchWithIsbn(String isbn) throws Exception {
+        String response = naverOpenApiSearchBook.bookDetail(isbn);
+        return parsingService.xmlToBook(response);
+    }
+
+
+    /**
      * 저장한 이력이 없는 책 등록
-     * - 구절 등록할 때 새로운 책 정보가 함께 등록됨
+     * - 구절 생성할 때 새로운 책 정보가 함께 저장됨
      * @param
-     * @return 저장 유무
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
+     * @return 새로 저장된 Book 의 id
      */
     @Transactional
-    public boolean add(String username, String isbn) throws Exception {
+    public Long add(String username, Book book) {
 
         User user = userRepository.findByUsername(username);
 
-        // 오픈 API 를 통해 책 상세 조회
-        String response = naverOpenApiSearchBook.bookDetail(isbn);
-        Book book = parsingService.xmlToBook(response);
         bookRepository.save(book); // 책 정보 저장
 
-
-        // 책 기록 등록
+        // 책 기록 저장
         BookRecord bookRecord = BookRecord.builder()
                 .user(user)
                 .book(book)
@@ -86,7 +90,7 @@ public class BookService {
                 .build();
         bookRecordRepository.save(bookRecord);
 
-        return true;
+        return bookRepository.findByIsbn(book.getIsbn()).getId();
     }
 
 
