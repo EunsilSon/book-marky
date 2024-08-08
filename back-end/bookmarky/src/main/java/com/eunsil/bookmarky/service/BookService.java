@@ -37,16 +37,19 @@ import java.util.Optional;
 public class BookService {
 
     private final NaverOpenApiSearchBook naverOpenApiSearchBook;
+    private final ParsingService parsingService;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final BookRecordRepository bookRecordRepository;
 
     @Autowired
     public BookService(NaverOpenApiSearchBook naverOpenApiSearchBook
+            , ParsingService parsingService
             , BookRepository bookRepository
-            , UserRepository userRepository
-            , BookRecordRepository bookRecordRepository) {
+            , BookRecordRepository bookRecordRepository
+            , UserRepository userRepository) {
         this.naverOpenApiSearchBook = naverOpenApiSearchBook;
+        this.parsingService = parsingService;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
         this.bookRecordRepository = bookRecordRepository;
@@ -54,33 +57,14 @@ public class BookService {
 
     /**
      * 책 검색
+     * - OPEN API 를 통해 책 검색 후 Book 객체로 변환해 전달
      * @param title 제목
      * @param page 가져올 페이지 번호
      * @return Book 을 담은 리스트
      */
     public List<Book> search(String title, int page) {
         String responseBody = naverOpenApiSearchBook.book(title, page); // 오픈 API 응답 결과
-        List<Book> bookList = new ArrayList<>();
-
-        // Book 객체로 변환 후 리스트에 담음
-        try {
-            // JSON 을 Java 로 변환하고 원하는 속성의 값만 추출
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode node = objectMapper.readTree(responseBody);
-            JsonNode items = node.path("items");
-
-            // 추출한 값을 순차적으로 접근
-            Iterator<JsonNode> elements = items.elements();
-            while (elements.hasNext()) {
-                JsonNode bookNode = elements.next();
-                Book book = objectMapper.treeToValue(bookNode, Book.class); // Book 객체로 변환
-                bookList.add(book);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        return bookList;
+        return parsingService.jsonToBookList(responseBody);
     }
 
 
@@ -115,7 +99,7 @@ public class BookService {
 
         // DB에 책 정보가 없을 때
         String response = naverOpenApiSearchBook.bookDetail(isbn); // 네이버 오픈 api 책 상세 조회
-        Book book = xmlToBook(response);
+        Book book = parsingService.xmlToBook(response);
         bookRepository.save(book); // DB 저장
 
         return book;
@@ -144,52 +128,6 @@ public class BookService {
         }
 
         return false;
-    }
-
-
-    /**
-     * XML 을 Book 객체로 변환
-     * @param xml
-     * @return Book
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    private Book xmlToBook(String xml) throws Exception {
-
-        // xml 파싱 -> 함수로 빼기
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(new InputSource(new StringReader(xml)));
-
-        // 책 정보 추출
-        List<String> bookInfo = new ArrayList<>();
-
-        for (int i = 0; i < 9; i++) {
-            if (i == 4 || i == 6) {
-                continue;
-            }
-
-            String info = document
-                    .getElementsByTagName("item")
-                    .item(0)
-                    .getChildNodes()
-                    .item(i) // 가져올 값
-                    .getTextContent();
-
-            bookInfo.add(info); // title 0, link 1, image 2, author 3, publisher 5, isbn 7, description 8;
-        }
-
-        // book 객체 반환
-        return Book.builder()
-                .title(bookInfo.get(0))
-                .link(bookInfo.get(1))
-                .image(bookInfo.get(2))
-                .author(bookInfo.get(3))
-                .publisher(bookInfo.get(4))
-                .isbn(bookInfo.get(5))
-                .description(bookInfo.get(6))
-                .build();
     }
 
 
