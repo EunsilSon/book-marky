@@ -20,9 +20,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -93,15 +91,34 @@ public class BookService {
 
 
     /**
-     * 책 기록 조회
+     * 저장한 책 제목만 리스트로 반환
+     * @param username
+     * @param page
+     * @return
+     */
+    public Map<Long, String> getTitleList(String username, int page) {
+
+        List<Book> bookList = getList(username, page, 10);
+        Map<Long, String> titleList = new HashMap<>();
+
+        for (Book book : bookList) {
+            titleList.put(book.getId(), book.getTitle()); // 책의 id와 제목만 추출
+        }
+
+        return titleList;
+    }
+
+
+    /**
+     * 저장한 책 목록 조회
      * @param username
      * @return Book 리스트
      */
-    public List<Book> get(String username, int page) {
+    public List<Book> getList(String username, int page, int size) {
 
         User user = userRepository.findByUsername(username);
 
-        Pageable pageable = PageRequest.of(page, 6, Sort.by("date").descending()); // pageable 객체 생성
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending()); // pageable 객체 생성
         Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
 
         List<Book> bookList = new ArrayList<>();
