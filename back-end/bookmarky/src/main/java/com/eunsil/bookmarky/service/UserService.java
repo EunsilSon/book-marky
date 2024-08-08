@@ -55,16 +55,16 @@ public class UserService {
 
 
     /**
-     * 비밀번호 변경 메일 생성 및 전송
+     * 비밀번호 변경을 위한 토큰 생성 후 변경 링크를 메일로 전달
      * @param username 유저 이메일
      * @return 유저 이메일, 일회용 토큰
      */
     @Transactional
-    public ResponseEntity<PasswordResetRes> sendResetEmail(String username) {
+    public ResponseEntity<PasswordResetRes> sendResetEmailWithToken(String username) {
 
         if (userRepository.existsByUsername(username)) {
-            String uuid = mailService.generateResetEmail(username); // 메일 생성 및 전송
-            PasswordResetRes passwordResetRes = new PasswordResetRes(username, uuid);
+            String uuid = resetTokenService.generateToken(username); // 일회용 토큰 생성
+            PasswordResetRes passwordResetRes = new PasswordResetRes(username, mailService.generateResetEmail(username, uuid)); // 토큰을 포함한 메일 생성
 
             return ResponseEntity.ok(passwordResetRes);
         }
@@ -75,12 +75,12 @@ public class UserService {
 
 
     /**
-     * 비밀번호 변경
+     * 토큰 유효성 검증 후 비밀번호 변경
      * @param passwordResetReq 유저 이메일, 새 비밀번호, 토큰
      * @return 변경 여부
      */
     @Transactional
-    public boolean resetPw(PasswordResetReq passwordResetReq) {
+    public boolean resetPwWithTokenValidation(PasswordResetReq passwordResetReq) {
 
         String token = passwordResetReq.getToken();
 

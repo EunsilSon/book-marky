@@ -6,7 +6,9 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -15,28 +17,24 @@ import java.io.UnsupportedEncodingException;
 @Service
 public class MailService {
 
-    private final ResetTokenService resetTokenService;
-    private final JavaMailSender mailSender;
-
     @Value("${spring.mail.username}")
     private String fromEmail;
     @Value("${spring.props.reset-password-url}")
     private String resetPwUrl;
 
-    @Autowired
-    public MailService(JavaMailSender mailSender, ResetTokenService resetTokenService) {
+    private final JavaMailSender mailSender;
+
+    public MailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
-        this.resetTokenService = resetTokenService;
     }
 
     /**
-     * 이메일 생성
+     * 이메일 내용 작성
      * @param username 로그인에 사용한 이메일
      * @return 토큰
      */
     @Transactional
-    public String generateResetEmail(String username) {
-        String uuid = resetTokenService.generateToken(username); // 일회용 토큰 생성
+    public String generateResetEmail(String username, String uuid) {
 
         String title = "[북마키] 비밀번호 재설정 링크입니다.";
         String content = "아래 링크에 접속하여 비밀번호를 재설정 해주세요.<br><br>"
@@ -49,7 +47,7 @@ public class MailService {
     }
 
     /**
-     * 이메일 전송
+     * 이메일 전송을 위한 송수신 설정
      * @param username 로그인에 사용한 이메일
      * @param title 메일 제목
      * @param content 메일 내용
