@@ -2,6 +2,7 @@ package com.eunsil.bookmarky.service;
 
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.Passage;
+import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.request.PassageReq;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
@@ -55,6 +56,23 @@ public class PassageService {
         passageRepository.save(passage);
 
         return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+    }
+
+
+    /**
+     * 구절 상세 조회
+     * @param id
+     * @return
+     */
+    public ResponseEntity<Passage> get(Long id) {
+
+        Passage passage = passageRepository.findById(id).orElse(null);
+
+        if (passage == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        return new ResponseEntity<>(passage, HttpStatus.OK);
     }
 
 }

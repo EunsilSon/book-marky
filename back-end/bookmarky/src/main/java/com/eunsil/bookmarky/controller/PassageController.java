@@ -1,13 +1,11 @@
 package com.eunsil.bookmarky.controller;
 
+import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.request.PassageReq;
 import com.eunsil.bookmarky.service.PassageService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/passage")
@@ -28,6 +26,16 @@ public class PassageController {
     @PostMapping("/")
     public ResponseEntity add(@Valid @RequestBody PassageReq passageReq) throws Exception {
         return passageService.add(passageReq);
+    }
+
+    /**
+     * 구절 상세 조회
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Passage> get(@PathVariable Long id) {
+        return passageService.get(id);
     }
 
 }
