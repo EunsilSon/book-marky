@@ -2,6 +2,7 @@ package com.eunsil.bookmarky.controller;
 
 import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.request.PassageReq;
+import com.eunsil.bookmarky.domain.request.PassageUpdateReq;
 import com.eunsil.bookmarky.service.PassageService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,17 @@ public class PassageController {
     @GetMapping("/{id}")
     public ResponseEntity<Passage> get(@PathVariable Long id) {
         return passageService.get(id);
+    }
+
+
+    /**
+     * 구절 수정
+     * @param passageUpdateReq isbn, bookId, username, content
+     * @return 수정 여부
+     */
+    @PatchMapping("/")
+    public ResponseEntity update(@Valid @RequestBody PassageUpdateReq passageUpdateReq) {
+        return passageService.update(passageUpdateReq);
     }
 
 }

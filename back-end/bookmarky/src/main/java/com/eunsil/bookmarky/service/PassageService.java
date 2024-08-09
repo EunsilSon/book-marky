@@ -4,6 +4,7 @@ import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.request.PassageReq;
+import com.eunsil.bookmarky.domain.request.PassageUpdateReq;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,23 @@ public class PassageService {
 
 
     /**
+     * 구절 수정
+     * @param passageUpdateReq 구절 id, 수정된 content
+     * @return 수정 여부
+     */
+    public ResponseEntity update(PassageUpdateReq passageUpdateReq) {
+
+        Passage passage = passageRepository.findById(passageUpdateReq.getPassageId()).orElse(null);
+
+        passage.setContent(passageUpdateReq.getContent());
+        passage.setDate(LocalDate.now());
+        passageRepository.save(passage);
+
+        return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+    }
+
+
+    /**
      * 구절 상세 조회
      * @param id
      * @return
@@ -74,5 +92,6 @@ public class PassageService {
 
         return new ResponseEntity<>(passage, HttpStatus.OK);
     }
+
 
 }
