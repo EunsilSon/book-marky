@@ -63,7 +63,7 @@ public class PassageController {
      * @return
      */
     @GetMapping("/{username}/{bookId}")
-    public ResponseEntity<List<PassageListRes>> getList(@PathVariable String username, @PathVariable Long bookId) {
-        return passageService.getList(username, bookId);
+    public ResponseEntity<List<PassageListRes>> getList(@PathVariable String username, @PathVariable Long bookId, @RequestParam(defaultValue = "0") int page) {
+        return passageService.getList(username, bookId, page);
     }
 }

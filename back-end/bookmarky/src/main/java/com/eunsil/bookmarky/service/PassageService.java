@@ -8,12 +8,15 @@ import com.eunsil.bookmarky.domain.request.PassageUpdateReq;
 import com.eunsil.bookmarky.domain.response.PassageListRes;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,16 +102,18 @@ public class PassageService {
 
 
     /**
-     * 구절 목록 조회
+     * 구절 목록 조회 (10개씩, passage id 기준 내림차순)
      * - 저장한 구절을 전체적으로 조회하기 위함
      * @param username 유저 이름
      * @param bookId 책 id
      * @return 쪽수, 구절 내용
      */
-    public ResponseEntity<List<PassageListRes>> getList(String username, Long bookId) {
+    public ResponseEntity<List<PassageListRes>> getList(String username, Long bookId, int page) {
 
         User user = userRepository.findByUsername(username);
-        List<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId);
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
+        Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
 
         // 필요한 값만 추출 (pageNum, content)
         List<PassageListRes> passageListResList = passagesList.stream()
