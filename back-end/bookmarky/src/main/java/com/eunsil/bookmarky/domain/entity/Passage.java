@@ -22,6 +22,8 @@ public class Passage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int pageNum;
+
     @NotNull
     private String content;
 
