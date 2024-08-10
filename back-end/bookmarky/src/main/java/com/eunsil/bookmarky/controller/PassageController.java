@@ -66,4 +66,15 @@ public class PassageController {
     public ResponseEntity<List<PassageListRes>> getList(@PathVariable String username, @PathVariable Long bookId, @RequestParam(defaultValue = "0") int page) {
         return passageService.getList(username, bookId, page);
     }
+
+
+    /**
+     * 구절 삭제
+     * @param id 구절 id
+     * @return 삭제 여부
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        return passageService.delete(id);
+    }
 }

@@ -124,4 +124,14 @@ public class PassageService {
         return ResponseEntity.status(HttpStatus.OK).body(passageListResList);
     }
 
+    /**
+     * 구절 삭제 (hard delete)
+     * TODO: soft delete
+     * @param id 구절 id
+     * @return 삭제 여부
+     */
+    public ResponseEntity delete(Long id) {
+        passageRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+    }
 }
