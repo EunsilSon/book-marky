@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@SQLDelete(sql = "UPDATE passage SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 public class Passage {
 
     @Id
@@ -35,5 +38,7 @@ public class Passage {
 
     @NotNull
     private Long userId;
+
+    private boolean isDeleted = Boolean.FALSE; // BigInt (0, 1)
 
 }
