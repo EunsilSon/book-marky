@@ -104,6 +104,7 @@ public class PassageService {
     /**
      * 구절 목록 조회 (10개씩, passage id 기준 내림차순)
      * - 저장한 구절을 전체적으로 조회하기 위함
+     * - 페이징: 반환 개수 10개 고정
      * @param username 유저 이름
      * @param bookId 책 id
      * @return 쪽수, 구절 내용
