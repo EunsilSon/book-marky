@@ -9,12 +9,11 @@ spring:
         enabled: true
 
   jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+        ddl-auto: update
+        show-sql: true
+        format-sql: true
 
   data:
     redis:
