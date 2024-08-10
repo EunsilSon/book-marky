@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class PasswordResetRes {
+public class PwResetRes {
 
     private String username;
     private String token;

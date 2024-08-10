@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.controller;
 
-import com.eunsil.bookmarky.domain.request.PasswordResetReq;
-import com.eunsil.bookmarky.domain.response.PasswordResetRes;
+import com.eunsil.bookmarky.domain.request.PwResetReq;
+import com.eunsil.bookmarky.domain.response.PwResetRes;
 import com.eunsil.bookmarky.service.UserService;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import jakarta.validation.Valid;
@@ -38,19 +38,19 @@ public class UserController {
      * @return 유저 이메일, 일회용 토큰
      */
     @GetMapping("/{username}")
-    public ResponseEntity<PasswordResetRes> sendResetEmail(@PathVariable String username) {
+    public ResponseEntity<PwResetRes> sendResetEmail(@PathVariable String username) {
         return userService.sendResetEmailWithToken(username);
     }
 
 
     /**
      * 유효한 링크로 접속 후 비밀번호 변경
-     * @param passwordResetReq 유저 이메일, 비밀번호, 토큰
+     * @param pwResetReq 유저 이메일, 비밀번호, 토큰
      * @return 변경 여부
      */
     @PutMapping("/")
-    public boolean resetPw(@Valid @RequestBody PasswordResetReq passwordResetReq) {
-        return userService.resetPwWithTokenValidation(passwordResetReq);
+    public boolean resetPw(@Valid @RequestBody PwResetReq pwResetReq) {
+        return userService.resetPwWithTokenValidation(pwResetReq);
     }
 
 }
