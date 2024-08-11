@@ -56,8 +56,6 @@ public class BookService {
 
     /**
      * 오픈 API 를 통해 isbn 으로 책 검색
-     * @param isbn
-     * @return
      */
     public Book searchWithIsbn(String isbn) throws Exception {
         String response = naverOpenApiSearch.bookDetail(isbn);
@@ -68,7 +66,6 @@ public class BookService {
     /**
      * 저장한 이력이 없는 책 등록
      * - 구절 생성할 때 새로운 책 정보가 함께 저장됨
-     * @param
      * @return 새로 저장된 Book 의 id
      */
     @Transactional
@@ -91,10 +88,8 @@ public class BookService {
 
 
     /**
-     * 저장한 책 제목만 리스트로 반환
-     * @param username
-     * @param page
-     * @return
+     * 저장한 책 제목만 리스트로 반환 (페이징)
+     * @return Map<책 id, 책 제목>
      */
     public Map<Long, String> getTitleList(String username, int page) {
 
@@ -111,7 +106,6 @@ public class BookService {
 
     /**
      * 저장한 책 목록 조회
-     * @param username
      * @return Book 리스트
      */
     public List<Book> getList(String username, int page, int size) {
