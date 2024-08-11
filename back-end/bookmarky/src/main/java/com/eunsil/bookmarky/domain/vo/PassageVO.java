@@ -7,9 +7,10 @@ import lombok.Getter;
 @Getter
 public class PassageVO {
 
-    private String isbn;
+    private Boolean isSaved;
 
-    private Long bookId;
+    @NotBlank
+    private String isbn;
 
     @NotBlank
     private String username;
