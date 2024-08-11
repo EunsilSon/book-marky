@@ -69,6 +69,16 @@ public class PassageController {
 
 
     /**
+     * 최근 삭제 내역 조회
+     * @param username
+     * @return 삭제한 구절 리스트
+     */@GetMapping("/deleted/{username}")
+    public List<Passage> getAllDeleted(@PathVariable String username) {
+        return passageService.getAllDeleted(username);
+    }
+
+
+    /**
      * 구절 삭제
      * @param id 구절 id
      * @return 삭제 여부
@@ -77,4 +87,6 @@ public class PassageController {
     public ResponseEntity delete(@PathVariable Long id) {
         return passageService.delete(id);
     }
+
+
 }
