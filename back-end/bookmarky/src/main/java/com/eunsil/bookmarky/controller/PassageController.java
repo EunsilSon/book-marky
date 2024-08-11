@@ -4,7 +4,7 @@ import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.vo.PassageVO;
 import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
 import com.eunsil.bookmarky.domain.dto.PassageListDTO;
-import com.eunsil.bookmarky.service.PassageService;
+import com.eunsil.bookmarky.service.passage.PassageService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

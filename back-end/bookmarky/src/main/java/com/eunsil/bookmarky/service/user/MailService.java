@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.service;
+package com.eunsil.bookmarky.service.user;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;

@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.service;
+package com.eunsil.bookmarky.service.book;
 
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.fasterxml.jackson.databind.JsonNode;

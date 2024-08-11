@@ -2,7 +2,7 @@ package com.eunsil.bookmarky.controller;
 
 import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
-import com.eunsil.bookmarky.service.BookService;
+import com.eunsil.bookmarky.service.book.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

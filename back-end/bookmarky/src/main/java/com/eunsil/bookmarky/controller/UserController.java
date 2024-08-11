@@ -2,7 +2,7 @@ package com.eunsil.bookmarky.controller;
 
 import com.eunsil.bookmarky.domain.vo.PwResetVO;
 import com.eunsil.bookmarky.domain.dto.PwResetDTO;
-import com.eunsil.bookmarky.service.UserService;
+import com.eunsil.bookmarky.service.user.UserService;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
