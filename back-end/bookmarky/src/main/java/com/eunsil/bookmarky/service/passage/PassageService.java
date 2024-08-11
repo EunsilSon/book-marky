@@ -7,6 +7,7 @@ import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.vo.PassageVO;
 import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
 import com.eunsil.bookmarky.domain.dto.PassageListDTO;
+import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
 import com.eunsil.bookmarky.service.book.BookService;
@@ -29,13 +30,18 @@ public class PassageService {
     private final FilterManager filterManager;
     private final UserRepository userRepository;
     private final BookService bookService;
+    private final BookRepository bookRepository;
     private PassageRepository passageRepository;
 
-    public PassageService(FilterManager filterManager, PassageRepository passageRepository, UserRepository userRepository, BookService bookService) {
+    public PassageService(FilterManager filterManager
+            , PassageRepository passageRepository
+            , UserRepository userRepository
+            , BookService bookService, BookRepository bookRepository) {
         this.filterManager = filterManager;
         this.passageRepository = passageRepository;
         this.userRepository = userRepository;
         this.bookService = bookService;
+        this.bookRepository = bookRepository;
     }
 
 
@@ -43,24 +49,24 @@ public class PassageService {
      * 특정 책의 구절 생성
      * - DB에 없는 책의 경우, 구절 생성 시 새로운 책 정보가 함께 DB에 저장됨
      * @param passageVO
-     * @return
+     * @return 생성 여부
      * @throws Exception 책 정보가 없을 때 검색을 위해 open api 호출 후 응답 값을 XML 로 변환하는 과정에서 발생 가능
      */
-    public ResponseEntity add(PassageVO passageVO) throws Exception {
+    public boolean add(PassageVO passageVO) throws Exception {
 
         // 책 정보
-        Long bookId;
+        Long newBookId;
 
-        if (passageVO.getBookId() == null) { // 저장한 이력이 없는 책
+        if (passageVO.getIsSaved()) { // 이미 저장된 책
+            newBookId = bookRepository.findByIsbn(passageVO.getIsbn()).getId();
+        } else { // 저장한 이력이 없는 책
             Book book = bookService.searchWithIsbn(passageVO.getIsbn());
-            bookId = bookService.add(passageVO.getUsername(), book); // 책 정보와 기록 저장
-        } else { // 이미 저장된 책
-            bookId = passageVO.getBookId();
+            newBookId = bookService.add(passageVO.getUsername(), book); // 책 정보와 기록 저장
         }
 
         // 구절 생성
         Passage passage = Passage.builder()
-                .bookId(bookId)
+                .bookId(newBookId)
                 .userId(userRepository.findByUsername(passageVO.getUsername()).getId())
                 .content(passageVO.getContent())
                 .date(LocalDate.now())
@@ -68,7 +74,7 @@ public class PassageService {
 
         passageRepository.save(passage);
 
-        return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+        return true;
     }
 
 
