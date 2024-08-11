@@ -73,8 +73,8 @@ public class PassageController {
      * @param username
      * @return 삭제한 구절 리스트
      */@GetMapping("/deleted/{username}")
-    public List<Passage> getAllDeleted(@PathVariable String username) {
-        return passageService.getAllDeleted(username);
+    public ResponseEntity<List<PassageListDTO>> getAllDeleted(@PathVariable String username, @RequestParam(defaultValue = "0") int page) {
+        return passageService.getAllDeleted(username, page);
     }
 
 
