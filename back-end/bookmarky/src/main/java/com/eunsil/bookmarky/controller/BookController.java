@@ -4,6 +4,7 @@ import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.service.book.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,7 +90,7 @@ public class BookController {
      * @return 삭제 여부
      */
     @DeleteMapping("/")
-    public ResponseEntity delete(@RequestBody BookVO bookVO) {
+    public ResponseEntity delete(@Valid @RequestBody BookVO bookVO) {
         return ResponseEntity.ok(bookService.delete(bookVO));
     }
 
