@@ -24,11 +24,13 @@ import java.util.stream.Collectors;
 @Service
 public class PassageService {
 
+    private final FilterManager filterManager;
     private final UserRepository userRepository;
     private final BookService bookService;
     private PassageRepository passageRepository;
 
-    public PassageService(PassageRepository passageRepository, UserRepository userRepository, BookService bookService) {
+    public PassageService(FilterManager filterManager, PassageRepository passageRepository, UserRepository userRepository, BookService bookService) {
+        this.filterManager = filterManager;
         this.passageRepository = passageRepository;
         this.userRepository = userRepository;
         this.bookService = bookService;
@@ -112,10 +114,13 @@ public class PassageService {
      */
     public ResponseEntity<List<PassageListDTO>> getList(String username, Long bookId, int page) {
 
-        User user = userRepository.findByUsername(username);
+        filterManager.enableFilter("deletedPassageFilter", "isDeleted", false); // 필터 활성화
 
+        User user = userRepository.findByUsername(username);
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
-        Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
+        Page<Passage> passagesList = passageRepository.findByUserIdAndBookIdAndIsDeleted(user.getId(), bookId, false, pageable);
+
+        filterManager.disableFilter("deletedPassageFilter"); // 필터 비활성화
 
         // 필요한 값만 추출 (pageNum, content)
         List<PassageListDTO> passageListResList = passagesList.stream()
@@ -124,6 +129,7 @@ public class PassageService {
 
         return ResponseEntity.status(HttpStatus.OK).body(passageListResList);
     }
+
 
     /**
      * 구절 삭제
@@ -135,6 +141,24 @@ public class PassageService {
     public ResponseEntity delete(Long id) {
         passageRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+    }
+
+
+    /**
+     * 최근 삭제 내역 조회 (30일 보관)
+     * @return 삭제된 구절 리스트
+     */
+    @Transactional
+    public List<Passage> getAllDeleted(String username) {
+
+        filterManager.enableFilter("deletedPassageFilter", "isDeleted", true); // 필터 활성화
+
+        User user = userRepository.findByUsername(username);
+        List<Passage> deletedPassageList = passageRepository.findByUserIdAndIsDeleted(user.getId(), true);
+
+        filterManager.disableFilter("deletedPassageFilter"); // 필터 비활성화
+
+        return deletedPassageList;
     }
 
 
