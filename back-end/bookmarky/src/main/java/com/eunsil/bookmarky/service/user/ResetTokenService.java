@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.service;
+package com.eunsil.bookmarky.service.user;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

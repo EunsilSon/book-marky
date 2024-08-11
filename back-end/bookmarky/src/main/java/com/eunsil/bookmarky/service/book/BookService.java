@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.service;
+package com.eunsil.bookmarky.service.book;
 
 import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
@@ -7,7 +7,6 @@ import com.eunsil.bookmarky.domain.entity.BookRecord;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.BookRecordRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
-import com.eunsil.bookmarky.service.api.NaverOpenApiSearchBook;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,19 +22,19 @@ import java.util.*;
 @Service
 public class BookService {
 
-    private final NaverOpenApiSearchBook naverOpenApiSearchBook;
+    private final NaverOpenApiSearch naverOpenApiSearch;
     private final ParsingService parsingService;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final BookRecordRepository bookRecordRepository;
 
     @Autowired
-    public BookService(NaverOpenApiSearchBook naverOpenApiSearchBook
+    public BookService(NaverOpenApiSearch naverOpenApiSearch
             , ParsingService parsingService
             , BookRepository bookRepository
             , BookRecordRepository bookRecordRepository
             , UserRepository userRepository) {
-        this.naverOpenApiSearchBook = naverOpenApiSearchBook;
+        this.naverOpenApiSearch = naverOpenApiSearch;
         this.parsingService = parsingService;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
@@ -50,7 +49,7 @@ public class BookService {
      * @return Book 을 담은 리스트
      */
     public List<Book> search(String title, int page) {
-        String response = naverOpenApiSearchBook.book(title, page); // 오픈 API 응답 결과
+        String response = naverOpenApiSearch.book(title, page); // 오픈 API 응답 결과
         return parsingService.jsonToBookList(response);
     }
 
@@ -61,7 +60,7 @@ public class BookService {
      * @return
      */
     public Book searchWithIsbn(String isbn) throws Exception {
-        String response = naverOpenApiSearchBook.bookDetail(isbn);
+        String response = naverOpenApiSearch.bookDetail(isbn);
         return parsingService.xmlToBook(response);
     }
 

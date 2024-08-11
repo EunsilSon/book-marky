@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.service;
+package com.eunsil.bookmarky.service.user;
 
 import com.eunsil.bookmarky.domain.vo.PwResetVO;
 import com.eunsil.bookmarky.domain.dto.PwResetDTO;
