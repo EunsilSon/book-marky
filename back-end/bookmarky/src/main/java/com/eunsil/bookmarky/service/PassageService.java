@@ -8,6 +8,7 @@ import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
 import com.eunsil.bookmarky.domain.dto.PassageListDTO;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -125,13 +126,16 @@ public class PassageService {
     }
 
     /**
-     * 구절 삭제 (hard delete)
-     * TODO: soft delete
+     * 구절 삭제
+     * - soft delete: 30일간 보존 후 영구 삭제
      * @param id 구절 id
      * @return 삭제 여부
      */
+    @Transactional
     public ResponseEntity delete(Long id) {
         passageRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
     }
+
+
 }
