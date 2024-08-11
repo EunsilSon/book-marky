@@ -16,6 +16,7 @@ public class Handler {
 
     /**
      * VO 유효성 검증 실패했을 때
+     *
      * @param e MethodArgumentNotValidException
      * @return CommonResponse
      */

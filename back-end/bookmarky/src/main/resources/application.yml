@@ -21,4 +21,4 @@ spring:
       port: 6379
 
   profiles:
-    active: private # DB, SMTP, 계정 정보 숨김
+    active: private # DB, SMTP 정보 숨김
