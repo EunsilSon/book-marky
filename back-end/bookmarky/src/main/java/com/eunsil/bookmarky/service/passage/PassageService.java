@@ -47,8 +47,9 @@ public class PassageService {
 
     /**
      * 특정 책의 구절 생성
+     *
      * - DB에 없는 책의 경우, 구절 생성 시 새로운 책 정보가 함께 DB에 저장됨
-     * @param passageVO
+     * @param passageVO isSaved, isbn, username, content
      * @return 생성 여부
      * @throws Exception 책 정보가 없을 때 검색을 위해 open api 호출 후 응답 값을 XML 로 변환하는 과정에서 발생 가능
      */
@@ -74,26 +75,25 @@ public class PassageService {
                 .build();
 
         passageRepository.save(passage);
-
         return true;
     }
 
 
     /**
      * 구절 수정
+     *
      * @param passageUpdateVO 구절 id, 수정된 content
      * @return 수정 여부
      */
     @Transactional
-    public ResponseEntity update(PassageUpdateVO passageUpdateVO) {
+    public boolean update(PassageUpdateVO passageUpdateVO) {
 
         Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElse(null);
-
         passage.setContent(passageUpdateVO.getContent());
         passage.setDate(LocalDate.now());
-        passageRepository.save(passage);
 
-        return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+        passageRepository.save(passage);
+        return true;
     }
 
 
@@ -104,38 +104,33 @@ public class PassageService {
      * @return 삭제 여부
      */
     @Transactional
-    public ResponseEntity delete(Long id) {
+    public boolean delete(Long id) {
         passageRepository.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+        return true;
     }
 
 
     /**
      * 구절 상세 조회
-     * @param id
-     * @return
+     *
+     * @param id 구절 id
+     * @return Passage 객체
      */
-    public ResponseEntity<Passage> get(Long id) {
-
-        Passage passage = passageRepository.findById(id).orElse(null);
-
-        if (passage == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        return new ResponseEntity<>(passage, HttpStatus.OK);
+    public Passage get(Long id) {
+        return passageRepository.findById(id).orElse(null);
     }
 
 
     /**
-     * 구절 목록 조회 (10개씩, passage id 기준 내림차순)
+     * 구절 목록 조회
+     *
      * - 저장한 구절을 전체적으로 조회하기 위함
-     * - 페이징: 반환 개수 10개 고정
-     * @param username 유저 이름
+     * - 페이징: 10개씩, passage id 기준 내림차순, 반환 개수 10개 고정
+     * @param username 유저 이메일
      * @param bookId 책 id
-     * @return 쪽수, 구절 내용
+     * @return PassageListDTO 리스트 (pageNum, content)
      */
-    public ResponseEntity<List<PassageListDTO>> getList(String username, Long bookId, int page) {
+    public List<PassageListDTO> getList(String username, Long bookId, int page) {
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false); // 필터 활성화
 
@@ -146,19 +141,21 @@ public class PassageService {
         filterManager.disableFilter("deletedPassageFilter"); // 필터 비활성화
 
         // 필요한 값만 추출 (pageNum, content)
-        List<PassageListDTO> passageListResList = passagesList.stream()
+        return passagesList.stream()
                 .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent()))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(passageListResList);
     }
 
 
     /**
      * 최근 삭제 내역 조회 (30일 보관)
-     * @return 삭제된 구절 리스트
+     *
+     * @param username 유저 이메일
+     * @param page 페이지 번호
+     * @return PassageListDTO 리스트 (pageNum, content)
      */
-    public ResponseEntity<List<PassageListDTO>> getAllDeleted(String username, int page) {
+    public List<PassageListDTO> getAllDeleted(String username, int page) {
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true); // 필터 활성화
 
@@ -168,11 +165,10 @@ public class PassageService {
 
         filterManager.disableFilter("deletedPassageFilter"); // 필터 비활성화
 
-        List<PassageListDTO> passageListResList = deletedPassageList.stream()
+        return deletedPassageList.stream()
                 .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent()))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(passageListResList);
     }
 
 
