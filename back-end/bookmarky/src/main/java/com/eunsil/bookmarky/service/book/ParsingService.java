@@ -6,12 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,8 +18,8 @@ import java.util.List;
 public class ParsingService {
 
     /**
-     * JSON 형식의 OPEN API 응답 값을 Book 객체 리스트로 변환
-     * @param responseBody
+     * JSON -> Book 객체 리스트 변환
+     * @param responseBody JSON 형식의 open api 응답 값
      * @return List<Book>
      */
     public List<Book> jsonToBookList(String responseBody) {
@@ -50,12 +47,10 @@ public class ParsingService {
 
 
     /**
-     * XML 형식의 OPEN API 응답 값을 Book 객체로 변환
-     * @param responseBody
+     * XML -> Book 객체 변환
+     * @param responseBody XML 형식의 open api 응답 값
      * @return Book
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
+     * @throws Exception
      */
     public Book xmlToBook(String responseBody) throws Exception {
 

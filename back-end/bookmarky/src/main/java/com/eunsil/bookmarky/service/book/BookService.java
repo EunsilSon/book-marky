@@ -1,5 +1,6 @@
 package com.eunsil.bookmarky.service.book;
 
+import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -43,7 +45,8 @@ public class BookService {
 
     /**
      * 책 검색
-     * - OPEN API 를 통해 책 검색 후 Book 객체로 변환해 전달
+     * - open api 를 통해 책 검색 후 Book 객체로 변환해 전달
+     *
      * @param title 제목
      * @param page 가져올 페이지 번호
      * @return Book 을 담은 리스트
@@ -55,7 +58,11 @@ public class BookService {
 
 
     /**
-     * 오픈 API 를 통해 isbn 으로 책 검색
+     * open api 를 통해 isbn 으로 책 검색
+     *
+     * @param isbn 책 isbn
+     * @return Book 객체
+     * @throws Exception open api 의 xml 형식 응답 값을 파싱하면서 발생 가능
      */
     public Book searchWithIsbn(String isbn) throws Exception {
         String response = naverOpenApiSearch.bookDetail(isbn);
@@ -66,7 +73,10 @@ public class BookService {
     /**
      * 저장한 이력이 없는 책 등록
      * - 구절 생성할 때 새로운 책 정보가 함께 저장됨
-     * @return 새로 저장된 Book 의 id
+     *
+     * @param username 유저 이메일
+     * @param book Book 객체
+     * @return Book id
      */
     @Transactional
     public Long add(String username, Book book) {
@@ -88,63 +98,8 @@ public class BookService {
 
 
     /**
-     * 저장한 책 제목만 리스트로 반환 (페이징)
-     * @return Map<책 id, 책 제목>
-     */
-    public Map<Long, String> getTitleList(String username, int page) {
-
-        List<Book> bookList = getList(username, page, 10);
-        Map<Long, String> titleList = new HashMap<>();
-
-        for (Book book : bookList) {
-            titleList.put(book.getId(), book.getTitle()); // 책의 id와 제목만 추출
-        }
-
-        return titleList;
-    }
-
-
-    /**
-     * 저장한 책 목록 조회
-     * @return Book 리스트
-     */
-    public List<Book> getList(String username, int page, int size) {
-
-        User user = userRepository.findByUsername(username);
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending()); // pageable 객체 생성
-        Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
-
-        List<Book> bookList = new ArrayList<>();
-        for (BookRecord bookRecord : userBookRecords) {
-            bookList.add(bookRepository.findByIsbn(bookRecord.getBook().getIsbn()));
-        }
-
-        return bookList;
-    }
-
-
-    /**
-     * 책 상세 정보 조회
-     * @param id Book Id
-     * @return Book 객체
-     */
-    public Book getInfo(long id) {
-
-        Optional<Book> book = bookRepository.findById(id);
-
-        if (!book.isEmpty()) {
-            return book.get();
-        } else {
-            System.out.println("[BookController]: Book not found");
-            return null;
-        }
-
-    }
-
-
-    /**
      * 책 삭제
+     *
      * @param bookVO 사용자 이름, 책 isbn
      * @return 삭제 여부
      */
@@ -157,5 +112,57 @@ public class BookService {
         bookRecordRepository.deleteByBookIdAndUserId(book.getId(), user.getId());
         return true;
     }
+
+
+    /**
+     * 저장한 책 목록 조회
+     *
+     * @param username 유저 이메일
+     * @param page 페이지 번호
+     * @param size 반환 개수
+     * @return Book 리스트
+     */
+    public List<Book> getList(String username, int page, int size) {
+
+        User user = userRepository.findByUsername(username);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
+
+        return userBookRecords.stream()
+                .map(bookRecord -> bookRepository.findByIsbn(bookRecord.getBook().getIsbn()))
+                .collect(Collectors.toList());
+
+    }
+
+
+    /**
+     * 저장한 책 제목만 리스트로 반환 (페이징)
+     *
+     * @param username 유저 이메일
+     * @param page 페이지 번호
+     * @return BookDTO 리스트
+     */
+    public List<BookDTO> getTitleList(String username, int page) {
+
+        List<Book> bookList = getList(username, page, 10); // 책의 모든 정보
+
+        return bookList.stream()
+                .map(book -> new BookDTO(book.getId(), book.getTitle()))
+                .collect(Collectors.toList());
+
+    }
+
+
+    /**
+     * 책 상세 정보 조회
+     *
+     * @param id 책 id
+     * @return Book 객체
+     */
+    public Book getInfo(long id) {
+        return bookRepository.findById(id).orElseThrow(null);
+    }
+
 
 }
