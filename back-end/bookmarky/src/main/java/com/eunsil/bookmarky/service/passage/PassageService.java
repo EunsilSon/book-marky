@@ -62,7 +62,7 @@ public class PassageService {
         if (passageVO.getIsSaved()) { // 이미 저장된 책
             newBookId = bookRepository.findByIsbn(passageVO.getIsbn()).getId();
         } else { // 저장한 이력이 없는 책
-            Book book = bookService.searchWithIsbn(passageVO.getIsbn());
+            Book book = bookService.searchByOpenApiWithIsbn(passageVO.getIsbn());
             newBookId = bookService.add(passageVO.getUsername(), book); // 책 정보와 기록 저장
         }
 
