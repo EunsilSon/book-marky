@@ -3,9 +3,9 @@ package com.eunsil.bookmarky.service;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.entity.User;
-import com.eunsil.bookmarky.domain.request.PassageReq;
-import com.eunsil.bookmarky.domain.request.PassageUpdateReq;
-import com.eunsil.bookmarky.domain.response.PassageListRes;
+import com.eunsil.bookmarky.domain.vo.PassageVO;
+import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
+import com.eunsil.bookmarky.domain.dto.PassageListDTO;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -37,27 +37,27 @@ public class PassageService {
     /**
      * 특정 책의 구절 생성
      * - DB에 없는 책의 경우, 구절 생성 시 새로운 책 정보가 함께 DB에 저장됨
-     * @param passageReq
+     * @param passageVO
      * @return
      * @throws Exception 책 정보가 없을 때 검색을 위해 open api 호출 후 응답 값을 XML 로 변환하는 과정에서 발생 가능
      */
-    public ResponseEntity add(PassageReq passageReq) throws Exception {
+    public ResponseEntity add(PassageVO passageVO) throws Exception {
 
         // 책 정보
         Long bookId;
 
-        if (passageReq.getBookId() == null) { // 저장한 이력이 없는 책
-            Book book = bookService.searchWithIsbn(passageReq.getIsbn());
-            bookId = bookService.add(passageReq.getUsername(), book); // 책 정보와 기록 저장
+        if (passageVO.getBookId() == null) { // 저장한 이력이 없는 책
+            Book book = bookService.searchWithIsbn(passageVO.getIsbn());
+            bookId = bookService.add(passageVO.getUsername(), book); // 책 정보와 기록 저장
         } else { // 이미 저장된 책
-            bookId = passageReq.getBookId();
+            bookId = passageVO.getBookId();
         }
 
         // 구절 생성
         Passage passage = Passage.builder()
                 .bookId(bookId)
-                .userId(userRepository.findByUsername(passageReq.getUsername()).getId())
-                .content(passageReq.getContent())
+                .userId(userRepository.findByUsername(passageVO.getUsername()).getId())
+                .content(passageVO.getContent())
                 .date(LocalDate.now())
                 .build();
 
@@ -69,14 +69,14 @@ public class PassageService {
 
     /**
      * 구절 수정
-     * @param passageUpdateReq 구절 id, 수정된 content
+     * @param passageUpdateVO 구절 id, 수정된 content
      * @return 수정 여부
      */
-    public ResponseEntity update(PassageUpdateReq passageUpdateReq) {
+    public ResponseEntity update(PassageUpdateVO passageUpdateVO) {
 
-        Passage passage = passageRepository.findById(passageUpdateReq.getPassageId()).orElse(null);
+        Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElse(null);
 
-        passage.setContent(passageUpdateReq.getContent());
+        passage.setContent(passageUpdateVO.getContent());
         passage.setDate(LocalDate.now());
         passageRepository.save(passage);
 
@@ -109,7 +109,7 @@ public class PassageService {
      * @param bookId 책 id
      * @return 쪽수, 구절 내용
      */
-    public ResponseEntity<List<PassageListRes>> getList(String username, Long bookId, int page) {
+    public ResponseEntity<List<PassageListDTO>> getList(String username, Long bookId, int page) {
 
         User user = userRepository.findByUsername(username);
 
@@ -117,8 +117,8 @@ public class PassageService {
         Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
 
         // 필요한 값만 추출 (pageNum, content)
-        List<PassageListRes> passageListResList = passagesList.stream()
-                .map(passage -> new PassageListRes(passage.getPageNum(), passage.getContent()))
+        List<PassageListDTO> passageListResList = passagesList.stream()
+                .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(passageListResList);

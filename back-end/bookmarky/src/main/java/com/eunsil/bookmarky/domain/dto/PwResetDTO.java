@@ -1,11 +1,11 @@
-package com.eunsil.bookmarky.domain.response;
+package com.eunsil.bookmarky.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class PwResetRes {
+public class PwResetDTO {
 
     private String username;
     private String token;

@@ -1,9 +1,9 @@
-package com.eunsil.bookmarky.domain.request;
+package com.eunsil.bookmarky.domain.vo;
 
 import lombok.Getter;
 
 @Getter
-public class BookReq {
+public class BookVO {
 
     private String username;
     private String isbn;

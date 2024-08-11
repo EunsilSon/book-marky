@@ -1,9 +1,9 @@
-package com.eunsil.bookmarky.domain.response;
+package com.eunsil.bookmarky.domain.dto;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class PassageListRes {
+public class PassageListDTO {
 
     public int pageNum;
     public String content;

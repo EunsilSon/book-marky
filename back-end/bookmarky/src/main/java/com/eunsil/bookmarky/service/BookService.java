@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.domain.request.BookReq;
+import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.entity.BookRecord;
@@ -15,10 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -155,14 +152,14 @@ public class BookService {
 
     /**
      * 책 삭제
-     * @param bookReq 사용자 이름, 책 isbn
+     * @param bookVO 사용자 이름, 책 isbn
      * @return 삭제 여부
      */
     @Transactional
-    public boolean delete(BookReq bookReq) {
+    public boolean delete(BookVO bookVO) {
 
-        User user = userRepository.findByUsername(bookReq.getUsername());
-        Book book = bookRepository.findByIsbn(bookReq.getIsbn());
+        User user = userRepository.findByUsername(bookVO.getUsername());
+        Book book = bookRepository.findByIsbn(bookVO.getIsbn());
 
         bookRecordRepository.deleteByBookIdAndUserId(book.getId(), user.getId());
         return true;

@@ -1,11 +1,11 @@
-package com.eunsil.bookmarky.domain.request;
+package com.eunsil.bookmarky.domain.vo;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class PassageUpdateReq {
+public class PassageUpdateVO {
 
     @NotNull
     private Long passageId;

@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.domain.request.PwResetReq;
-import com.eunsil.bookmarky.domain.response.PwResetRes;
+import com.eunsil.bookmarky.domain.vo.PwResetVO;
+import com.eunsil.bookmarky.domain.dto.PwResetDTO;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.UserRepository;
@@ -60,13 +60,13 @@ public class UserService {
      * @return 유저 이메일, 일회용 토큰
      */
     @Transactional
-    public ResponseEntity<PwResetRes> sendResetEmailWithToken(String username) {
+    public ResponseEntity<PwResetDTO> sendResetEmailWithToken(String username) {
 
         if (userRepository.existsByUsername(username)) {
             String uuid = resetTokenService.generateToken(username); // 일회용 토큰 생성
-            PwResetRes pwResetRes = new PwResetRes(username, mailService.generateResetEmail(username, uuid)); // 토큰을 포함한 메일 생성
+            PwResetDTO pwResetDTO = new PwResetDTO(username, mailService.generateResetEmail(username, uuid)); // 토큰을 포함한 메일 생성
 
-            return ResponseEntity.ok(pwResetRes);
+            return ResponseEntity.ok(pwResetDTO);
         }
 
         System.out.println("[Not Existed User]: " + username);
@@ -76,20 +76,20 @@ public class UserService {
 
     /**
      * 토큰 유효성 검증 후 비밀번호 변경
-     * @param pwResetReq 유저 이메일, 새 비밀번호, 토큰
+     * @param pwResetVO 유저 이메일, 새 비밀번호, 토큰
      * @return 변경 여부
      */
     @Transactional
-    public boolean resetPwWithTokenValidation(PwResetReq pwResetReq) {
+    public boolean resetPwWithTokenValidation(PwResetVO pwResetVO) {
 
-        String token = pwResetReq.getToken();
+        String token = pwResetVO.getToken();
 
         // 토큰 유효성 검사
         if (resetTokenService.isValidToken(token)) {
 
             // 비밀번호 재설정
-            User user = userRepository.findByUsername(pwResetReq.getUsername());
-            user.setPassword(bCryptPasswordEncoder.encode(pwResetReq.getPassword()));
+            User user = userRepository.findByUsername(pwResetVO.getUsername());
+            user.setPassword(bCryptPasswordEncoder.encode(pwResetVO.getPassword()));
             userRepository.save(user);
 
             // 토큰 무효화

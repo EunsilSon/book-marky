@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.controller;
 
-import com.eunsil.bookmarky.domain.request.BookReq;
+import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,12 +78,12 @@ public class BookController {
 
     /**
      * 책 삭제
-     * @param bookReq 사용자 이름, 책 isbn
+     * @param bookVO 사용자 이름, 책 isbn
      * @return 삭제 여부
      */
     @DeleteMapping("/")
-    public boolean delete(@RequestBody BookReq bookReq) {
-        return bookService.delete(bookReq);
+    public boolean delete(@RequestBody BookVO bookVO) {
+        return bookService.delete(bookVO);
     }
 
 

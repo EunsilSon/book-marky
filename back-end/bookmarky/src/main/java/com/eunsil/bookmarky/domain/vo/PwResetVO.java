@@ -1,11 +1,11 @@
-package com.eunsil.bookmarky.domain.request;
+package com.eunsil.bookmarky.domain.vo;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class PwResetReq {
+public class PwResetVO {
 
     @Pattern(regexp = "^[a-z\\d._]+@[a-z._]+\\.[a-z]{2,6}$") // 이메일
     private String username;

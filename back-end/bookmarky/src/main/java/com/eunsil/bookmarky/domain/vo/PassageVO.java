@@ -1,11 +1,11 @@
-package com.eunsil.bookmarky.domain.request;
+package com.eunsil.bookmarky.domain.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class PassageReq {
+public class PassageVO {
 
     private String isbn;
 
