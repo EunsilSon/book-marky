@@ -64,7 +64,7 @@ public class BookService {
      * @return Book 객체
      * @throws Exception open api 의 xml 형식 응답 값을 파싱하면서 발생 가능
      */
-    public Book searchWithIsbn(String isbn) throws Exception {
+    public Book searchByOpenApiWithIsbn(String isbn) throws Exception {
         String response = naverOpenApiSearch.bookDetail(isbn);
         return parsingService.xmlToBook(response);
     }
