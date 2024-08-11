@@ -149,16 +149,21 @@ public class PassageService {
      * @return 삭제된 구절 리스트
      */
     @Transactional
-    public List<Passage> getAllDeleted(String username) {
+    public ResponseEntity<List<PassageListDTO>> getAllDeleted(String username, int page) {
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true); // 필터 활성화
 
         User user = userRepository.findByUsername(username);
-        List<Passage> deletedPassageList = passageRepository.findByUserIdAndIsDeleted(user.getId(), true);
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
+        Page<Passage> deletedPassageList = passageRepository.findByUserIdAndIsDeleted(user.getId(), true, pageable);
 
         filterManager.disableFilter("deletedPassageFilter"); // 필터 비활성화
 
-        return deletedPassageList;
+        List<PassageListDTO> passageListResList = deletedPassageList.stream()
+                .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(passageListResList);
     }
 
 
