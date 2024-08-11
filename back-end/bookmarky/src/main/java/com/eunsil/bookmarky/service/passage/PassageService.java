@@ -52,6 +52,7 @@ public class PassageService {
      * @return 생성 여부
      * @throws Exception 책 정보가 없을 때 검색을 위해 open api 호출 후 응답 값을 XML 로 변환하는 과정에서 발생 가능
      */
+    @Transactional
     public boolean add(PassageVO passageVO) throws Exception {
 
         // 책 정보
@@ -83,6 +84,7 @@ public class PassageService {
      * @param passageUpdateVO 구절 id, 수정된 content
      * @return 수정 여부
      */
+    @Transactional
     public ResponseEntity update(PassageUpdateVO passageUpdateVO) {
 
         Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElse(null);
@@ -91,6 +93,19 @@ public class PassageService {
         passage.setDate(LocalDate.now());
         passageRepository.save(passage);
 
+        return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
+    }
+
+
+    /**
+     * 구절 삭제
+     * - soft delete: 30일간 보존 후 영구 삭제
+     * @param id 구절 id
+     * @return 삭제 여부
+     */
+    @Transactional
+    public ResponseEntity delete(Long id) {
+        passageRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
     }
 
@@ -140,23 +155,9 @@ public class PassageService {
 
 
     /**
-     * 구절 삭제
-     * - soft delete: 30일간 보존 후 영구 삭제
-     * @param id 구절 id
-     * @return 삭제 여부
-     */
-    @Transactional
-    public ResponseEntity delete(Long id) {
-        passageRepository.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).header("result").body("success");
-    }
-
-
-    /**
      * 최근 삭제 내역 조회 (30일 보관)
      * @return 삭제된 구절 리스트
      */
-    @Transactional
     public ResponseEntity<List<PassageListDTO>> getAllDeleted(String username, int page) {
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true); // 필터 활성화

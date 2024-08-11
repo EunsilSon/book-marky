@@ -59,7 +59,6 @@ public class UserService {
      * @param username 유저 이메일
      * @return 유저 이메일, 일회용 토큰
      */
-    @Transactional
     public ResponseEntity<PwResetDTO> sendResetEmailWithToken(String username) {
 
         if (userRepository.existsByUsername(username)) {

@@ -30,7 +30,6 @@ public class MailService {
      * @param username 로그인에 사용한 이메일
      * @return 토큰
      */
-    @Transactional
     public String generateResetEmail(String username, String uuid) {
 
         String title = "[북마키] 비밀번호 재설정 링크입니다.";
