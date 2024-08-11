@@ -18,7 +18,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @SQLDelete(sql = "UPDATE passage SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted = false")
+@FilterDef(name = "deletedPassageFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedPassageFilter", condition = "isDeleted = :isDeleted")
 public class Passage {
 
     @Id
@@ -39,6 +40,7 @@ public class Passage {
     @NotNull
     private Long userId;
 
-    private boolean isDeleted = Boolean.FALSE; // BigInt (0, 1)
+    @Builder.Default
+    private Boolean isDeleted = Boolean.FALSE; // BigInt (0, 1)
 
 }
