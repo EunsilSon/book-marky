@@ -161,7 +161,7 @@ public class BookService {
      * @return Book 객체
      */
     public Book getInfo(long id) {
-        return bookRepository.findById(id).orElseThrow(null);
+        return bookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Book Not Found"));
     }
 
 
