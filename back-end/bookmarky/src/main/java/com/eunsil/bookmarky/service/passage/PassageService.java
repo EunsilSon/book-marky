@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,7 +89,7 @@ public class PassageService {
     @Transactional
     public boolean update(PassageUpdateVO passageUpdateVO) {
 
-        Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElse(null);
+        Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
         passage.setContent(passageUpdateVO.getContent());
         passage.setDate(LocalDate.now());
 
@@ -117,7 +118,7 @@ public class PassageService {
      * @return Passage 객체
      */
     public Passage get(Long id) {
-        return passageRepository.findById(id).orElse(null);
+        return passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
     }
 
 
