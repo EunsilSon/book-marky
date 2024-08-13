@@ -16,8 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -133,17 +131,20 @@ public class PassageService {
      */
     public List<PassageListDTO> getList(String username, Long bookId, int page) {
 
-        filterManager.enableFilter("deletedPassageFilter", "isDeleted", false); // 필터 활성화
+        // 필터 활성화
+        filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
+
 
         User user = userRepository.findByUsername(username);
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
         Page<Passage> passagesList = passageRepository.findByUserIdAndBookIdAndIsDeleted(user.getId(), bookId, false, pageable);
 
-        filterManager.disableFilter("deletedPassageFilter"); // 필터 비활성화
+        // 필터 비활성화
+        filterManager.disableFilter("deletedPassageFilter");
 
-        // 필요한 값만 추출 (pageNum, content)
+
         return passagesList.stream()
-                .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent()))
+                .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent(), passage.getBookId()))
                 .collect(Collectors.toList());
 
     }
@@ -158,16 +159,23 @@ public class PassageService {
      */
     public List<PassageListDTO> getAllDeleted(String username, int page) {
 
-        filterManager.enableFilter("deletedPassageFilter", "isDeleted", true); // 필터 활성화
+        // 필터 활성화
+        filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
+
 
         User user = userRepository.findByUsername(username);
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
         Page<Passage> deletedPassageList = passageRepository.findByUserIdAndIsDeleted(user.getId(), true, pageable);
 
-        filterManager.disableFilter("deletedPassageFilter"); // 필터 비활성화
+
+        // 필터 비활성화
+        filterManager.disableFilter("deletedPassageFilter");
+
 
         return deletedPassageList.stream()
-                .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent()))
+                .map(passage -> new PassageListDTO(passage.getPageNum()
+                        , passage.getContent()
+                        , passage.getBookId()))
                 .collect(Collectors.toList());
 
     }
