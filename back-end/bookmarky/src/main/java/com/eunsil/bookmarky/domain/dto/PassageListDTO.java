@@ -7,5 +7,6 @@ public class PassageListDTO {
 
     public int pageNum;
     public String content;
+    public Long bookId;
 
 }
