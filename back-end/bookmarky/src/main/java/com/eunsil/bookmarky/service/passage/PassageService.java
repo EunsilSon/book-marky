@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.service.passage;
 
-import com.eunsil.bookmarky.config.FilterManager;
+import com.eunsil.bookmarky.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.entity.User;

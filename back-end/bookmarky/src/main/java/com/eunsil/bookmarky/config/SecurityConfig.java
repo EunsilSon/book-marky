@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.config;
 
-import com.eunsil.bookmarky.config.handler.CustomAuthenticationFailureHandler;
-import com.eunsil.bookmarky.config.handler.CustomAuthenticationSuccessHandler;
+import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationFailureHandler;
+import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
