@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.config;
 
-import com.eunsil.bookmarky.config.handler.CustomAuthenticationFailureHandler;
-import com.eunsil.bookmarky.config.handler.CustomAuthenticationSuccessHandler;
+import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationFailureHandler;
+import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,8 +37,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/users/").permitAll()
-                        .anyRequest().authenticated()) // 로그인, 회원가입 페이지를 제외한 모든 페이지에서 인증 필요
+                        .requestMatchers("/users/").permitAll()
+                        .anyRequest().authenticated()) // 로그인, 회원가입 요청을 제외한 모든 요청은 인증 필요
                 .formLogin(login -> login
                         .loginProcessingUrl("/login") // Security 가 로그인을 대신 수행하므로 컨트롤러를 만들지 않아도 됨
                         .successHandler(customAuthenticationSuccessHandler())
