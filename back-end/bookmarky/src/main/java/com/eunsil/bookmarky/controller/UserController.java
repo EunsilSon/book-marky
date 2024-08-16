@@ -1,11 +1,15 @@
 package com.eunsil.bookmarky.controller;
 
+import com.eunsil.bookmarky.domain.vo.PwQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PwResetVO;
 import com.eunsil.bookmarky.domain.dto.PwResetDTO;
+import com.eunsil.bookmarky.exception.CommonResponse;
+import com.eunsil.bookmarky.exception.ResponseService;
 import com.eunsil.bookmarky.service.user.UserService;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final ResponseService responseService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,ResponseService responseService) {
         this.userService = userService;
+        this.responseService = responseService;
     }
 
     /**
@@ -37,7 +43,7 @@ public class UserController {
      * @param username 유저 이메일
      * @return 유저 이메일, 일회용 토큰
      */
-    @GetMapping("/{username}")
+    @GetMapping("/{username}/mail")
     public ResponseEntity<PwResetDTO> sendResetEmail(@PathVariable String username) {
         return userService.sendResetEmailWithToken(username);
     }
@@ -51,6 +57,36 @@ public class UserController {
     @PutMapping("/")
     public boolean resetPw(@Valid @RequestBody PwResetVO pwResetVO) {
         return userService.resetPwWithTokenValidation(pwResetVO);
+    }
+
+
+    /**
+     * 보안 질문 검증
+     * - 비밀번호 변경 시 토큰 탈취 방지를 위한 2차 검증
+     *
+     * @param pwQuestionVO 유저 메일, 답변
+     * @return 저장된 답변과 일치 여부
+     */
+    @PostMapping("/pw")
+    public ResponseEntity<String> checkSecureQuestion(@Valid @RequestBody PwQuestionVO pwQuestionVO) {
+        if (userService.checkSecureQuestion(pwQuestionVO)) {
+            return ResponseEntity.status(HttpStatus.OK).body("success");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("failed");
+    }
+
+
+    /**
+     * 사용자가 선택한 보안 질문 조회
+     *
+     * @param username 유저 메일
+     * @return 질문
+     */
+    @GetMapping("/{username}/question")
+    public ResponseEntity<String> getSecureQuestion(@PathVariable String username) {
+        String result = userService.getSecureQuestion(username);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+
     }
 
 }

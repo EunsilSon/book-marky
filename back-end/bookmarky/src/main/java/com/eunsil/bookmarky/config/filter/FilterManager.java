@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:back-end/bookmarky/src/main/java/com/eunsil/bookmarky/config/FilterManager.java
-package com.eunsil.bookmarky.config;
-========
 package com.eunsil.bookmarky.config.filter;
->>>>>>>> back:back-end/bookmarky/src/main/java/com/eunsil/bookmarky/config/filter/FilterManager.java
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.SessionFactory;
