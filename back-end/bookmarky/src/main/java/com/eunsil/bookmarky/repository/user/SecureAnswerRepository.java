@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.repository;
+package com.eunsil.bookmarky.repository.user;
 
 import com.eunsil.bookmarky.domain.entity.SecureAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;

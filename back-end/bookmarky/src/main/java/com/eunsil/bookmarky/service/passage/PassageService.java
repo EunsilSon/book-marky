@@ -9,7 +9,7 @@ import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
 import com.eunsil.bookmarky.domain.dto.PassageListDTO;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.PassageRepository;
-import com.eunsil.bookmarky.repository.UserRepository;
+import com.eunsil.bookmarky.repository.user.UserRepository;
 import com.eunsil.bookmarky.service.book.BookService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;

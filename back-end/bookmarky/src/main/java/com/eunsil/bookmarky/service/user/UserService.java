@@ -7,16 +7,14 @@ import com.eunsil.bookmarky.domain.vo.PwResetVO;
 import com.eunsil.bookmarky.domain.dto.PwResetDTO;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import com.eunsil.bookmarky.domain.entity.User;
-import com.eunsil.bookmarky.repository.SecureAnswerRepository;
-import com.eunsil.bookmarky.repository.SecureQuestionRepository;
-import com.eunsil.bookmarky.repository.UserRepository;
+import com.eunsil.bookmarky.repository.user.SecureAnswerRepository;
+import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
+import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {

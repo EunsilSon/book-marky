@@ -7,7 +7,7 @@ import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.entity.BookRecord;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.BookRecordRepository;
-import com.eunsil.bookmarky.repository.UserRepository;
+import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
