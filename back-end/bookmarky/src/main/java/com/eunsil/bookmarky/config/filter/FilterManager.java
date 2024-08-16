@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config;
+package com.eunsil.bookmarky.config.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.SessionFactory;
