@@ -1,5 +1,6 @@
 package com.eunsil.bookmarky.controller;
 
+import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.PwQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PwResetVO;
 import com.eunsil.bookmarky.domain.dto.PwResetDTO;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -77,15 +80,13 @@ public class UserController {
 
 
     /**
-     * 사용자가 선택한 보안 질문 조회
+     * 보안 질문 조회
      *
-     * @param username 유저 메일
-     * @return 질문
+     * @return SecureQuestionId 리스트
      */
-    @GetMapping("/{username}/question")
-    public ResponseEntity<String> getSecureQuestion(@PathVariable String username) {
-        String result = userService.getSecureQuestion(username);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+    @GetMapping("/question")
+    public ResponseEntity<List<SecureQuestion>> getSecureQuestion() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getSecureQuestion());
 
     }
 

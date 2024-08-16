@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SecureAnswerRepository extends JpaRepository<SecureAnswer, Long> {
 
-    SecureAnswer findByUserId(Long userId);
+    SecureAnswer findBySecureQuestionIdAndUserId(Long secureQuestionId, Long userId);
 
 }

@@ -30,4 +30,7 @@ public class User {
     @Column(nullable = false)
     private String role; // ROLE_USER, ROLE_ADMIN
 
+    @Column(nullable = false)
+    private Long secureQuestionId;
+
 }

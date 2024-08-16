@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -132,21 +134,19 @@ public class UserService {
      */
     public boolean checkSecureQuestion(PwQuestionVO pwQuestionVO) {
         User user = userRepository.findByUsername(pwQuestionVO.getUsername());
-        SecureAnswer secureAnswer = secureAnswerRepository.findByUserId(user.getId());
+        SecureAnswer secureAnswer = secureAnswerRepository.findBySecureQuestionIdAndUserId(pwQuestionVO.getSecureQuestionId(), user.getId());
 
         return secureAnswer.getContent().equals(pwQuestionVO.getAnswer());
     }
 
 
     /**
-     * 사용자가 선택한 보안 질문 조회
+     * 보안 질문 조회
      *
-     * @param username 유저 메일
-     * @return 질문
+     * @return SecureQuestionId 리스트
      */
-    public String getSecureQuestion(String username) {
-        User user = userRepository.findByUsername(username);
-        return secureAnswerRepository.findByUserId(user.getId()).getSecureQuestion().getContent();
+    public List<SecureQuestion> getSecureQuestion() {
+        return secureQuestionRepository.findAll();
     }
 
 }

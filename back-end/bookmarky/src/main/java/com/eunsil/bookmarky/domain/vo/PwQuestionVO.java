@@ -6,5 +6,6 @@ import lombok.Getter;
 public class PwQuestionVO {
 
     private String username;
+    private Long secureQuestionId;
     private String answer;
 }
