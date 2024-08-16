@@ -1,7 +1,6 @@
 package com.eunsil.bookmarky.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @AllArgsConstructor
@@ -16,19 +15,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column(nullable = false)
     private String username;
 
-    @NotNull
+    @Column(nullable = false)
     private String password;
 
-    @NotNull
+    @Column(nullable = false)
     private String nickname;
 
-    @NotNull
+    @Column(nullable = false)
     private String telephone;
 
-    @NotNull
+    @Column(nullable = false)
     private String role; // ROLE_USER, ROLE_ADMIN
 
 }
