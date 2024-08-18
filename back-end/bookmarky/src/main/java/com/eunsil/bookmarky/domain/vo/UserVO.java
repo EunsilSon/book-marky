@@ -15,7 +15,7 @@ public class UserVO {
     private String password;
 
     @Pattern(regexp = "^[a-zA-Z가-힣]*$", message = "닉네임은 영문과 한글만 가능합니다.")
-    @Size(min = 3, max = 8, message = "닉네임은 최소 3자, 최대 8자입니다.")
+    @Size(min = 3, max = 10, message = "닉네임은 최소 3자, 최대 10자입니다.")
     private String nickname;
 
     @Pattern(regexp = "\\d{2,3}-\\d{3,4}-\\d{4}+$", message = "010-0000-0000 형식입니다.")

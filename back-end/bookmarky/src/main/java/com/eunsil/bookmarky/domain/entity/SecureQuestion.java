@@ -10,13 +10,10 @@ import lombok.*;
 @Builder
 @Entity
 public class SecureQuestion {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String content;
-
-
 }

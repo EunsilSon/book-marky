@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @Builder
 @Entity
 public class BookRecord { // 사용자가 읽은 책 저장
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +27,7 @@ public class BookRecord { // 사용자가 읽은 책 저장
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
-
 }
