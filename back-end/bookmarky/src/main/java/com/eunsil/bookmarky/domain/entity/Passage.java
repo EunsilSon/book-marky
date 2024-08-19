@@ -17,12 +17,21 @@ import java.time.LocalDate;
 @Entity
 @SQLDelete(sql = "UPDATE passage SET is_deleted = true WHERE id = ?")
 @FilterDef(name = "deletedPassageFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "deletedPassageFilter", condition = "isDeleted = :isDeleted")
+@Filter(name = "deletedPassageFilter", condition = "is_deleted = :isDeleted")
 public class Passage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Column(nullable = false)
+    private Long bookId;
+
+    @NotNull
+    @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private int pageNum;
 
     @Size(max = 1000, message = "최대 1,000자까지 가능합니다.")
@@ -32,12 +41,6 @@ public class Passage {
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
-
-    @NotNull
-    private Long bookId;
-
-    @NotNull
-    private Long userId;
 
     @Builder.Default
     private Boolean isDeleted = Boolean.FALSE; // BigInt (0, 1)

@@ -5,9 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class PwResetDTO {
-
+public class PasswordDTO {
     private String username;
     private String token;
-
 }
