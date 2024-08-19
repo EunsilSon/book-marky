@@ -1,38 +1,31 @@
 package com.eunsil.bookmarky.controller;
 
-import com.eunsil.bookmarky.domain.vo.PwQuestionVO;
-import com.eunsil.bookmarky.domain.vo.PwResetVO;
-import com.eunsil.bookmarky.domain.dto.PwResetDTO;
-import com.eunsil.bookmarky.exception.CommonResponse;
-import com.eunsil.bookmarky.exception.ResponseService;
+import com.eunsil.bookmarky.domain.entity.SecureQuestion;
+import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
+import com.eunsil.bookmarky.domain.vo.PasswordVO;
+import com.eunsil.bookmarky.domain.dto.PasswordDTO;
 import com.eunsil.bookmarky.service.user.UserService;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/users")
 public class UserController {
 
     private final UserService userService;
-    private final ResponseService responseService;
-
-    @Autowired
-    public UserController(UserService userService,ResponseService responseService) {
-        this.userService = userService;
-        this.responseService = responseService;
-    }
 
     /**
      * 회원 가입
      * @param userVO 유저 이메일, 비밀번호, 닉네임
      * @return 성공 여부
      */
-    @PostMapping("/")
+    @PostMapping("")
     public boolean join(@Valid @RequestBody UserVO userVO) {
         return userService.join(userVO);
     }
@@ -43,20 +36,20 @@ public class UserController {
      * @param username 유저 이메일
      * @return 유저 이메일, 일회용 토큰
      */
-    @GetMapping("/{username}/mail")
-    public ResponseEntity<PwResetDTO> sendResetEmail(@PathVariable String username) {
+    @GetMapping("/user/mail/{username}")
+    public ResponseEntity<PasswordDTO> sendResetEmail(@PathVariable String username) {
         return userService.sendResetEmailWithToken(username);
     }
 
 
     /**
      * 유효한 링크로 접속 후 비밀번호 변경
-     * @param pwResetVO 유저 이메일, 비밀번호, 토큰
+     * @param passwordVO 유저 이메일, 비밀번호, 토큰
      * @return 변경 여부
      */
-    @PutMapping("/")
-    public boolean resetPw(@Valid @RequestBody PwResetVO pwResetVO) {
-        return userService.resetPwWithTokenValidation(pwResetVO);
+    @PutMapping("/user")
+    public boolean resetPw(@Valid @RequestBody PasswordVO passwordVO) {
+        return userService.resetPwWithTokenValidation(passwordVO);
     }
 
 
@@ -64,12 +57,12 @@ public class UserController {
      * 보안 질문 검증
      * - 비밀번호 변경 시 토큰 탈취 방지를 위한 2차 검증
      *
-     * @param pwQuestionVO 유저 메일, 답변
+     * @param secureQuestionVO 유저 메일, 답변
      * @return 저장된 답변과 일치 여부
      */
-    @PostMapping("/pw")
-    public ResponseEntity<String> checkSecureQuestion(@Valid @RequestBody PwQuestionVO pwQuestionVO) {
-        if (userService.checkSecureQuestion(pwQuestionVO)) {
+    @PostMapping("/user/checkQuestion")
+    public ResponseEntity<String> checkSecureQuestion(@Valid @RequestBody SecureQuestionVO secureQuestionVO) {
+        if (userService.checkSecureQuestion(secureQuestionVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("success");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("failed");
@@ -77,15 +70,13 @@ public class UserController {
 
 
     /**
-     * 사용자가 선택한 보안 질문 조회
+     * 보안 질문 조회
      *
-     * @param username 유저 메일
-     * @return 질문
+     * @return SecureQuestionId 리스트
      */
-    @GetMapping("/{username}/question")
-    public ResponseEntity<String> getSecureQuestion(@PathVariable String username) {
-        String result = userService.getSecureQuestion(username);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+    @GetMapping("/user/secureQuestion")
+    public ResponseEntity<List<SecureQuestion>> getSecureQuestion() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getSecureQuestion());
 
     }
 

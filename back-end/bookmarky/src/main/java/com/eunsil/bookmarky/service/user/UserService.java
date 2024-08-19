@@ -2,21 +2,21 @@ package com.eunsil.bookmarky.service.user;
 
 import com.eunsil.bookmarky.domain.entity.SecureAnswer;
 import com.eunsil.bookmarky.domain.entity.SecureQuestion;
-import com.eunsil.bookmarky.domain.vo.PwQuestionVO;
-import com.eunsil.bookmarky.domain.vo.PwResetVO;
-import com.eunsil.bookmarky.domain.dto.PwResetDTO;
+import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
+import com.eunsil.bookmarky.domain.vo.PasswordVO;
+import com.eunsil.bookmarky.domain.dto.PasswordDTO;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import com.eunsil.bookmarky.domain.entity.User;
-import com.eunsil.bookmarky.repository.SecureAnswerRepository;
-import com.eunsil.bookmarky.repository.SecureQuestionRepository;
-import com.eunsil.bookmarky.repository.UserRepository;
+import com.eunsil.bookmarky.repository.user.SecureAnswerRepository;
+import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
+import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -81,13 +81,13 @@ public class UserService {
      * @param username 유저 이메일
      * @return 유저 이메일, 일회용 토큰
      */
-    public ResponseEntity<PwResetDTO> sendResetEmailWithToken(String username) {
+    public ResponseEntity<PasswordDTO> sendResetEmailWithToken(String username) {
 
         if (userRepository.existsByUsername(username)) {
             String uuid = resetTokenService.generateToken(username); // 일회용 토큰 생성
-            PwResetDTO pwResetDTO = new PwResetDTO(username, mailService.generateResetEmail(username, uuid)); // 토큰을 포함한 메일 생성
+            PasswordDTO passwordDTO = new PasswordDTO(username, mailService.generateResetEmail(username, uuid)); // 토큰을 포함한 메일 생성
 
-            return ResponseEntity.ok(pwResetDTO);
+            return ResponseEntity.ok(passwordDTO);
         }
 
         System.out.println("[Not Existed User]: " + username);
@@ -97,20 +97,20 @@ public class UserService {
 
     /**
      * 토큰 유효성 검증 후 비밀번호 변경
-     * @param pwResetVO 유저 이메일, 새 비밀번호, 토큰
+     * @param passwordVO 유저 이메일, 새 비밀번호, 토큰
      * @return 변경 여부
      */
     @Transactional
-    public boolean resetPwWithTokenValidation(PwResetVO pwResetVO) {
+    public boolean resetPwWithTokenValidation(PasswordVO passwordVO) {
 
-        String token = pwResetVO.getToken();
+        String token = passwordVO.getToken();
 
         // 토큰 유효성 검사
         if (resetTokenService.isValidToken(token)) {
 
             // 비밀번호 재설정
-            User user = userRepository.findByUsername(pwResetVO.getUsername());
-            user.setPassword(bCryptPasswordEncoder.encode(pwResetVO.getPassword()));
+            User user = userRepository.findByUsername(passwordVO.getUsername());
+            user.setPassword(bCryptPasswordEncoder.encode(passwordVO.getPassword()));
             userRepository.save(user);
 
             // 토큰 무효화
@@ -129,26 +129,24 @@ public class UserService {
      * 보안 질문 검증
      * - 비밀번호 변경 시 토큰 탈취 방지를 위한 2차 검증
      *
-     * @param pwQuestionVO 유저 메일, 답변
+     * @param secureQuestionVO 유저 메일, 답변
      * @return 저장된 답변과 일치 여부
      */
-    public boolean checkSecureQuestion(PwQuestionVO pwQuestionVO) {
-        User user = userRepository.findByUsername(pwQuestionVO.getUsername());
-        SecureAnswer secureAnswer = secureAnswerRepository.findByUserId(user.getId());
+    public boolean checkSecureQuestion(SecureQuestionVO secureQuestionVO) {
+        User user = userRepository.findByUsername(secureQuestionVO.getUsername());
+        SecureAnswer secureAnswer = secureAnswerRepository.findBySecureQuestionIdAndUserId(secureQuestionVO.getSecureQuestionId(), user.getId());
 
-        return secureAnswer.getContent().equals(pwQuestionVO.getAnswer());
+        return secureAnswer.getContent().equals(secureQuestionVO.getAnswer());
     }
 
 
     /**
-     * 사용자가 선택한 보안 질문 조회
+     * 보안 질문 조회
      *
-     * @param username 유저 메일
-     * @return 질문
+     * @return SecureQuestionId 리스트
      */
-    public String getSecureQuestion(String username) {
-        User user = userRepository.findByUsername(username);
-        return secureAnswerRepository.findByUserId(user.getId()).getSecureQuestion().getContent();
+    public List<SecureQuestion> getSecureQuestion() {
+        return secureQuestionRepository.findAll();
     }
 
 }

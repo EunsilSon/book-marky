@@ -1,17 +1,18 @@
 package com.eunsil.bookmarky.service.passage;
 
 import com.eunsil.bookmarky.config.filter.FilterManager;
-import com.eunsil.bookmarky.domain.entity.Book;
+import com.eunsil.bookmarky.domain.dto.BookDTO;
+import com.eunsil.bookmarky.domain.dto.PassageDTO;
 import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.vo.PassageVO;
 import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
-import com.eunsil.bookmarky.domain.dto.PassageListDTO;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.PassageRepository;
-import com.eunsil.bookmarky.repository.UserRepository;
+import com.eunsil.bookmarky.repository.user.UserRepository;
 import com.eunsil.bookmarky.service.book.BookService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,30 +24,21 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class PassageService {
+
+    private static final int DEFAULT_PASSAGE_SIZE = 10;
 
     private final FilterManager filterManager;
     private final UserRepository userRepository;
     private final BookService bookService;
     private final BookRepository bookRepository;
-    private PassageRepository passageRepository;
-
-    public PassageService(FilterManager filterManager
-            , PassageRepository passageRepository
-            , UserRepository userRepository
-            , BookService bookService, BookRepository bookRepository) {
-        this.filterManager = filterManager;
-        this.passageRepository = passageRepository;
-        this.userRepository = userRepository;
-        this.bookService = bookService;
-        this.bookRepository = bookRepository;
-    }
+    private final PassageRepository passageRepository;
 
 
     /**
      * 특정 책의 구절 생성
-     *
      * - DB에 없는 책의 경우, 구절 생성 시 새로운 책 정보가 함께 DB에 저장됨
      * @param passageVO isSaved, isbn, username, content
      * @return 생성 여부
@@ -61,8 +53,8 @@ public class PassageService {
         if (passageVO.getIsSaved()) { // 이미 저장된 책
             newBookId = bookRepository.findByIsbn(passageVO.getIsbn()).getId();
         } else { // 저장한 이력이 없는 책
-            Book book = bookService.searchByOpenApiWithIsbn(passageVO.getIsbn());
-            newBookId = bookService.add(passageVO.getUsername(), book); // 책 정보와 기록 저장
+            BookDTO bookDTO = bookService.searchByOpenApiWithIsbn(passageVO.getIsbn());
+            newBookId = bookService.add(passageVO.getUsername(), bookDTO); // 책 정보와 기록 저장
         }
 
         // 구절 생성
@@ -115,36 +107,44 @@ public class PassageService {
      * @param id 구절 id
      * @return Passage 객체
      */
-    public Passage get(Long id) {
-        return passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
+    public PassageDTO get(Long id) {
+        Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
+
+        return PassageDTO.builder()
+                .id(passage.getId())
+                .userId(passage.getUserId())
+                .bookId(passage.getBookId())
+                .content(passage.getContent())
+                .build();
     }
 
 
     /**
      * 구절 목록 조회
-     *
      * - 저장한 구절을 전체적으로 조회하기 위함
-     * - 페이징: 10개씩, passage id 기준 내림차순, 반환 개수 10개 고정
+     * - 페이징: passage id 기준 내림차순, 반환 개수 10개 고정
      * @param username 유저 이메일
      * @param bookId 책 id
-     * @return PassageListDTO 리스트 (pageNum, content)
+     * @param type 정렬 기준
+     * @param page 페이지 번호
+     * @return PassageDTO 리스트 (pageNum, content)
      */
-    public List<PassageListDTO> getList(String username, Long bookId, int page) {
+    public List<PassageDTO> getList(String username, Long bookId, String type, int page) {
 
         // 필터 활성화
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
 
 
         User user = userRepository.findByUsername(username);
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
-        Page<Passage> passagesList = passageRepository.findByUserIdAndBookIdAndIsDeleted(user.getId(), bookId, false, pageable);
+        Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(type).descending());
+        Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
 
         // 필터 비활성화
         filterManager.disableFilter("deletedPassageFilter");
 
 
         return passagesList.stream()
-                .map(passage -> new PassageListDTO(passage.getPageNum(), passage.getContent(), passage.getBookId()))
+                .map(passage -> new PassageDTO(passage.getId(), passage.getUserId(), passage.getBookId(), passage.getPageNum(), passage.getContent()))
                 .collect(Collectors.toList());
 
     }
@@ -155,17 +155,17 @@ public class PassageService {
      *
      * @param username 유저 이메일
      * @param page 페이지 번호
-     * @return PassageListDTO 리스트 (pageNum, content)
+     * @return PassageDTO 리스트 (pageNum, content)
      */
-    public List<PassageListDTO> getAllDeleted(String username, int page) {
+    public List<PassageDTO> getAllDeleted(String username, int page) {
 
         // 필터 활성화
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
 
 
         User user = userRepository.findByUsername(username);
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
-        Page<Passage> deletedPassageList = passageRepository.findByUserIdAndIsDeleted(user.getId(), true, pageable);
+        Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by("id").descending());
+        Page<Passage> deletedPassageList = passageRepository.findByUserId(user.getId(), pageable);
 
 
         // 필터 비활성화
@@ -173,9 +173,8 @@ public class PassageService {
 
 
         return deletedPassageList.stream()
-                .map(passage -> new PassageListDTO(passage.getPageNum()
-                        , passage.getContent()
-                        , passage.getBookId()))
+                .map(passage -> new PassageDTO(
+                        passage.getId(), passage.getUserId(), passage.getBookId(), passage.getPageNum(), passage.getContent()))
                 .collect(Collectors.toList());
 
     }

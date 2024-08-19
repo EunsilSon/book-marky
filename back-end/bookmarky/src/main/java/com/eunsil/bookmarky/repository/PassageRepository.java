@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PassageRepository extends JpaRepository<Passage, Long> {
 
-    Page<Passage> findByUserIdAndBookIdAndIsDeleted(Long userId, Long bookId, Boolean isDeleted, Pageable pageable);
+    Page<Passage> findByUserIdAndBookId(Long userId, Long bookId, Pageable pageable);
 
-    Page<Passage> findByUserIdAndIsDeleted(Long userId, Boolean isDeleted, Pageable pageable);
+    Page<Passage> findByUserId(Long userId, Pageable pageable);
 }

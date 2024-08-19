@@ -37,7 +37,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/users/", "/users/{username}/question", "/users/pw").permitAll() // 요청 없이 접근 가능 (로그인, 회원가입, 보안 질문 조회, 보안 질문 검증)
+                        /* 요청 없이 접근 가능한 URI -> 로그인, 회원가입, 비밀번호 변경 메일 요청, 보안 질문 조회, 보안 질문 검증 */
+                        .requestMatchers("/users/", "/users/mail/{username}", "/users/question", "/users/pw").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .loginProcessingUrl("/login") // Security 가 로그인을 대신 수행하므로 컨트롤러를 만들지 않아도 됨

@@ -10,24 +10,25 @@ import lombok.*;
 @Builder
 @Entity
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 13)
     private String telephone;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private String role; // ROLE_USER, ROLE_ADMIN
 
+    @Column(nullable = false)
+    private Long secureQuestionId;
 }

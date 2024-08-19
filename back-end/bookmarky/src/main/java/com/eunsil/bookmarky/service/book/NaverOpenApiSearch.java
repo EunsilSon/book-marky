@@ -16,6 +16,8 @@ public class NaverOpenApiSearch {
     private String clientId;
     @Value("${spring.props.client-secret}")
     private String clientSecret;
+    @Value("${spring.props.api-url}")
+    private String apiUrl;
 
     /**
      * 책 검색
@@ -26,9 +28,7 @@ public class NaverOpenApiSearch {
     public String book(String title, int page) {
 
         String text = URLEncoder.encode(title, StandardCharsets.UTF_8); // 검색 키워드와 인코딩 형식
-        String apiURL = "https://openapi.naver.com/v1/search/book.json?display=10"
-                + "&query=" + text
-                + "&start=" + page;
+        String apiURL = apiUrl + "/book.json?display=10" + "&query=" + text + "&start=" + page;
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);
@@ -44,8 +44,7 @@ public class NaverOpenApiSearch {
      */
     public String bookDetail(String isbn) {
 
-        String apiURL = "https://openapi.naver.com/v1/search/book_adv.xml?"
-                + "d_isbn=" + isbn;
+        String apiURL = apiUrl + "/book_adv.xml?" + "d_isbn=" + isbn;
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);

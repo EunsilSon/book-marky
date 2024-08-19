@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.service.book;
 
-import com.eunsil.bookmarky.domain.entity.Book;
+import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -22,8 +22,8 @@ public class ParsingService {
      * @param responseBody JSON 형식의 open api 응답 값
      * @return List<Book>
      */
-    public List<Book> jsonToBookList(String responseBody) {
-        List<Book> bookList = new ArrayList<>();
+    public List<BookDTO> jsonToBookList(String responseBody) {
+        List<BookDTO> bookList = new ArrayList<>();
 
         try {
             // JSON 을 Java 로 변환하고 원하는 속성의 값만 추출
@@ -35,8 +35,8 @@ public class ParsingService {
             Iterator<JsonNode> elements = items.elements();
             while (elements.hasNext()) {
                 JsonNode bookNode = elements.next();
-                Book book = objectMapper.treeToValue(bookNode, Book.class); // Book 객체로 변환
-                bookList.add(book);
+                BookDTO bookDTO = objectMapper.treeToValue(bookNode, BookDTO.class); // Book 객체로 변환
+                bookList.add(bookDTO);
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -50,9 +50,8 @@ public class ParsingService {
      * XML -> Book 객체 변환
      * @param responseBody XML 형식의 open api 응답 값
      * @return Book
-     * @throws Exception
      */
-    public Book xmlToBook(String responseBody) throws Exception {
+    public BookDTO xmlToBook(String responseBody) throws Exception {
 
         // xml 파싱 -> 함수로 빼기
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -78,7 +77,7 @@ public class ParsingService {
         }
 
         // book 객체 반환
-        return Book.builder()
+        return BookDTO.builder()
                 .title(bookInfo.get(0))
                 .link(bookInfo.get(1))
                 .image(bookInfo.get(2))

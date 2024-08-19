@@ -1,15 +1,16 @@
 package com.eunsil.bookmarky.service.book;
 
 import com.eunsil.bookmarky.domain.dto.BookDTO;
+import com.eunsil.bookmarky.domain.dto.BookSimpleDTO;
 import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.entity.BookRecord;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.BookRecordRepository;
-import com.eunsil.bookmarky.repository.UserRepository;
+import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +21,12 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@RequiredArgsConstructor
 @Service
 public class BookService {
+
+    private static final String DEFAULT_BOOK_TITLE_LIST_TYPE = "id";
+    private static final int DEFAULT_BOOK_TITLE_LIST_SIZE = 10;
 
     private final NaverOpenApiSearch naverOpenApiSearch;
     private final ParsingService parsingService;
@@ -30,18 +34,6 @@ public class BookService {
     private final UserRepository userRepository;
     private final BookRecordRepository bookRecordRepository;
 
-    @Autowired
-    public BookService(NaverOpenApiSearch naverOpenApiSearch
-            , ParsingService parsingService
-            , BookRepository bookRepository
-            , BookRecordRepository bookRecordRepository
-            , UserRepository userRepository) {
-        this.naverOpenApiSearch = naverOpenApiSearch;
-        this.parsingService = parsingService;
-        this.bookRepository = bookRepository;
-        this.userRepository = userRepository;
-        this.bookRecordRepository = bookRecordRepository;
-    }
 
     /**
      * 책 검색
@@ -51,7 +43,7 @@ public class BookService {
      * @param page 가져올 페이지 번호
      * @return Book 을 담은 리스트
      */
-    public List<Book> search(String title, int page) {
+    public List<BookDTO> search(String title, int page) {
         String response = naverOpenApiSearch.book(title, page); // 오픈 API 응답 결과
         return parsingService.jsonToBookList(response);
     }
@@ -64,7 +56,7 @@ public class BookService {
      * @return Book 객체
      * @throws Exception open api 의 xml 형식 응답 값을 파싱하면서 발생 가능
      */
-    public Book searchByOpenApiWithIsbn(String isbn) throws Exception {
+    public BookDTO searchByOpenApiWithIsbn(String isbn) throws Exception {
         String response = naverOpenApiSearch.bookDetail(isbn);
         return parsingService.xmlToBook(response);
     }
@@ -75,15 +67,14 @@ public class BookService {
      * - 구절 생성할 때 새로운 책 정보가 함께 저장됨
      *
      * @param username 유저 이메일
-     * @param book Book 객체
+     * @param bookDTO BookDTO 객체
      * @return Book id
      */
     @Transactional
-    public Long add(String username, Book book) {
+    public Long add(String username, BookDTO bookDTO) {
 
         User user = userRepository.findByUsername(username);
-
-        bookRepository.save(book); // 책 정보 저장
+        Book book = bookRepository.save(bookDTO.toEntity()); // 책 정보 저장
 
         // 책 기록 저장
         BookRecord bookRecord = BookRecord.builder()
@@ -93,7 +84,7 @@ public class BookService {
                 .build();
         bookRecordRepository.save(bookRecord);
 
-        return bookRepository.findByIsbn(book.getIsbn()).getId();
+        return book.getId();
     }
 
 
@@ -120,19 +111,31 @@ public class BookService {
      * @param username 유저 이메일
      * @param page 페이지 번호
      * @param size 반환 개수
+     * @param type 정렬 기준
      * @return Book 리스트
      */
-    public List<Book> getList(String username, int page, int size) {
+    public List<BookDTO> getList(String username, int page, String type, int size) {
 
         User user = userRepository.findByUsername(username);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(type).descending());
         Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
 
         return userBookRecords.stream()
-                .map(bookRecord -> bookRepository.findByIsbn(bookRecord.getBook().getIsbn()))
+                .map(bookRecord -> {
+                    Book book = bookRepository.findByIsbn(bookRecord.getBook().getIsbn());
+                    return BookDTO.builder()
+                            .id(book.getId())
+                            .title(book.getTitle())
+                            .author(book.getAuthor())
+                            .publisher(book.getPublisher())
+                            .link(book.getLink())
+                            .image(book.getImage())
+                            .isbn(book.getIsbn())
+                            .description(book.getDescription())
+                            .build();
+                })
                 .collect(Collectors.toList());
-
     }
 
 
@@ -141,14 +144,14 @@ public class BookService {
      *
      * @param username 유저 이메일
      * @param page 페이지 번호
-     * @return BookDTO 리스트
+     * @return BookSimpleDTO 리스트
      */
-    public List<BookDTO> getTitleList(String username, int page) {
+    public List<BookSimpleDTO> getTitleList(String username, int page) {
 
-        List<Book> bookList = getList(username, page, 10); // 책의 모든 정보
+        List<BookDTO> bookList = getList(username, page, DEFAULT_BOOK_TITLE_LIST_TYPE, DEFAULT_BOOK_TITLE_LIST_SIZE); // 책의 모든 정보
 
         return bookList.stream()
-                .map(book -> new BookDTO(book.getId(), book.getTitle()))
+                .map(book -> new BookSimpleDTO(book.getId(), book.getTitle()))
                 .collect(Collectors.toList());
 
     }
@@ -160,8 +163,19 @@ public class BookService {
      * @param id 책 id
      * @return Book 객체
      */
-    public Book getInfo(long id) {
-        return bookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Book Not Found"));
+    public BookDTO getInfo(long id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Book Not Found"));
+
+        return BookDTO.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .publisher(book.getPublisher())
+                .link(book.getLink())
+                .image(book.getImage())
+                .isbn(book.getIsbn())
+                .description(book.getDescription())
+                .build();
     }
 
 
