@@ -11,13 +11,14 @@ import com.eunsil.bookmarky.repository.user.SecureAnswerRepository;
 import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
@@ -28,19 +29,6 @@ public class UserService {
     private final ResetTokenService resetTokenService;
     private final SecureQuestionRepository secureQuestionRepository;
 
-    @Autowired
-    public UserService(BCryptPasswordEncoder bCryptPasswordEncoder,
-                       UserRepository userRepository,
-                       SecureAnswerRepository secureAnswerRepository,
-                       MailService mailService,
-                       ResetTokenService resetTokenService, SecureQuestionRepository secureQuestionRepository) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.userRepository = userRepository;
-        this.secureAnswerRepository = secureAnswerRepository;
-        this.mailService = mailService;
-        this.resetTokenService = resetTokenService;
-        this.secureQuestionRepository = secureQuestionRepository;
-    }
 
     /**
      * 회원가입

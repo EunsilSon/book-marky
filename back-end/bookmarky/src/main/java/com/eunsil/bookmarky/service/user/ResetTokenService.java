@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.service.user;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -9,17 +9,12 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class ResetTokenService {
 
     private static final String TOKEN_PREFIX = "password-reset-token: ";
     private final RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    public ResetTokenService(RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-
 
     /**
      * 토큰 생성 및 Redis 저장

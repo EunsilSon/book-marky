@@ -31,12 +31,12 @@ public class Passage {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
-    private int pageNum;
-
     @Size(max = 1000, message = "최대 1,000자까지 가능합니다.")
     @Column(nullable = false, length = 1000)
     private String content;
+
+    @Column(nullable = false)
+    private int pageNum;
 
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

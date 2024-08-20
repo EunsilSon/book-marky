@@ -1,8 +1,8 @@
 package com.eunsil.bookmarky.service.book;
 
+import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.BookSimpleDTO;
-import com.eunsil.bookmarky.domain.vo.BookVO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.entity.BookRecord;
@@ -29,10 +29,11 @@ public class BookService {
     private static final int DEFAULT_BOOK_TITLE_LIST_SIZE = 10;
 
     private final NaverOpenApiSearch naverOpenApiSearch;
-    private final ParsingService parsingService;
+    private final OpenApiResponseParser openApiResponseParser;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final BookRecordRepository bookRecordRepository;
+    private final SecurityUtil securityUtil;
 
 
     /**
@@ -45,7 +46,7 @@ public class BookService {
      */
     public List<BookDTO> search(String title, int page) {
         String response = naverOpenApiSearch.book(title, page); // 오픈 API 응답 결과
-        return parsingService.jsonToBookList(response);
+        return openApiResponseParser.jsonToBookList(response);
     }
 
 
@@ -58,7 +59,7 @@ public class BookService {
      */
     public BookDTO searchByOpenApiWithIsbn(String isbn) throws Exception {
         String response = naverOpenApiSearch.bookDetail(isbn);
-        return parsingService.xmlToBook(response);
+        return openApiResponseParser.xmlToBook(response);
     }
 
 
@@ -66,14 +67,13 @@ public class BookService {
      * 저장한 이력이 없는 책 등록
      * - 구절 생성할 때 새로운 책 정보가 함께 저장됨
      *
-     * @param username 유저 이메일
      * @param bookDTO BookDTO 객체
      * @return Book id
      */
     @Transactional
-    public Long add(String username, BookDTO bookDTO) {
+    public Long add(BookDTO bookDTO) {
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
         Book book = bookRepository.save(bookDTO.toEntity()); // 책 정보 저장
 
         // 책 기록 저장
@@ -91,14 +91,14 @@ public class BookService {
     /**
      * 책 삭제
      *
-     * @param bookVO 사용자 이름, 책 isbn
+     * @param isbn 책 고유 번호
      * @return 삭제 여부
      */
     @Transactional
-    public boolean delete(BookVO bookVO) {
+    public boolean delete(String isbn) {
 
-        User user = userRepository.findByUsername(bookVO.getUsername());
-        Book book = bookRepository.findByIsbn(bookVO.getIsbn());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        Book book = bookRepository.findByIsbn(isbn);
 
         bookRecordRepository.deleteByBookIdAndUserId(book.getId(), user.getId());
         return true;
@@ -108,15 +108,14 @@ public class BookService {
     /**
      * 저장한 책 목록 조회
      *
-     * @param username 유저 이메일
      * @param page 페이지 번호
      * @param size 반환 개수
      * @param type 정렬 기준
      * @return Book 리스트
      */
-    public List<BookDTO> getList(String username, int page, String type, int size) {
+    public List<BookDTO> getList(int page, String type, int size) {
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(type).descending());
         Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
@@ -142,13 +141,12 @@ public class BookService {
     /**
      * 저장한 책 제목만 리스트로 반환 (페이징)
      *
-     * @param username 유저 이메일
      * @param page 페이지 번호
      * @return BookSimpleDTO 리스트
      */
-    public List<BookSimpleDTO> getTitleList(String username, int page) {
+    public List<BookSimpleDTO> getTitleList(int page) {
 
-        List<BookDTO> bookList = getList(username, page, DEFAULT_BOOK_TITLE_LIST_TYPE, DEFAULT_BOOK_TITLE_LIST_SIZE); // 책의 모든 정보
+        List<BookDTO> bookList = getList(page, DEFAULT_BOOK_TITLE_LIST_TYPE, DEFAULT_BOOK_TITLE_LIST_SIZE); // 책의 모든 정보
 
         return bookList.stream()
                 .map(book -> new BookSimpleDTO(book.getId(), book.getTitle()))
