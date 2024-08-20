@@ -1,5 +1,6 @@
 package com.eunsil.bookmarky.service.passage;
 
+import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
@@ -35,12 +36,13 @@ public class PassageService {
     private final BookService bookService;
     private final BookRepository bookRepository;
     private final PassageRepository passageRepository;
+    private final SecurityUtil securityUtil;
 
 
     /**
      * 특정 책의 구절 생성
      * - DB에 없는 책의 경우, 구절 생성 시 새로운 책 정보가 함께 DB에 저장됨
-     * @param passageVO isSaved, isbn, username, content
+     * @param passageVO isSaved, isbn, content
      * @return 생성 여부
      * @throws Exception 책 정보가 없을 때 검색을 위해 open api 호출 후 응답 값을 XML 로 변환하는 과정에서 발생 가능
      */
@@ -54,14 +56,15 @@ public class PassageService {
             newBookId = bookRepository.findByIsbn(passageVO.getIsbn()).getId();
         } else { // 저장한 이력이 없는 책
             BookDTO bookDTO = bookService.searchByOpenApiWithIsbn(passageVO.getIsbn());
-            newBookId = bookService.add(passageVO.getUsername(), bookDTO); // 책 정보와 기록 저장
+            newBookId = bookService.add(bookDTO); // 책 정보와 기록 저장
         }
 
         // 구절 생성
         Passage passage = Passage.builder()
                 .bookId(newBookId)
-                .userId(userRepository.findByUsername(passageVO.getUsername()).getId())
+                .userId(userRepository.findByUsername(securityUtil.getCurrentUsername()).getId())
                 .content(passageVO.getContent())
+                .pageNum(passageVO.getPageNum())
                 .date(LocalDate.now())
                 .build();
 
@@ -81,6 +84,7 @@ public class PassageService {
 
         Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
         passage.setContent(passageUpdateVO.getContent());
+        passage.setPageNum(passageUpdateVO.getPageNum());
         passage.setDate(LocalDate.now());
 
         passageRepository.save(passage);
@@ -123,19 +127,18 @@ public class PassageService {
      * 구절 목록 조회
      * - 저장한 구절을 전체적으로 조회하기 위함
      * - 페이징: passage id 기준 내림차순, 반환 개수 10개 고정
-     * @param username 유저 이메일
      * @param bookId 책 id
      * @param type 정렬 기준
      * @param page 페이지 번호
      * @return PassageDTO 리스트 (pageNum, content)
      */
-    public List<PassageDTO> getList(String username, Long bookId, String type, int page) {
+    public List<PassageDTO> getList(Long bookId, String type, int page) {
 
         // 필터 활성화
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
 
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(type).descending());
         Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
 
@@ -153,17 +156,16 @@ public class PassageService {
     /**
      * 최근 삭제 내역 조회 (30일 보관)
      *
-     * @param username 유저 이메일
      * @param page 페이지 번호
      * @return PassageDTO 리스트 (pageNum, content)
      */
-    public List<PassageDTO> getAllDeleted(String username, int page) {
+    public List<PassageDTO> getAllDeleted(int page) {
 
         // 필터 활성화
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
 
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by("id").descending());
         Page<Passage> deletedPassageList = passageRepository.findByUserId(user.getId(), pageable);
 

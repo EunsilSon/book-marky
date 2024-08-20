@@ -9,6 +9,6 @@ public class PassageDTO {
     public Long id;
     public Long userId;
     public Long bookId;
-    public int pageNum;
+    public Integer pageNum;
     public String content;
 }

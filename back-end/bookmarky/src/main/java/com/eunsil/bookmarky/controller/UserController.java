@@ -77,7 +77,6 @@ public class UserController {
     @GetMapping("/user/secureQuestion")
     public ResponseEntity<List<SecureQuestion>> getSecureQuestion() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getSecureQuestion());
-
     }
 
 }

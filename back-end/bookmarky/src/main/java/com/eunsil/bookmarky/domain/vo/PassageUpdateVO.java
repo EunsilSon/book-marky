@@ -14,4 +14,7 @@ public class PassageUpdateVO {
     @Size(max = 1000)
     private String content;
 
+    @NotNull
+    private Integer pageNum;
+
 }

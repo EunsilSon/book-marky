@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
-public class ParsingService {
+public class OpenApiResponseParser {
 
     /**
      * JSON -> Book 객체 리스트 변환
@@ -38,7 +38,7 @@ public class ParsingService {
                 BookDTO bookDTO = objectMapper.treeToValue(bookNode, BookDTO.class); // Book 객체로 변환
                 bookList.add(bookDTO);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
