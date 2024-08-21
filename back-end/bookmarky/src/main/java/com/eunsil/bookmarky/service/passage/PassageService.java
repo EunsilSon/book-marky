@@ -138,7 +138,7 @@ public class PassageService {
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
 
 
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()); // Authentication 에서 가져옴
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(type).descending());
         Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
 
@@ -147,7 +147,12 @@ public class PassageService {
 
 
         return passagesList.stream()
-                .map(passage -> new PassageDTO(passage.getId(), passage.getUserId(), passage.getBookId(), passage.getPageNum(), passage.getContent()))
+                .map(passage -> new PassageDTO(
+                        passage.getId()
+                        , passage.getUserId()
+                        , passage.getBookId()
+                        , passage.getPageNum()
+                        , passage.getContent()))
                 .collect(Collectors.toList());
 
     }
@@ -176,7 +181,11 @@ public class PassageService {
 
         return deletedPassageList.stream()
                 .map(passage -> new PassageDTO(
-                        passage.getId(), passage.getUserId(), passage.getBookId(), passage.getPageNum(), passage.getContent()))
+                        passage.getId()
+                        , passage.getUserId()
+                        , passage.getBookId()
+                        , passage.getPageNum()
+                        , passage.getContent()))
                 .collect(Collectors.toList());
 
     }
