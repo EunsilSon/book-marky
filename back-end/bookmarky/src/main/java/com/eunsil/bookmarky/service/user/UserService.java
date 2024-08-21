@@ -12,12 +12,14 @@ import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -78,7 +80,6 @@ public class UserService {
             return ResponseEntity.ok(passwordDTO);
         }
 
-        System.out.println("[Not Existed User]: " + username);
         return ResponseEntity.notFound().build(); // 404
     }
 
@@ -103,12 +104,8 @@ public class UserService {
 
             // 토큰 무효화
             resetTokenService.invalidateToken(token);
-            System.out.println("[Password Reset Success]");
-
             return true;
         }
-
-        System.out.println("[Password Reset Failed]: Invalid or expired token");
         return false;
     }
 
