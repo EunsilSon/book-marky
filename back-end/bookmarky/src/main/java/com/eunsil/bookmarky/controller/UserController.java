@@ -25,7 +25,7 @@ public class UserController {
      * @param userVO 유저 이메일, 비밀번호, 닉네임
      * @return 성공 여부
      */
-    @PostMapping("")
+    @PostMapping("/user")
     public boolean join(@Valid @RequestBody UserVO userVO) {
         return userService.join(userVO);
     }
@@ -60,7 +60,7 @@ public class UserController {
      * @param secureQuestionVO 유저 메일, 답변
      * @return 저장된 답변과 일치 여부
      */
-    @PostMapping("/user/checkQuestion")
+    @PostMapping("/user/question")
     public ResponseEntity<String> checkSecureQuestion(@Valid @RequestBody SecureQuestionVO secureQuestionVO) {
         if (userService.checkSecureQuestion(secureQuestionVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("success");
@@ -74,7 +74,7 @@ public class UserController {
      *
      * @return SecureQuestionId 리스트
      */
-    @GetMapping("/user/secureQuestion")
+    @GetMapping("/user/question")
     public ResponseEntity<List<SecureQuestion>> getSecureQuestion() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getSecureQuestion());
     }

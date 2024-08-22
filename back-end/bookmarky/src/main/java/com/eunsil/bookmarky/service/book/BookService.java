@@ -113,11 +113,11 @@ public class BookService {
      * @param type 정렬 기준
      * @return Book 리스트
      */
-    public List<BookDTO> getList(int page, String type, int size) {
+    public List<BookDTO> getList(int page, String order, int size) {
 
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(type).descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(order).descending());
         Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
 
         return userBookRecords.stream()
