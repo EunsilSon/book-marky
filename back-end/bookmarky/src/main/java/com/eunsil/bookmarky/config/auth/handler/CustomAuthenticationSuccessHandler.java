@@ -2,11 +2,13 @@ package com.eunsil.bookmarky.config.auth.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
 
+@Slf4j
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
@@ -16,6 +18,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         response.setContentType("text/plain;charset=UTF-8"); // 응답 값 유형
         response.getWriter().write("Authentication Success");
-        System.out.println("[Authentication Success]: " + request.getParameter("username"));
+        log.info(authentication.getName());
     }
 }

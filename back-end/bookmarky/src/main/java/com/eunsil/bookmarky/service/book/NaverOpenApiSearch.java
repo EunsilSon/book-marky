@@ -1,5 +1,6 @@
 package com.eunsil.bookmarky.service.book;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class NaverOpenApiSearch {
 
@@ -79,7 +81,7 @@ public class NaverOpenApiSearch {
     }
 
     private HttpURLConnection connect(String apiUrl){
-        System.out.println("[네이버 Open 책 API 연결]");
+        log.info("Naver Open API Connected");
 
         try {
             URL url = new URL(apiUrl);
