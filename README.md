@@ -20,7 +20,6 @@
 4. [API 명세](#API-명세)
 5. [ERD](#ERD)
 
-
 <br>
 
 # 프로젝트 소개
@@ -77,7 +76,7 @@
 |  |  삭제된 구절 목록 조회  |  |
 
 # API 명세
-<img width="90%" alt="api" src="https://github.com/user-attachments/assets/1400ce2b-d733-44c1-9d50-3b708d2aa7b2">
+<img width="90%" alt="api" src="https://github.com/user-attachments/assets/c9a71735-0f0b-4fc2-b422-6e37ad73b642">
 
 <br>
 
