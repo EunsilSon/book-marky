@@ -128,18 +128,18 @@ public class PassageService {
      * - 저장한 구절을 전체적으로 조회하기 위함
      * - 페이징: passage id 기준 내림차순, 반환 개수 10개 고정
      * @param bookId 책 id
-     * @param type 정렬 기준
+     * @param order 정렬 기준
      * @param page 페이지 번호
      * @return PassageDTO 리스트 (pageNum, content)
      */
-    public List<PassageDTO> getList(Long bookId, String type, int page) {
+    public List<PassageDTO> getList(Long bookId, String order, int page) {
 
         // 필터 활성화
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
 
 
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername()); // Authentication 에서 가져옴
-        Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(type).descending());
+        Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(order).descending());
         Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
 
         // 필터 비활성화

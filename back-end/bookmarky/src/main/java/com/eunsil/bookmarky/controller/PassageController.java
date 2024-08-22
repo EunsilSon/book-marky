@@ -70,13 +70,13 @@ public class PassageController {
      * 구절 목록 조회
      * - 저장한 구절을 전체적으로 조회하기 위함
      * @param bookId 책 id
-     * @param type 정렬 기준
+     * @param order 정렬 기준
      * @param page 페이지 번호
      * @return PassageDTO 리스트
      */
     @GetMapping("/passages")
-    public ResponseEntity<List<PassageDTO>> getList(@RequestParam Long bookId, @RequestParam(defaultValue = "id") String type, @RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(passageService.getList(bookId, type, page));
+    public ResponseEntity<List<PassageDTO>> getList(@RequestParam Long bookId, @RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(passageService.getList(bookId, order, page));
     }
 
 
@@ -86,7 +86,7 @@ public class PassageController {
      * @param page 페이지 번호
      * @return PassageDTO 리스트 (pageNum, content)
      */
-    @GetMapping("/passage/deleted")
+    @GetMapping("/passages/deleted")
     public ResponseEntity<List<PassageDTO>> getAllDeleted( @RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok(passageService.getAllDeleted(page));
     }
