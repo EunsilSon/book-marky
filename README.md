@@ -76,10 +76,8 @@
 |  |  구절 목록 조회  |  |
 |  |  삭제된 구절 목록 조회  |  |
 
-<br>
-
 # API 명세
-<img width="90%" alt="api" src="https://github.com/user-attachments/assets/aec7d0e3-df39-499a-a29a-bb845081d1cd">
+<img width="90%" alt="api" src="https://github.com/user-attachments/assets/1400ce2b-d733-44c1-9d50-3b708d2aa7b2">
 
 <br>
 
