@@ -191,4 +191,19 @@ public class PassageService {
     }
 
 
+    public PassageDTO restoreDeletedPassage(Long id) {
+        Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
+        passage.setIsDeleted(false);
+        passageRepository.save(passage);
+
+        return PassageDTO.builder()
+                .id(passage.getId())
+                .bookId(passage.getBookId())
+                .userId(passage.getUserId())
+                .content(passage.getContent())
+                .pageNum(passage.getPageNum())
+                .build();
+    }
+
+
 }

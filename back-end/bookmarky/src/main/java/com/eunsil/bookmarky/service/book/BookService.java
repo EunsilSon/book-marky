@@ -110,7 +110,7 @@ public class BookService {
      *
      * @param page 페이지 번호
      * @param size 반환 개수
-     * @param type 정렬 기준
+     * @param order 정렬 기준
      * @return Book 리스트
      */
     public List<BookDTO> getList(int page, String order, int size) {
