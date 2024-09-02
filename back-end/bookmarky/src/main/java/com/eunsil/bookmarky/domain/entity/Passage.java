@@ -2,8 +2,6 @@ package com.eunsil.bookmarky.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.*;
 
@@ -23,15 +21,12 @@ public class Passage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Column(nullable = false)
     private Long bookId;
 
-    @NotNull
     @Column(nullable = false)
     private Long userId;
 
-    @Size(max = 1000, message = "최대 1,000자까지 가능합니다.")
     @Column(nullable = false, length = 1000)
     private String content;
 

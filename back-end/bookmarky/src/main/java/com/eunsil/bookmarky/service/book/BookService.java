@@ -116,13 +116,12 @@ public class BookService {
     public List<BookDTO> getList(int page, String order, int size) {
 
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
-
         Pageable pageable = PageRequest.of(page, size, Sort.by(order).descending());
         Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
 
         return userBookRecords.stream()
                 .map(bookRecord -> {
-                    Book book = bookRepository.findByIsbn(bookRecord.getBook().getIsbn());
+                    Book book = bookRecord.getBook();
                     return BookDTO.builder()
                             .id(book.getId())
                             .title(book.getTitle())
