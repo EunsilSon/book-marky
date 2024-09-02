@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Builder
 @Getter

@@ -224,8 +224,7 @@ public class PassageService {
     @Scheduled(cron = "0 0 0 * * ?")
     public void dailyCleanUpOfDeletedPassages() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
-        List<Passage> oldPassages = passageRepository.findByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
-        passageRepository.deleteAll(oldPassages);
+        passageRepository.deleteByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
         log.info("삭제된 지 30일 경과된 Passage 영구 제거");
     }
 
