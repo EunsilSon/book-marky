@@ -14,10 +14,12 @@ import com.eunsil.bookmarky.repository.user.UserRepository;
 import com.eunsil.bookmarky.service.book.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PassageService {
@@ -65,7 +68,7 @@ public class PassageService {
                 .userId(userRepository.findByUsername(securityUtil.getCurrentUsername()).getId())
                 .content(passageVO.getContent())
                 .pageNum(passageVO.getPageNum())
-                .date(LocalDate.now())
+                .createdAt(LocalDate.now())
                 .build();
 
         passageRepository.save(passage);
@@ -85,7 +88,7 @@ public class PassageService {
         Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
         passage.setContent(passageUpdateVO.getContent());
         passage.setPageNum(passageUpdateVO.getPageNum());
-        passage.setDate(LocalDate.now());
+        passage.setCreatedAt(LocalDate.now());
 
         passageRepository.save(passage);
         return true;
@@ -119,6 +122,7 @@ public class PassageService {
                 .userId(passage.getUserId())
                 .bookId(passage.getBookId())
                 .content(passage.getContent())
+                .createdAt(passage.getCreatedAt())
                 .build();
     }
 
@@ -152,7 +156,8 @@ public class PassageService {
                         , passage.getUserId()
                         , passage.getBookId()
                         , passage.getPageNum()
-                        , passage.getContent()))
+                        , passage.getContent()
+                        , passage.getCreatedAt()))
                 .collect(Collectors.toList());
 
     }
@@ -185,12 +190,18 @@ public class PassageService {
                         , passage.getUserId()
                         , passage.getBookId()
                         , passage.getPageNum()
-                        , passage.getContent()))
+                        , passage.getContent()
+                        , passage.getCreatedAt()))
                 .collect(Collectors.toList());
 
     }
 
 
+    /**
+     * 삭제된 구절 복구
+     * @param id 구절 id
+     * @return 복구된 구절
+     */
     public PassageDTO restoreDeletedPassage(Long id) {
         Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
         passage.setIsDeleted(false);
@@ -202,8 +213,20 @@ public class PassageService {
                 .userId(passage.getUserId())
                 .content(passage.getContent())
                 .pageNum(passage.getPageNum())
+                .createdAt(passage.getCreatedAt())
                 .build();
     }
 
+
+    /**
+     * 삭제한 지 30일 지난 구절 영구 제거
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void dailyCleanUpOfDeletedPassages() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        List<Passage> oldPassages = passageRepository.findByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
+        passageRepository.deleteAll(oldPassages);
+        log.info("삭제된 지 30일 경과된 Passage 영구 제거");
+    }
 
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Builder
 @Getter
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE passage SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE passage SET is_deleted = true, deleted_at = NOW() WHERE id = ?")
 @FilterDef(name = "deletedPassageFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
 @Filter(name = "deletedPassageFilter", condition = "is_deleted = :isDeleted")
 public class Passage {
@@ -35,8 +36,11 @@ public class Passage {
 
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate date;
+    private LocalDate createdAt;
+
+    private LocalDate deletedAt;
 
     @Builder.Default
     private Boolean isDeleted = Boolean.FALSE; // BigInt (0, 1)
+
 }
