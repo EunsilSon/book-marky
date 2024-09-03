@@ -87,8 +87,24 @@ public class PassageController {
      * @return PassageDTO 리스트 (pageNum, content)
      */
     @GetMapping("/passages/deleted")
-    public ResponseEntity<List<PassageDTO>> getAllDeleted( @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<PassageDTO>> getAllDeleted(@RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok(passageService.getAllDeleted(page));
+    }
+
+
+    /**
+     * 삭제했던 구절 복구
+     * @param id 구절 id
+     * @return 복구 여부
+     */
+    @GetMapping("/passage/restore/{id}")
+    public ResponseEntity<PassageDTO> getRestore(@PathVariable Long id) {
+        PassageDTO passageDTO = passageService.restoreDeletedPassage(id);
+        if (passageDTO == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(passageDTO);
+        }
     }
 
 

@@ -15,6 +15,7 @@ public class PassageVO {
     @Size(max = 1000, message = "입력 가능 길이는 최대 1000자리입니다.")
     private String content;
 
+    @NotBlank
     private Integer pageNum;
 
 }

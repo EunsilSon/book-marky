@@ -38,7 +38,7 @@ public class BookController {
      * @param order 정렬 기준 (기본 값: id)
      * @return BookDTO 리스트
      */
-    @GetMapping("/books")
+    @GetMapping("/books/saved")
     public ResponseEntity<List<BookDTO>> getList(@RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
         return new ResponseEntity<>(bookService.getList(page, order, DEFAULT_BOOK_SIZE), HttpStatus.OK);
     }
@@ -63,7 +63,7 @@ public class BookController {
      * @return Book 객체
      */
     @GetMapping("/book/{id}")
-    public ResponseEntity<BookDTO> getInfo(@PathVariable long id) {
+    public ResponseEntity<BookDTO> getInfo(@PathVariable Long id) {
 
         BookDTO bookDTO = bookService.getInfo(id);
 
