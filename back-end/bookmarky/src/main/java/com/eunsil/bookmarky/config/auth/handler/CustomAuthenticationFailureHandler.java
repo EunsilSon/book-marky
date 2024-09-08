@@ -15,9 +15,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 응답 상태 코드 = 401
-        response.setContentType("text/plain;charset=UTF-8"); // 응답 값 타입
-        response.getWriter().write("Authentication Failed");
+        response.setContentType("text/plain;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         log.info(exception.getMessage());
     }
 }

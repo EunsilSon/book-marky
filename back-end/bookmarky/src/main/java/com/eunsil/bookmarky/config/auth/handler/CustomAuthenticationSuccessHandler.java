@@ -16,8 +16,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        response.setContentType("text/plain;charset=UTF-8"); // 응답 값 유형
-        response.getWriter().write("Authentication Success");
+        response.setContentType("text/plain;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write(authentication.getName());
         log.info(authentication.getName());
     }
 }
