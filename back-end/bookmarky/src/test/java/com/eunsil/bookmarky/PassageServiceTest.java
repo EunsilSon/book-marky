@@ -17,4 +17,5 @@ public class PassageServiceTest {
     public void scheduledTest() {
         passageService.dailyCleanUpOfDeletedPassages();
     }
+
 }

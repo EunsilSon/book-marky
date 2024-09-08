@@ -21,13 +21,11 @@ public class NaverOpenApiSearch {
     @Value("${spring.props.api-url}")
     private String apiUrl;
 
+
     /**
-     * 책 검색
-     * @param title 제목
-     * @param page 가져올 페이지 번호
-     * @return JSON 형태의 검색 결과 10개
+     * 제목으로 책 여러 권 검색
      */
-    public String book(String title, int page) {
+    public String searchBooksByTitle(String title, int page) {
 
         String text = URLEncoder.encode(title, StandardCharsets.UTF_8); // 검색 키워드와 인코딩 형식
         String apiURL = apiUrl + "/book.json?display=10" + "&query=" + text + "&start=" + page;
@@ -39,12 +37,11 @@ public class NaverOpenApiSearch {
         return get(apiURL, requestHeaders); // 결과 반환
     }
 
+
     /**
-     * 책 상세 정보 검색
-     * @param isbn 고유 바코드 번호
-     * @return JSON 형태의 책 정보
+     * isbn 으로 책 1권 검색
      */
-    public String bookDetail(String isbn) {
+    public String searchBookByIsbn(String isbn) {
 
         String apiURL = apiUrl + "/book_adv.xml?" + "d_isbn=" + isbn;
 
@@ -79,6 +76,7 @@ public class NaverOpenApiSearch {
             con.disconnect();
         }
     }
+
 
     private HttpURLConnection connect(String apiUrl){
         log.info("Naver Open API Connected");

@@ -22,30 +22,20 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    /**
-     * 이메일 내용 작성
-     * @param username 로그인에 사용한 이메일
-     * @return 토큰
-     */
-    public String generateResetEmail(String username, String uuid) {
 
+    public String generateEmail(String username, String uuid) {
         String title = "[북마키] 비밀번호 재설정 링크입니다.";
         String content = "아래 링크에 접속하여 비밀번호를 재설정 해주세요.<br><br>"
                 + "<a href=\"" + resetPwUrl + "/" + uuid + "\"> "
                 + resetPwUrl + "/" + uuid + "</a>"
                 + "<br><br>해당 링크는 24시간 동안 유효하며, 1회 변경 가능합니다.<br>"; // 임시 주소
 
-        sendMail(username, title, content);
+        sendEmail(username, title, content);
         return uuid;
     }
 
-    /**
-     * 이메일 전송을 위한 송수신 설정
-     * @param username 로그인에 사용한 이메일
-     * @param title 메일 제목
-     * @param content 메일 내용
-     */
-    public void sendMail(String username, String title, String content) {
+
+    public void sendEmail(String username, String title, String content) {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {

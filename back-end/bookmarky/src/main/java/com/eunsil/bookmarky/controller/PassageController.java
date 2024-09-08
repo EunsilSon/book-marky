@@ -6,6 +6,7 @@ import com.eunsil.bookmarky.domain.dto.PassageDTO;
 import com.eunsil.bookmarky.service.passage.PassageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,86 +20,72 @@ public class PassageController {
 
     /**
      * 구절 생성
-     *
-     * @param passageVO isbn, bookId, content
-     * @return 생성 여부
-     * @throws Exception 책 정보가 없을 때 검색을 위해 open api 호출 후 응답 값을 XML 로 변환하는 과정에서 발생 가능
      */
     @PostMapping("/passage")
-    public ResponseEntity add(@Valid @RequestBody PassageVO passageVO) throws Exception {
-        return ResponseEntity.ok(passageService.add(passageVO));
+    public ResponseEntity<String> create(@Valid @RequestBody PassageVO passageVO) {
+        if (passageService.create(passageVO)) {
+            return ResponseEntity.status(HttpStatus.OK).body("Ok");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BOOK NOT FOUND");
     }
 
 
     /**
      * 구절 수정
-     *
-     * @param passageUpdateVO isbn, bookId, content
-     * @return 수정 여부
      */
     @PatchMapping("/passage")
-    public ResponseEntity update(@Valid @RequestBody PassageUpdateVO passageUpdateVO) {
-        return ResponseEntity.ok(passageService.update(passageUpdateVO));
+    public ResponseEntity<String> update(@Valid @RequestBody PassageUpdateVO passageUpdateVO) {
+        if (passageService.update(passageUpdateVO)) {
+            return ResponseEntity.status(HttpStatus.OK).body("Ok");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passage Not Found");
     }
 
 
     /**
      * 구절 삭제
-     *
-     * @param id 구절 id
-     * @return 삭제 여부
      */
     @DeleteMapping("/passage/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
-        return ResponseEntity.ok(passageService.delete(id));
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        if (passageService.delete(id)) {
+            return ResponseEntity.status(HttpStatus.OK).body("Ok");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passage Not Found");
     }
 
 
     /**
      * 구절 상세 조회
-     *
-     * @param id 유저 이메일
-     * @return Passage 객체
      */
     @GetMapping("/passage/{id}")
-    public ResponseEntity<PassageDTO> get(@PathVariable Long id) {
-        return ResponseEntity.ok(passageService.get(id));
+    public ResponseEntity<PassageDTO> getPassageDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(passageService.getPassageDetails(id));
     }
 
 
     /**
      * 구절 목록 조회
-     * - 저장한 구절을 전체적으로 조회하기 위함
-     * @param bookId 책 id
-     * @param order 정렬 기준
-     * @param page 페이지 번호
-     * @return PassageDTO 리스트
      */
     @GetMapping("/passages")
-    public ResponseEntity<List<PassageDTO>> getList(@RequestParam Long bookId, @RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(passageService.getList(bookId, order, page));
+    public ResponseEntity<List<PassageDTO>> getPassages(@RequestParam Long bookId, @RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(passageService.getPassages(bookId, order, page));
     }
 
 
     /**
-     * 최근 삭제 내역 조회
-     *
-     * @param page 페이지 번호
-     * @return PassageDTO 리스트 (pageNum, content)
+     * 삭제한 구절 조회
      */
     @GetMapping("/passages/deleted")
-    public ResponseEntity<List<PassageDTO>> getAllDeleted(@RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(passageService.getAllDeleted(page));
+    public ResponseEntity<List<PassageDTO>> getDeletedPassages(@RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(passageService.getDeletedPassages(page));
     }
 
 
     /**
-     * 삭제했던 구절 복구
-     * @param id 구절 id
-     * @return 복구 여부
+     * 삭제한 구절 복구
      */
-    @GetMapping("/passage/restore/{id}")
-    public ResponseEntity<PassageDTO> getRestore(@PathVariable Long id) {
+    @GetMapping("/passage/restore")
+    public ResponseEntity<PassageDTO> restorePassage(@RequestParam String id) {
         PassageDTO passageDTO = passageService.restoreDeletedPassage(id);
         if (passageDTO == null) {
             return ResponseEntity.notFound().build();

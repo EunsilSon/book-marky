@@ -10,7 +10,6 @@ public class SecurityUtil {
 
     /**
      * 현재 Authentication 에 저장된 사용자의 username 반환
-     * @return username
      */
     public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
