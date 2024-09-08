@@ -18,9 +18,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     /**
      * Security 로그인
-     * @param username 로그인에 사용되는 email 타입
-     * @return UserDetails 타입의 User 정보
-     * @throws UsernameNotFoundException
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -13,7 +13,6 @@ import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,42 +33,26 @@ public class UserAccountService {
 
     /**
      * 비밀번호 변경을 위한 토큰 생성 후 변경 링크를 메일로 전달
-     * @param username 유저 이메일
-     * @return 유저 이메일, 일회용 토큰
      */
-    public ResponseEntity<PasswordDTO> sendResetEmailWithToken(String username) {
-
+    public PasswordDTO sendResetEmailWithToken(String username) {
         if (userRepository.existsByUsername(username)) {
             String uuid = resetTokenService.generateToken(username); // 일회용 토큰 생성
-            PasswordDTO passwordDTO = new PasswordDTO(username, mailService.generateResetEmail(username, uuid)); // 토큰을 포함한 메일 생성
-
-            return ResponseEntity.ok(passwordDTO);
+            return new PasswordDTO(username, mailService.generateEmail(username, uuid)); // 토큰을 포함한 메일 생성
         }
-
-        return ResponseEntity.notFound().build(); // 404
+        return null;
     }
 
 
     /**
      * 토큰 유효성 검증 후 비밀번호 변경
-     * @param passwordVO 유저 이메일, 새 비밀번호, 토큰
-     * @return 변경 여부
      */
     @Transactional
-    public boolean resetPwWithTokenValidation(PasswordVO passwordVO) {
-
-        String token = passwordVO.getToken();
-
-        // 토큰 유효성 검사
-        if (resetTokenService.isValidToken(token)) {
-
-            // 비밀번호 재설정
+    public boolean resetPwWithValidateToken(PasswordVO passwordVO) {
+        if (resetTokenService.isValidToken(passwordVO.getToken())) {
             User user = userRepository.findByUsername(passwordVO.getUsername());
             user.setPassword(bCryptPasswordEncoder.encode(passwordVO.getPassword()));
             userRepository.save(user);
-
-            // 토큰 무효화
-            resetTokenService.invalidateToken(token);
+            resetTokenService.invalidateToken(passwordVO.getToken());
             return true;
         }
         return false;
@@ -78,23 +61,17 @@ public class UserAccountService {
 
     /**
      * 보안 질문 검증
-     * - 비밀번호 변경 시 토큰 탈취 방지를 위한 2차 검증
-     *
-     * @param secureQuestionVO 유저 메일, 답변
-     * @return 저장된 답변과 일치 여부
+     * :비밀번호 변경 시 토큰 탈취 방지를 위한 2차 검증
      */
     public boolean checkSecureQuestion(SecureQuestionVO secureQuestionVO) {
         User user = userRepository.findByUsername(secureQuestionVO.getUsername());
         SecureAnswer secureAnswer = secureAnswerRepository.findBySecureQuestionIdAndUserId(secureQuestionVO.getSecureQuestionId(), user.getId());
-
         return secureAnswer.getContent().equals(secureQuestionVO.getAnswer());
     }
 
 
     /**
      * 보안 질문 조회
-     *
-     * @return SecureQuestionId 리스트
      */
     public List<SecureQuestion> getSecureQuestion() {
         return secureQuestionRepository.findAll();
@@ -121,6 +98,9 @@ public class UserAccountService {
     }
 
 
+    /**
+     * 닉네임 조회
+     */
     public String getNickname() {
         return userRepository.findByUsername(securityUtil.getCurrentUsername()).getNickname();
     }

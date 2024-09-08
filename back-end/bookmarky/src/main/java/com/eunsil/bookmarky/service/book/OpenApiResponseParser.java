@@ -20,7 +20,6 @@ public class OpenApiResponseParser {
     /**
      * JSON -> Book 객체 리스트 변환
      * @param responseBody JSON 형식의 open api 응답 값
-     * @return List<Book>
      */
     public List<BookDTO> jsonToBookList(String responseBody) {
         List<BookDTO> bookList = new ArrayList<>();
@@ -38,18 +37,16 @@ public class OpenApiResponseParser {
                 BookDTO bookDTO = objectMapper.treeToValue(bookNode, BookDTO.class); // Book 객체로 변환
                 bookList.add(bookDTO);
             }
+            return bookList;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error parsing JSON response");
         }
-
-        return bookList;
     }
 
 
     /**
      * XML -> Book 객체 변환
      * @param responseBody XML 형식의 open api 응답 값
-     * @return Book
      */
     public BookDTO xmlToBook(String responseBody) throws Exception {
 
@@ -58,9 +55,7 @@ public class OpenApiResponseParser {
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.parse(new InputSource(new StringReader(responseBody)));
 
-        // 책 정보 추출
         List<String> bookInfo = new ArrayList<>();
-
         for (int i = 0; i < 9; i++) {
             if (i == 4 || i == 6) {
                 continue;
@@ -76,7 +71,6 @@ public class OpenApiResponseParser {
             bookInfo.add(info); // title 0, link 1, image 2, author 3, publisher 5, isbn 7, description 8;
         }
 
-        // book 객체 반환
         return BookDTO.builder()
                 .title(bookInfo.get(0))
                 .link(bookInfo.get(1))

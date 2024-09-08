@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class PassageUpdateVO {
-
     @NotNull
     private Long passageId;
 
@@ -16,5 +15,4 @@ public class PassageUpdateVO {
 
     @NotNull
     private String pageNum;
-
 }

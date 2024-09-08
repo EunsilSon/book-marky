@@ -2,7 +2,6 @@ package com.eunsil.bookmarky.service.user;
 
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.vo.UserVO;
-import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

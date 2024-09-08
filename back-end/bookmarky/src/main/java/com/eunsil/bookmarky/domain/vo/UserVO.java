@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class UserVO {
-
     @Pattern(regexp = "^[a-z\\d._]+@[a-z._]+\\.[a-z]{2,6}$", message = "아이디는 이메일 형식입니다.")
     private String username;
 
@@ -25,5 +24,4 @@ public class UserVO {
 
     @Size(min = 1, max = 50, message = "답변은 최소 1자, 최대 50자입니다.")
     private String answerContent;
-
 }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.SQLDelete;
+
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @Entity
+@SQLDelete(sql = "UPDATE book_record SET is_deleted = true, deleted_at = NOW() WHERE id = ?")
 public class BookRecord { // 사용자가 읽은 책 저장
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +31,10 @@ public class BookRecord { // 사용자가 읽은 책 저장
     private Book book;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate date;
+    private LocalDate createdAt;
+
+    private LocalDate deletedAt;
+
+    @Builder.Default
+    private Boolean isDeleted = Boolean.FALSE; // BigInt (0, 1)
 }

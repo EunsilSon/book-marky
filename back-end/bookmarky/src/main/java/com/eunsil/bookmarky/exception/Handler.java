@@ -17,17 +17,16 @@ public class Handler {
     }
 
     /**
-     * VO 유효성 검증 실패했을 때
-     *
-     * @param e MethodArgumentNotValidException
-     * @return CommonResponse
+     * VO 유효성 검증 실패
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         return responseService.getErrorResponse(e.getStatusCode(), e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
-
+    /**
+     * 트랜잭션 롤백
+     */
     @ExceptionHandler(UnexpectedRollbackException.class)
     public ResponseEntity<CommonResponse> unexpectedRollbackException(UnexpectedRollbackException e) {
         return responseService.getErrorResponse(HttpStatus.BAD_REQUEST, "Failed to create security question.");

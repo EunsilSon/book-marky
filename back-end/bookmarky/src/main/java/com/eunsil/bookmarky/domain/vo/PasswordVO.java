@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class PasswordVO {
-
     @Pattern(regexp = "^[a-z\\d._]+@[a-z._]+\\.[a-z]{2,6}$") // 이메일
     private String username;
 
@@ -15,5 +14,4 @@ public class PasswordVO {
     private String password;
 
     private String token;
-
 }
