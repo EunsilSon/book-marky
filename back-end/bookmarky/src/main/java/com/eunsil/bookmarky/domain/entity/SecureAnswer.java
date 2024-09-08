@@ -17,7 +17,7 @@ public class SecureAnswer {
     @Column(nullable = false, length = 50)
     private String content;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

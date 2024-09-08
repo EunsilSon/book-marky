@@ -4,8 +4,7 @@ import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.domain.dto.PasswordDTO;
-import com.eunsil.bookmarky.service.user.UserService;
-import com.eunsil.bookmarky.domain.vo.UserVO;
+import com.eunsil.bookmarky.service.user.UserAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,20 +15,9 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class UserController {
+public class UserAccountController {
 
-    private final UserService userService;
-
-    /**
-     * 회원 가입
-     * @param userVO 유저 이메일, 비밀번호, 닉네임
-     * @return 성공 여부
-     */
-    @PostMapping("/user")
-    public boolean join(@Valid @RequestBody UserVO userVO) {
-        return userService.join(userVO);
-    }
-
+    private final UserAccountService userAccountService;
 
     /**
      * 비밀번호 변경 메일 요청
@@ -38,7 +26,7 @@ public class UserController {
      */
     @GetMapping("/user/mail/{username}")
     public ResponseEntity<PasswordDTO> sendResetEmail(@PathVariable String username) {
-        return userService.sendResetEmailWithToken(username);
+        return userAccountService.sendResetEmailWithToken(username);
     }
 
 
@@ -49,7 +37,7 @@ public class UserController {
      */
     @PutMapping("/user")
     public boolean resetPw(@Valid @RequestBody PasswordVO passwordVO) {
-        return userService.resetPwWithTokenValidation(passwordVO);
+        return userAccountService.resetPwWithTokenValidation(passwordVO);
     }
 
 
@@ -62,7 +50,7 @@ public class UserController {
      */
     @PostMapping("/user/question")
     public ResponseEntity<String> checkSecureQuestion(@Valid @RequestBody SecureQuestionVO secureQuestionVO) {
-        if (userService.checkSecureQuestion(secureQuestionVO)) {
+        if (userAccountService.checkSecureQuestion(secureQuestionVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("success");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("failed");
@@ -76,7 +64,7 @@ public class UserController {
      */
     @GetMapping("/user/question")
     public ResponseEntity<List<SecureQuestion>> getSecureQuestion() {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getSecureQuestion());
+        return ResponseEntity.status(HttpStatus.OK).body(userAccountService.getSecureQuestion());
     }
 
 }

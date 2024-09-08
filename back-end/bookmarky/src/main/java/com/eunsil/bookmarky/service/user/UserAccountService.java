@@ -5,7 +5,6 @@ import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.domain.dto.PasswordDTO;
-import com.eunsil.bookmarky.domain.vo.UserVO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.user.SecureAnswerRepository;
 import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
@@ -22,49 +21,14 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserAccountService {
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final SecureAnswerRepository secureAnswerRepository;
+    private final SecureQuestionRepository secureQuestionRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MailService mailService;
     private final ResetTokenService resetTokenService;
-    private final SecureQuestionRepository secureQuestionRepository;
-
-
-    /**
-     * 회원가입
-     * @param userVO 유저 이메일, 비밀번호, 닉네임
-     * @return 성공 여부
-     */
-    @Transactional
-    public boolean join(UserVO userVO) {
-        if (!userRepository.existsByUsername(userVO.getUsername())) { // 유저 아이디 중복 체크
-
-            User user = User.builder()
-                    .username(userVO.getUsername())
-                    .password(bCryptPasswordEncoder.encode(userVO.getPassword()))
-                    .nickname(userVO.getNickname())
-                    .telephone(userVO.getTelephone())
-                    .role("ROLE_USER")
-                    .build();
-
-            userRepository.save(user);
-
-            // 보안 질문 생성
-            SecureQuestion question = secureQuestionRepository.findById(userVO.getSecureQuestionId()).orElseThrow(null);
-            SecureAnswer answer = SecureAnswer.builder()
-                    .secureQuestion(question)
-                    .user(user)
-                    .content(userVO.getSecureAnswer())
-                    .build();
-            secureAnswerRepository.save(answer);
-
-            return true;
-        }
-        return false;
-    }
-
 
     /**
      * 비밀번호 변경을 위한 토큰 생성 후 변경 링크를 메일로 전달
@@ -132,6 +96,30 @@ public class UserService {
      */
     public List<SecureQuestion> getSecureQuestion() {
         return secureQuestionRepository.findAll();
+    }
+
+
+    /**
+     * 사용자의 보안 질문과 답변 등록
+     */
+    @Transactional
+    public boolean registerSecureQuestion(User user, Long questionId, String answerContent) {
+        try {
+            SecureQuestion question = secureQuestionRepository.findById(questionId).orElseThrow(null);
+            SecureAnswer answer = SecureAnswer.builder()
+                    .secureQuestion(question)
+                    .user(user)
+                    .content(answerContent)
+                    .build();
+            secureAnswerRepository.save(answer);
+
+            user.setSecureAnswer(answer);
+            userRepository.save(user);
+            return true;
+
+        } catch(Exception e) {
+            throw new RuntimeException();
+        }
     }
 
 }

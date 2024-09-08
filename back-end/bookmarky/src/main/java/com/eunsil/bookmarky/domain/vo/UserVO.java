@@ -24,6 +24,6 @@ public class UserVO {
     private Long secureQuestionId;
 
     @Size(min = 1, max = 50, message = "답변은 최소 1자, 최대 50자입니다.")
-    private String secureAnswer;
+    private String answerContent;
 
 }

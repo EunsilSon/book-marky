@@ -1,6 +1,8 @@
 package com.eunsil.bookmarky.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,5 +25,16 @@ public class Handler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         return responseService.getErrorResponse(e.getStatusCode(), e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    }
+
+
+    @ExceptionHandler(UnexpectedRollbackException.class)
+    public ResponseEntity<CommonResponse> unexpectedRollbackException(UnexpectedRollbackException e) {
+        return responseService.getErrorResponse(HttpStatus.BAD_REQUEST, "Failed to create security question.");
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<CommonResponse> runtimeException(RuntimeException e) {
+        return responseService.getErrorResponse(HttpStatus.CONFLICT, e.getMessage());
     }
 }
