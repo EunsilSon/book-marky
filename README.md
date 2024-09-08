@@ -1,5 +1,5 @@
 # 북마키 (BookMarky)
-- 마지막 업데이트 일자는 **24.08.23**이며, 현재 개발 진행 중입니다.  
+- 마지막 업데이트 일자는 **24.09.09**이며, 현재 개발 진행 중입니다.  
 - 개발 완료 된 사항들은 `main` 브랜치에서 확인 가능합니다.
 
 <br>
@@ -75,10 +75,12 @@
 |  |  구절 목록 조회  |  |
 |  |  삭제된 구절 목록 조회  |  |
 
+<br>
+
 # API 명세
-<img width="90%" alt="api" src="https://github.com/user-attachments/assets/c9a71735-0f0b-4fc2-b422-6e37ad73b642">
+<img width="90%" alt="api" src="https://github.com/user-attachments/assets/7abf7918-2ac3-4541-93fc-a77c2872355a">
 
 <br>
 
 # ERD
-<img width="100%" alt="erd" src="https://github.com/user-attachments/assets/65d17a80-4fbd-4889-8c4e-997b399fbd4b">
+<img width="100%" alt="erd" src="https://github.com/user-attachments/assets/204b616a-b070-4671-9b5a-6b677e1afd41">
