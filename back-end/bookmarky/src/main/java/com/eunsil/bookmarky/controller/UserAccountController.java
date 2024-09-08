@@ -4,8 +4,10 @@ import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.domain.dto.PasswordDTO;
+import com.eunsil.bookmarky.repository.user.UserRepository;
 import com.eunsil.bookmarky.service.user.UserAccountService;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserAccountController {
 
     private final UserAccountService userAccountService;
+    private final UserRepository userRepository;
 
     /**
      * 비밀번호 변경 메일 요청
@@ -65,6 +68,12 @@ public class UserAccountController {
     @GetMapping("/user/question")
     public ResponseEntity<List<SecureQuestion>> getSecureQuestion() {
         return ResponseEntity.status(HttpStatus.OK).body(userAccountService.getSecureQuestion());
+    }
+
+
+    @GetMapping("/user/nickname")
+    public ResponseEntity<String> getNickname() {
+        return ResponseEntity.status(HttpStatus.OK).body(userAccountService.getNickname());
     }
 
 }

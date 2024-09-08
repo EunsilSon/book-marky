@@ -1,5 +1,6 @@
 package com.eunsil.bookmarky.service.user;
 
+import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.domain.entity.SecureAnswer;
 import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
@@ -29,6 +30,7 @@ public class UserAccountService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MailService mailService;
     private final ResetTokenService resetTokenService;
+    private final SecurityUtil securityUtil;
 
     /**
      * 비밀번호 변경을 위한 토큰 생성 후 변경 링크를 메일로 전달
@@ -112,14 +114,15 @@ public class UserAccountService {
                     .content(answerContent)
                     .build();
             secureAnswerRepository.save(answer);
-
-            user.setSecureAnswer(answer);
-            userRepository.save(user);
             return true;
-
         } catch(Exception e) {
             throw new RuntimeException();
         }
+    }
+
+
+    public String getNickname() {
+        return userRepository.findByUsername(securityUtil.getCurrentUsername()).getNickname();
     }
 
 }

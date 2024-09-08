@@ -28,7 +28,4 @@ public class User {
 
     @Column(nullable = false, length = 10)
     private String role; // ROLE_USER, ROLE_ADMIN
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private SecureAnswer secureAnswer;
 }
