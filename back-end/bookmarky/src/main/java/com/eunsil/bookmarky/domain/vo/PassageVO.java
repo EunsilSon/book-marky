@@ -6,9 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class PassageVO {
-
-    private Boolean isSaved;
-
     @NotBlank
     private String isbn;
 
@@ -16,6 +13,5 @@ public class PassageVO {
     private String content;
 
     @NotBlank
-    private Integer pageNum;
-
+    private String pageNum;
 }

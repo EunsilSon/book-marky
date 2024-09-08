@@ -31,7 +31,7 @@ public class Passage {
     private String content;
 
     @Column(nullable = false)
-    private int pageNum;
+    private String pageNum;
 
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

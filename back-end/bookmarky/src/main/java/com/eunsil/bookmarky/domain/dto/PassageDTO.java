@@ -11,7 +11,7 @@ public class PassageDTO {
     public Long id;
     public Long userId;
     public Long bookId;
-    public Integer pageNum;
+    public String pageNum;
     public String content;
     private LocalDate createdAt;
 }

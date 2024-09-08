@@ -37,7 +37,7 @@ public class BookService {
 
 
     /**
-     * 책 검색
+     * 제목으로 책 검색
      * - open api 를 통해 책 검색 후 Book 객체로 변환해 전달
      *
      * @param title 제목
@@ -51,7 +51,7 @@ public class BookService {
 
 
     /**
-     * open api 를 통해 isbn 으로 책 검색
+     * isbn 으로 책 검색
      *
      * @param isbn 책 isbn
      * @return Book 객체
@@ -64,7 +64,7 @@ public class BookService {
 
 
     /**
-     * 저장한 이력이 없는 책 등록
+     * 책 등록
      * - 구절 생성할 때 새로운 책 정보가 함께 저장됨
      *
      * @param bookDTO BookDTO 객체
@@ -72,11 +72,9 @@ public class BookService {
      */
     @Transactional
     public Long add(BookDTO bookDTO) {
-
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
-        Book book = bookRepository.save(bookDTO.toEntity()); // 책 정보 저장
+        Book book = bookRepository.save(bookDTO.toEntity());
 
-        // 책 기록 저장
         BookRecord bookRecord = BookRecord.builder()
                 .user(user)
                 .book(book)

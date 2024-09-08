@@ -15,6 +15,6 @@ public class PassageUpdateVO {
     private String content;
 
     @NotNull
-    private Integer pageNum;
+    private String pageNum;
 
 }

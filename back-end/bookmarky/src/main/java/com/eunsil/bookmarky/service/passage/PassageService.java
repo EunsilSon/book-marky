@@ -43,7 +43,7 @@ public class PassageService {
 
 
     /**
-     * 특정 책의 구절 생성
+     * 구절 생성
      * - DB에 없는 책의 경우, 구절 생성 시 새로운 책 정보가 함께 DB에 저장됨
      * @param passageVO isSaved, isbn, content
      * @return 생성 여부
@@ -52,27 +52,27 @@ public class PassageService {
     @Transactional
     public boolean add(PassageVO passageVO) throws Exception {
 
-        // 책 정보
-        Long newBookId;
+        try {
+            Long newBookId;
+            if (bookRepository.existsByIsbn(passageVO.getIsbn())) {
+                newBookId = bookRepository.findByIsbn(passageVO.getIsbn()).getId();
+            } else {
+                BookDTO bookDTO = bookService.searchByOpenApiWithIsbn(passageVO.getIsbn());
+                newBookId = bookService.add(bookDTO);
+            }
 
-        if (passageVO.getIsSaved()) { // 이미 저장된 책
-            newBookId = bookRepository.findByIsbn(passageVO.getIsbn()).getId();
-        } else { // 저장한 이력이 없는 책
-            BookDTO bookDTO = bookService.searchByOpenApiWithIsbn(passageVO.getIsbn());
-            newBookId = bookService.add(bookDTO); // 책 정보와 기록 저장
+            Passage passage = Passage.builder()
+                    .bookId(newBookId)
+                    .userId(userRepository.findByUsername(securityUtil.getCurrentUsername()).getId())
+                    .content(passageVO.getContent())
+                    .pageNum(passageVO.getPageNum())
+                    .createdAt(LocalDate.now())
+                    .build();
+            passageRepository.save(passage);
+            return true;
+        } catch(Exception e) {
+            return false;
         }
-
-        // 구절 생성
-        Passage passage = Passage.builder()
-                .bookId(newBookId)
-                .userId(userRepository.findByUsername(securityUtil.getCurrentUsername()).getId())
-                .content(passageVO.getContent())
-                .pageNum(passageVO.getPageNum())
-                .createdAt(LocalDate.now())
-                .build();
-
-        passageRepository.save(passage);
-        return true;
     }
 
 
