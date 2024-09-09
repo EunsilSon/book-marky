@@ -2,14 +2,12 @@ package com.eunsil.bookmarky.controller;
 
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.BookSimpleDTO;
-import com.eunsil.bookmarky.service.book.BookRecordService;
+import com.eunsil.bookmarky.service.BookRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor

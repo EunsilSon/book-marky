@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.service.book;
+package com.eunsil.bookmarky.service;
 
 import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.config.filter.FilterManager;

@@ -3,7 +3,7 @@ package com.eunsil.bookmarky.controller;
 import com.eunsil.bookmarky.domain.vo.PassageVO;
 import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
-import com.eunsil.bookmarky.service.passage.PassageService;
+import com.eunsil.bookmarky.service.PassageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

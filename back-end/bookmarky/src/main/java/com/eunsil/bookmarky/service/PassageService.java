@@ -1,8 +1,7 @@
-package com.eunsil.bookmarky.service.passage;
+package com.eunsil.bookmarky.service;
 
 import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.config.filter.FilterManager;
-import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.BookRecord;
@@ -14,7 +13,6 @@ import com.eunsil.bookmarky.repository.BookRecordRepository;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
-import com.eunsil.bookmarky.service.book.BookRecordService;
 import com.eunsil.bookmarky.service.book.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +87,6 @@ public class PassageService {
         passage.setContent(passageUpdateVO.getContent());
         passage.setPageNum(passageUpdateVO.getPageNum());
         passage.setCreatedAt(LocalDate.now());
-        passageRepository.save(passage);
         return true;
     }
 
@@ -169,7 +166,6 @@ public class PassageService {
         if (!passageRepository.existsByBookIdAndIsDeletedFalse(passage.getBook().getId())) {
             bookRecordRepository.delete(bookRecordRepository.findByBookId(passage.getBook().getId()));
         }
-
         return true;
     }
 
@@ -187,7 +183,6 @@ public class PassageService {
             BookRecord bookRecord = bookRecordRepository.findByBookId(passage.getBook().getId());
             bookRecord.setIsDeleted(false);
             bookRecord.setDeletedAt(null);
-
             return true;
         } catch(Exception e) {
             return false;

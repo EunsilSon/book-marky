@@ -1,30 +1,21 @@
 package com.eunsil.bookmarky.service.book;
 
-import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.entity.Book;
-import com.eunsil.bookmarky.domain.entity.User;
-import com.eunsil.bookmarky.domain.entity.BookRecord;
 import com.eunsil.bookmarky.repository.BookRepository;
-import com.eunsil.bookmarky.repository.BookRecordRepository;
-import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 public class BookService {
 
-    private final SecurityUtil securityUtil;
     private final NaverOpenApiSearch naverOpenApiSearch;
     private final OpenApiResponseParser openApiResponseParser;
-    private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    private final BookRecordRepository bookRecordRepository;
 
     /**
      * Open Api 를 통해 제목으로 책 검색

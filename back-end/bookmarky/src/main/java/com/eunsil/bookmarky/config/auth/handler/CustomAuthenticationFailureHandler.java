@@ -10,6 +10,7 @@ import java.io.IOException;
 
 @Slf4j
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
