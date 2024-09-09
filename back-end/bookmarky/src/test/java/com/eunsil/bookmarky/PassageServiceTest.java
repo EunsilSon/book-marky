@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky;
 
-import com.eunsil.bookmarky.service.passage.PassageService;
+import com.eunsil.bookmarky.service.PassageService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

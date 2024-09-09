@@ -1,12 +1,11 @@
 package com.eunsil.bookmarky.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
@@ -14,9 +13,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 @Entity
 @SQLDelete(sql = "UPDATE book_record SET is_deleted = true, deleted_at = NOW() WHERE id = ?")
+@FilterDef(name = "deletedBookRecordFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedBookRecordFilter", condition = "is_deleted = :isDeleted")
 public class BookRecord { // 사용자가 읽은 책 저장
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

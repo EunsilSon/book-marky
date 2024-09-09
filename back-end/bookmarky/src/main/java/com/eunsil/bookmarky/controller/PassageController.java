@@ -3,7 +3,7 @@ package com.eunsil.bookmarky.controller;
 import com.eunsil.bookmarky.domain.vo.PassageVO;
 import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
-import com.eunsil.bookmarky.service.passage.PassageService;
+import com.eunsil.bookmarky.service.PassageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class PassageController {
      */
     @PostMapping("/passage")
     public ResponseEntity<String> create(@Valid @RequestBody PassageVO passageVO) {
-        if (passageService.create(passageVO)) {
+        if (passageService.createPassage(passageVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("Ok");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BOOK NOT FOUND");
@@ -84,13 +84,12 @@ public class PassageController {
     /**
      * 삭제한 구절 복구
      */
-    @GetMapping("/passage/restore")
-    public ResponseEntity<PassageDTO> restorePassage(@RequestParam String id) {
-        PassageDTO passageDTO = passageService.restoreDeletedPassage(id);
-        if (passageDTO == null) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/passage/restore/{id}")
+    public ResponseEntity<Void> restorePassage(@PathVariable String id) {
+        if (passageService.restoreDeletedPassage(id)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
-            return ResponseEntity.ok(passageDTO);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

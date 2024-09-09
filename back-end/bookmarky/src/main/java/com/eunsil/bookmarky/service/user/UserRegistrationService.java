@@ -58,7 +58,6 @@ public class UserRegistrationService {
 
             // 보안 질문 등록 (실패 시 롤백)
             return userAccountService.registerSecureQuestion(user, userVO.getSecureQuestionId(), userVO.getAnswerContent());
-
         } catch(Exception e) {
             log.info("[{}] User registration has been rolled back.", userVO.getUsername());
             return false;
