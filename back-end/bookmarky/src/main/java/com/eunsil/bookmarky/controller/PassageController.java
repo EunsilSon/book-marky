@@ -23,7 +23,7 @@ public class PassageController {
      */
     @PostMapping("/passage")
     public ResponseEntity<String> create(@Valid @RequestBody PassageVO passageVO) {
-        if (passageService.create(passageVO)) {
+        if (passageService.createPassage(passageVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("Ok");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BOOK NOT FOUND");

@@ -4,6 +4,7 @@ import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
+import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.BookRecord;
 import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.entity.User;
@@ -13,6 +14,7 @@ import com.eunsil.bookmarky.repository.BookRecordRepository;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
+import com.eunsil.bookmarky.service.book.BookRecordService;
 import com.eunsil.bookmarky.service.book.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,7 @@ public class PassageService {
     private final SecurityUtil securityUtil;
     private final FilterManager filterManager;
     private final BookService bookService;
+    private final BookRecordService bookRecordService;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final PassageRepository passageRepository;
@@ -50,16 +53,21 @@ public class PassageService {
      * :DB에 없는 책의 경우, 책 저장 후 구절 생성
      */
     @Transactional
-    public boolean create(PassageVO passageVO) {
+    public boolean createPassage(PassageVO passageVO) {
         try {
-            if (!bookRepository.existsByIsbn(passageVO.getIsbn())) {
-                BookDTO bookDTO = bookService.searchBookByIsbnFromOpenApi(passageVO.getIsbn());
-                bookService.addBook(bookDTO);
+            User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+            Book book;
+
+            if (bookRepository.existsByIsbn(passageVO.getIsbn())) {
+                book = bookRepository.findByIsbn(passageVO.getIsbn());
+            } else {
+                book = bookService.addNewBook(passageVO.getIsbn());
+                bookRecordService.createBookRecord(book, user);
             }
 
             Passage passage = Passage.builder()
-                    .book(bookRepository.findByIsbn(passageVO.getIsbn()))
-                    .user(userRepository.findByUsername(securityUtil.getCurrentUsername()))
+                    .book(book)
+                    .user(user)
                     .content(passageVO.getContent())
                     .pageNum(passageVO.getPageNum())
                     .createdAt(LocalDate.now())
@@ -107,12 +115,11 @@ public class PassageService {
      * 구절 목록 조회
      */
     public List<PassageDTO> getPassages(Long bookId, String order, int page) {
-        filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
-
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(order).descending());
-        Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
 
+        filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
+        Page<Passage> passagesList = passageRepository.findByUserIdAndBookId(user.getId(), bookId, pageable);
         filterManager.disableFilter("deletedPassageFilter");
 
         return passagesList.stream()
@@ -131,12 +138,11 @@ public class PassageService {
      * 최근 삭제 내역 조회 (30일 보관)
      */
     public List<PassageDTO> getDeletedPassages(int page) {
-        filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
-
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by("id").descending());
-        Page<Passage> deletedPassageList = passageRepository.findByUserId(user.getId(), pageable);
 
+        filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
+        Page<Passage> deletedPassageList = passageRepository.findByUserId(user.getId(), pageable);
         filterManager.disableFilter("deletedPassageFilter");
 
         return deletedPassageList.stream()
@@ -190,15 +196,14 @@ public class PassageService {
 
 
     /**
-     * 삭제한 지 30일 지난 구절과 책 기록 영구 제거
+     * 삭제한 지 30일 지난 구절 영구 제거
      * :매일 자정에 실행됨
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void dailyCleanUpOfDeletedPassages() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         passageRepository.deleteByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
-        bookRecordRepository.deleteByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
-        log.info("삭제된 지 30일 경과된 Passage 와 BookRecord 영구 삭제");
+        log.info("삭제 30일 경과된 Passage 영구 삭제");
     }
 
 }
