@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @SQLDelete(sql = "UPDATE book_record SET is_deleted = true, deleted_at = NOW() WHERE id = ?")
+@FilterDef(name = "deletedBookRecordFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedBookRecordFilter", condition = "is_deleted = :isDeleted")
 public class BookRecord { // 사용자가 읽은 책 저장
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

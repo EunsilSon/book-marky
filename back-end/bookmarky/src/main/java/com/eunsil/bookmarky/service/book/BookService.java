@@ -1,6 +1,7 @@
 package com.eunsil.bookmarky.service.book;
 
 import com.eunsil.bookmarky.config.SecurityUtil;
+import com.eunsil.bookmarky.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.BookSimpleDTO;
 import com.eunsil.bookmarky.domain.entity.Book;
@@ -36,6 +37,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookRecordRepository bookRecordRepository;
     private final PassageRepository passageRepository;
+    private final FilterManager filterManager;
 
 
     /**
@@ -108,10 +110,12 @@ public class BookService {
      * 저장된 책 목록 조회
      */
     public List<BookDTO> getSavedBooks(int page, String order, int size) {
-
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
         Pageable pageable = PageRequest.of(page, size, Sort.by(order).descending());
+
+        filterManager.enableFilter("deletedBookRecordFilter", "isDeleted", false);
         Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
+        filterManager.disableFilter("deletedBookRecordFilter");
 
         return userBookRecords.stream()
                 .map(bookRecord -> {
@@ -135,14 +139,13 @@ public class BookService {
      * 저장된 책의 제목만 조회
      */
     public List<BookSimpleDTO> getSavedBookTitles(int page) {
-
+        filterManager.enableFilter("deletedBookRecordFilter", "isDeleted", false);
         List<BookDTO> bookList = getSavedBooks(page, DEFAULT_BOOK_TITLE_LIST_TYPE, DEFAULT_BOOK_TITLE_LIST_SIZE); // 책의 모든 정보
+        filterManager.disableFilter("deletedBookRecordFilter");
 
         return bookList.stream()
                 .map(book -> new BookSimpleDTO(book.getId(), book.getTitle()))
                 .collect(Collectors.toList());
-
     }
-
 
 }
