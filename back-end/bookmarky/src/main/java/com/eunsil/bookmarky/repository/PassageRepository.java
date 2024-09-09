@@ -14,16 +14,16 @@ import java.time.LocalDate;
 
 @Repository
 public interface PassageRepository extends JpaRepository<Passage, Long> {
-
     Page<Passage> findByUserIdAndBookId(Long userId, Long bookId, Pageable pageable);
 
     Page<Passage> findByUserId(Long userId, Pageable pageable);
 
     void deleteByBookIdAndUserId(Long bookId, Long userId);
 
+    boolean existsByBookIdAndIsDeletedFalse(Long bookId);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Passage p WHERE p.isDeleted = true AND p.deletedAt < :date")
     void deleteByIsDeletedTrueAndDeletedAtBefore(LocalDate date);
-
 }

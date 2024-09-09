@@ -4,10 +4,12 @@ import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
+import com.eunsil.bookmarky.domain.entity.BookRecord;
 import com.eunsil.bookmarky.domain.entity.Passage;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.vo.PassageVO;
 import com.eunsil.bookmarky.domain.vo.PassageUpdateVO;
+import com.eunsil.bookmarky.repository.BookRecordRepository;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
@@ -34,12 +36,13 @@ public class PassageService {
 
     private static final int DEFAULT_PASSAGE_SIZE = 10;
 
+    private final SecurityUtil securityUtil;
     private final FilterManager filterManager;
-    private final UserRepository userRepository;
     private final BookService bookService;
+    private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final PassageRepository passageRepository;
-    private final SecurityUtil securityUtil;
+    private final BookRecordRepository bookRecordRepository;
 
 
     /**
@@ -79,17 +82,6 @@ public class PassageService {
         passage.setPageNum(passageUpdateVO.getPageNum());
         passage.setCreatedAt(LocalDate.now());
         passageRepository.save(passage);
-        return true;
-    }
-
-
-    /**
-     * 구절 삭제
-     * soft delete: 30일간 보존 후 영구 삭제
-     */
-    @Transactional
-    public boolean delete(Long id) {
-        passageRepository.deleteById(id);
         return true;
     }
 
@@ -160,33 +152,53 @@ public class PassageService {
 
 
     /**
-     * 삭제된 구절 복구
+     * 구절 삭제
+     * soft delete: 30일간 보존 후 영구 삭제
      */
-    public PassageDTO restoreDeletedPassage(String id) {
-        Passage passage = passageRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
-        passage.setIsDeleted(false);
-        passageRepository.save(passage);
+    @Transactional
+    public boolean delete(Long id) {
+        Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage not found"));
+        passageRepository.delete(passage);
 
-        return PassageDTO.builder()
-                .id(passage.getId())
-                .bookId(passage.getBook().getId())
-                .userId(passage.getUser().getId())
-                .content(passage.getContent())
-                .pageNum(passage.getPageNum())
-                .createdAt(passage.getCreatedAt())
-                .build();
+        if (!passageRepository.existsByBookIdAndIsDeletedFalse(passage.getBook().getId())) {
+            bookRecordRepository.delete(bookRecordRepository.findByBookId(passage.getBook().getId()));
+        }
+
+        return true;
     }
 
 
     /**
-     * 삭제한 지 30일 지난 구절 영구 제거
+     * 삭제된 구절 복구
+     */
+    @Transactional
+    public boolean restoreDeletedPassage(String id) {
+        try {
+            Passage passage = passageRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
+            passage.setIsDeleted(false);
+            passage.setDeletedAt(null);
+
+            BookRecord bookRecord = bookRecordRepository.findByBookId(passage.getBook().getId());
+            bookRecord.setIsDeleted(false);
+            bookRecord.setDeletedAt(null);
+
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * 삭제한 지 30일 지난 구절과 책 기록 영구 제거
      * :매일 자정에 실행됨
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void dailyCleanUpOfDeletedPassages() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         passageRepository.deleteByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
-        log.info("삭제된 지 30일 경과된 Passage 영구 제거");
+        bookRecordRepository.deleteByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
+        log.info("삭제된 지 30일 경과된 Passage 와 BookRecord 영구 삭제");
     }
 
 }

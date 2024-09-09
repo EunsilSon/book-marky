@@ -58,8 +58,8 @@ public class BookController {
     /**
      * 책 삭제
      */
-    @DeleteMapping("/book")
-    public ResponseEntity<String> delete(@RequestParam String id) {
+    @DeleteMapping("/book/{id}")
+    public ResponseEntity<String> delete(@PathVariable String id) {
         if (bookService.deleteBookById(id)) {
             return new ResponseEntity<>("Ok", HttpStatus.OK);
         }

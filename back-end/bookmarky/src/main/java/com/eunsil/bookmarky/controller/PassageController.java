@@ -84,13 +84,12 @@ public class PassageController {
     /**
      * 삭제한 구절 복구
      */
-    @GetMapping("/passage/restore")
-    public ResponseEntity<PassageDTO> restorePassage(@RequestParam String id) {
-        PassageDTO passageDTO = passageService.restoreDeletedPassage(id);
-        if (passageDTO == null) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/passage/restore/{id}")
+    public ResponseEntity<Void> restorePassage(@PathVariable String id) {
+        if (passageService.restoreDeletedPassage(id)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
-            return ResponseEntity.ok(passageDTO);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
