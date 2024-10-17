@@ -8,15 +8,15 @@ export const loginForm = () => {
     formElement.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const username = getInputValue('username');
+        const userName = getInputValue('username');
         const userPw = getInputValue('password');
 
         try {
             const response = await login({
-                username: username,
+                username: userName,
                 password: userPw
             });
-            console.log('Login succesful:', response);
+            console.log('Login Result:', response);
 
         } catch (error) {
             showError('Login failed.Please check your credentials.');

@@ -2,24 +2,28 @@ import { User } from '../types/user';
 
 declare var axios: any;
 
-const API_URL = 'http://127.0.0.1:8000/login';
+const instance = axios.create({
+    baseURL: 'http://127.0.0.1:8000',
+    withCredentials: true,
+})
 
 export const login = async (user: User): Promise<any> => {
     console.log('authService.ts');
     try {
-        const response = await axios({
-            method: 'post',
-            url: API_URL,
-            data: {
-                name: user.username,
-                password: user.password
-            }
+        const formData = new FormData();
+        formData.append('username', user.username);
+        formData.append('password', user.password);
+
+        const response = await instance.post('/login', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
         });
 
         return response.data;
 
-    } catch (error) { // Axios 오류
-        if (axios.isAxiosError(error) && error.response) {
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
             console.error('Axios Error:', error.response.data.message);
         } else {
             console.error('Error:', error);

@@ -40,23 +40,23 @@ export var loginForm = function () {
     var formElement = document.getElementById('login-form');
     console.log('LoginForm.ts');
     formElement.addEventListener('submit', function (event) { return __awaiter(void 0, void 0, void 0, function () {
-        var username, userPw, response, error_1;
+        var userName, userPw, response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     event.preventDefault();
-                    username = getInputValue('username');
+                    userName = getInputValue('username');
                     userPw = getInputValue('password');
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, login({
-                            username: username,
+                            username: userName,
                             password: userPw
                         })];
                 case 2:
                     response = _a.sent();
-                    console.log('Login succesful:', response);
+                    console.log('Login Result:', response);
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();

@@ -34,9 +34,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var API_URL = 'http://127.0.0.1:8000/login';
+var instance = axios.create({
+    baseURL: 'http://127.0.0.1:8000',
+    withCredentials: true,
+});
 export var login = function (user) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_1;
+    var formData, response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -44,20 +47,20 @@ export var login = function (user) { return __awaiter(void 0, void 0, void 0, fu
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, axios({
-                        method: 'post',
-                        url: API_URL,
-                        data: {
-                            name: user.username,
-                            password: user.password
-                        }
+                formData = new FormData();
+                formData.append('username', user.username);
+                formData.append('password', user.password);
+                return [4 /*yield*/, instance.post('/login', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data', // form-data로 전송
+                        },
                     })];
             case 2:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
             case 3:
                 error_1 = _a.sent();
-                if (axios.isAxiosError(error_1) && error_1.response) {
+                if (axios.isAxiosError(error_1)) {
                     console.error('Axios Error:', error_1.response.data.message);
                 }
                 else {
