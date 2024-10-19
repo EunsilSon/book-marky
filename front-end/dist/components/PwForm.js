@@ -34,37 +34,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { login } from '../services/authService.js';
+import { updatePw } from '../services/authService.js';
 import { getInputValue, showError } from '../utils/domUtils.js';
-export var loginForm = function () {
-    var formElement = document.getElementById('login-form');
+export var pwForm = function () {
+    var formElement = document.getElementById('pw-form');
     formElement.addEventListener('submit', function (event) { return __awaiter(void 0, void 0, void 0, function () {
-        var userName, userPw, response, error_1;
+        var userName, userPw, userToken, response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     event.preventDefault();
                     userName = getInputValue('username');
                     userPw = getInputValue('password');
+                    userToken = getInputValue('token');
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, login({
+                    return [4 /*yield*/, updatePw({
                             username: userName,
-                            password: userPw
+                            password: userPw,
+                            token: userToken
                         })];
                 case 2:
                     response = _a.sent();
-                    console.log('Login Result:', response);
+                    console.log('Update Password Result:', response);
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();
-                    showError('Login failed.Please check your credentials.');
-                    console.error('Login Error:', error_1);
+                    showError('Update Password failed.Please check your credentials.');
+                    console.error('Update Password Error:', error_1);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
         });
     }); });
 };
-//# sourceMappingURL=LoginForm.js.map
+//# sourceMappingURL=PwForm.js.map

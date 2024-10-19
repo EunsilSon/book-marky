@@ -34,8 +34,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+import { handleError } from '../utils/domUtils.js';
 var instance = axios.create({
-    baseURL: 'http://127.0.0.1:8000',
+    baseURL: "http://127.0.0.1:8000",
     withCredentials: true,
 });
 export var login = function (user) { return __awaiter(void 0, void 0, void 0, function () {
@@ -43,31 +44,171 @@ export var login = function (user) { return __awaiter(void 0, void 0, void 0, fu
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('authService.ts');
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
+                _a.trys.push([0, 2, , 3]);
                 formData = new FormData();
                 formData.append('username', user.username);
                 formData.append('password', user.password);
-                return [4 /*yield*/, instance.post('/login', formData, {
+                return [4 /*yield*/, instance.post("/login", formData, {
                         headers: {
-                            'Content-Type': 'multipart/form-data', // form-data로 전송
+                            'Content-Type': 'multipart/form-data',
                         },
                     })];
-            case 2:
+            case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
-            case 3:
+            case 2:
                 error_1 = _a.sent();
-                if (axios.isAxiosError(error_1)) {
-                    console.error('Axios Error:', error_1.response.data.message);
-                }
-                else {
-                    console.error('Error:', error_1);
-                }
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                handleError(error_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var join = function (user) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.post("/user", user)];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_2 = _a.sent();
+                handleError(error_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var checkDuplicateUsername = function (username) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.post("/registration/username/".concat(username))];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_3 = _a.sent();
+                handleError(error_3);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var checkDuplicateNickname = function (nickname) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.post("/registration/nickname/".concat(nickname))];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_4 = _a.sent();
+                handleError(error_4);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var checkDuplicateTel = function (telephone) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.post("/registration/telephone/".concat(telephone))];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_5 = _a.sent();
+                handleError(error_5);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var requestPasswordMail = function (username) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("/user/mail/".concat(username))];
+            case 1:
+                response = _a.sent();
+                console.log(response);
+                return [3 /*break*/, 3];
+            case 2:
+                error_6 = _a.sent();
+                handleError(error_6);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var getSecureQuestion = function (username) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("/user/question/".concat(username))];
+            case 1:
+                response = _a.sent();
+                console.log(response);
+                return [3 /*break*/, 3];
+            case 2:
+                error_7 = _a.sent();
+                handleError(error_7);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var checkSecureQuestion = function (userPasswordAnswer) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_8;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.post("/user/question", userPasswordAnswer)];
+            case 1:
+                response = _a.sent();
+                console.log(response);
+                return [3 /*break*/, 3];
+            case 2:
+                error_8 = _a.sent();
+                handleError(error_8);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var updatePassword = function (userPasswordToken) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_9;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.put("/user", userPasswordToken)];
+            case 1:
+                response = _a.sent();
+                console.log(response);
+                return [3 /*break*/, 3];
+            case 2:
+                error_9 = _a.sent();
+                handleError(error_9);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };

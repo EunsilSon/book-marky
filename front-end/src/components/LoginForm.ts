@@ -3,7 +3,6 @@ import { getInputValue, showError } from '../utils/domUtils.js';
 
 export const loginForm = () => {
     const formElement = document.getElementById('login-form') as HTMLFormElement;
-    console.log('LoginForm.ts');
 
     formElement.addEventListener('submit', async (event) => {
         event.preventDefault();
