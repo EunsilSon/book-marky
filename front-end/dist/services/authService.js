@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { handleError } from '../utils/domUtils.js';
 var instance = axios.create({
-    baseURL: "http://127.0.0.1:8000",
+    baseURL: "http://127.0.0.1:8000/",
     withCredentials: true,
 });
 export var login = function (user) { return __awaiter(void 0, void 0, void 0, function () {
@@ -48,7 +48,7 @@ export var login = function (user) { return __awaiter(void 0, void 0, void 0, fu
                 formData = new FormData();
                 formData.append('username', user.username);
                 formData.append('password', user.password);
-                return [4 /*yield*/, instance.post("/login", formData, {
+                return [4 /*yield*/, instance.post("login", formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
@@ -70,7 +70,7 @@ export var join = function (user) { return __awaiter(void 0, void 0, void 0, fun
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("/user", user)];
+                return [4 /*yield*/, instance.post("user", user)];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -88,7 +88,7 @@ export var checkDuplicateUsername = function (username) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("/registration/username/".concat(username))];
+                return [4 /*yield*/, instance.post("registration/username/".concat(username))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -106,7 +106,7 @@ export var checkDuplicateNickname = function (nickname) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("/registration/nickname/".concat(nickname))];
+                return [4 /*yield*/, instance.post("registration/nickname/".concat(nickname))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -124,7 +124,7 @@ export var checkDuplicateTel = function (telephone) { return __awaiter(void 0, v
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("/registration/telephone/".concat(telephone))];
+                return [4 /*yield*/, instance.post("registration/telephone/".concat(telephone))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -142,7 +142,7 @@ export var requestPasswordMail = function (username) { return __awaiter(void 0, 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.get("/user/mail/".concat(username))];
+                return [4 /*yield*/, instance.get("user/mail/".concat(username))];
             case 1:
                 response = _a.sent();
                 console.log(response);
@@ -161,7 +161,7 @@ export var getSecureQuestion = function (username) { return __awaiter(void 0, vo
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.get("/user/question/".concat(username))];
+                return [4 /*yield*/, instance.get("user/question/".concat(username))];
             case 1:
                 response = _a.sent();
                 console.log(response);
@@ -180,7 +180,7 @@ export var checkSecureQuestion = function (userPasswordAnswer) { return __awaite
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("/user/question", userPasswordAnswer)];
+                return [4 /*yield*/, instance.post("user/question", userPasswordAnswer)];
             case 1:
                 response = _a.sent();
                 console.log(response);
@@ -199,7 +199,7 @@ export var updatePassword = function (userPasswordToken) { return __awaiter(void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.put("/user", userPasswordToken)];
+                return [4 /*yield*/, instance.put("user", userPasswordToken)];
             case 1:
                 response = _a.sent();
                 console.log(response);
