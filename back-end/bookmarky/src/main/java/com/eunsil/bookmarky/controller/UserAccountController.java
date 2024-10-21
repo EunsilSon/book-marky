@@ -60,9 +60,9 @@ public class UserAccountController {
     /**
      * 보안 질문 조회
      */
-    @GetMapping("/user/question")
-    public ResponseEntity<List<SecureQuestion>> getSecureQuestion() {
-        return ResponseEntity.status(HttpStatus.OK).body(userAccountService.getSecureQuestion());
+    @GetMapping("/user/question/{username}")
+    public ResponseEntity<String> getSecureQuestion(@PathVariable String username) {
+        return ResponseEntity.status(HttpStatus.OK).body(userAccountService.getSecureQuestion(username));
     }
 
 

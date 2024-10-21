@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 , "/registration/nickname/{nickname}"
                                 , "/registration/telephone/{telephone}"
                                 , "/user/mail/{username}"
+                                , "/user/question/{username}"
                                 , "/user/question"
                         ).permitAll()
                         .anyRequest().authenticated())

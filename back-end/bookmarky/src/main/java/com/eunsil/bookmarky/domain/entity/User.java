@@ -26,6 +26,10 @@ public class User {
     @Column(nullable = false, length = 13)
     private String telephone;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id", nullable = false)
+    private SecureQuestion secureQuestion;
+
     @Column(nullable = false, length = 10)
     private String role; // ROLE_USER, ROLE_ADMIN
 }

@@ -1,7 +1,9 @@
 package com.eunsil.bookmarky.service.user;
 
+import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.vo.UserVO;
+import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserRegistrationService {
 
     private final UserRepository userRepository;
+    private final SecureQuestionRepository secureQuestionRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserAccountService userAccountService;
 
@@ -47,17 +50,20 @@ public class UserRegistrationService {
 
         try {
             // 유저 등록
+            SecureQuestion secureQuestion = secureQuestionRepository.findById(userVO.getSecureQuestionId()).orElseThrow(null);
+
             User user = User.builder()
                     .username(userVO.getUsername())
                     .password(bCryptPasswordEncoder.encode(userVO.getPassword()))
                     .nickname(userVO.getNickname())
                     .telephone(userVO.getTelephone())
+                    .secureQuestion(secureQuestion)
                     .role("ROLE_USER")
                     .build();
             userRepository.save(user);
 
             // 보안 질문 등록 (실패 시 롤백)
-            return userAccountService.registerSecureQuestion(user, userVO.getSecureQuestionId(), userVO.getAnswerContent());
+            return userAccountService.registerSecureQuestion(user, secureQuestion, userVO.getAnswerContent());
         } catch(Exception e) {
             log.info("[{}] User registration has been rolled back.", userVO.getUsername());
             return false;
