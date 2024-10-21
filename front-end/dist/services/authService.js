@@ -55,10 +55,15 @@ export var login = function (user) { return __awaiter(void 0, void 0, void 0, fu
                     })];
             case 1:
                 response = _a.sent();
-                return [2 /*return*/, response.data];
+                return [2 /*return*/, response];
             case 2:
                 error_1 = _a.sent();
-                handleError(error_1);
+                if (axios.isAxiosError(error_1)) {
+                    return [2 /*return*/, error_1.response];
+                }
+                else {
+                    handleError(error_1);
+                }
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -70,7 +75,7 @@ export var join = function (user) { return __awaiter(void 0, void 0, void 0, fun
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("user", user)];
+                return [4 /*yield*/, instance.post("registration", user)];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -145,12 +150,10 @@ export var requestPasswordMail = function (username) { return __awaiter(void 0, 
                 return [4 /*yield*/, instance.get("user/mail/".concat(username))];
             case 1:
                 response = _a.sent();
-                console.log(response);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, response];
             case 2:
                 error_6 = _a.sent();
-                handleError(error_6);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, error_6.response];
             case 3: return [2 /*return*/];
         }
     });
@@ -164,12 +167,10 @@ export var getSecureQuestion = function (username) { return __awaiter(void 0, vo
                 return [4 /*yield*/, instance.get("user/question/".concat(username))];
             case 1:
                 response = _a.sent();
-                console.log(response);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, response];
             case 2:
                 error_7 = _a.sent();
-                handleError(error_7);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, error_7.response];
             case 3: return [2 /*return*/];
         }
     });
@@ -183,12 +184,10 @@ export var checkSecureQuestion = function (userPasswordAnswer) { return __awaite
                 return [4 /*yield*/, instance.post("user/question", userPasswordAnswer)];
             case 1:
                 response = _a.sent();
-                console.log(response);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, response];
             case 2:
                 error_8 = _a.sent();
-                handleError(error_8);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, error_8.response];
             case 3: return [2 /*return*/];
         }
     });
@@ -199,15 +198,13 @@ export var updatePassword = function (userPasswordToken) { return __awaiter(void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.put("user", userPasswordToken)];
+                return [4 /*yield*/, instance.post("user", userPasswordToken)];
             case 1:
                 response = _a.sent();
-                console.log(response);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, response];
             case 2:
                 error_9 = _a.sent();
-                handleError(error_9);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, error_9.response];
             case 3: return [2 /*return*/];
         }
     });

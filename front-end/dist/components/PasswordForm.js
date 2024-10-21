@@ -37,25 +37,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import { requestPasswordMail, getSecureQuestion, checkSecureQuestion, updatePassword } from '../services/authService.js';
 import { getButtonElement, getInputValue } from '../utils/domUtils.js';
 var pwMailButton = getButtonElement('pw-mail-submit');
-var pwUpdate1Button = getButtonElement('pw-update-submit-1');
-var pwUpdate2Button = getButtonElement('pw-update-submit-2');
-var pwUpdate3Button = getButtonElement('pw-update-submit-3');
-var usernameValue = getInputValue('username');
+var usernameBtn = getButtonElement('update-pw-username');
+var questionBtn = getButtonElement('update-pw-question');
+var updateBtn = getButtonElement('update-pw');
 if (pwMailButton) {
     pwMailButton.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
-        var usernameValue, response, error_1;
+        var response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     event.preventDefault();
-                    usernameValue = getInputValue('username');
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, requestPasswordMail(usernameValue)];
+                    return [4 /*yield*/, requestPasswordMail(getInputValue('username'))];
                 case 2:
                     response = _a.sent();
-                    console.log(response);
+                    alert('메일함을 확인하세요.');
+                    if (response.status == 200) {
+                        console.log(response.data);
+                    }
+                    else {
+                        alert('존재하지 않는 이메일입니다. 다시 입력하세요.');
+                    }
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();
@@ -66,8 +70,8 @@ if (pwMailButton) {
         });
     }); });
 }
-if (pwUpdate1Button) {
-    pwUpdate1Button.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
+if (usernameBtn) {
+    usernameBtn.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
         var response, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -76,10 +80,15 @@ if (pwUpdate1Button) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, getSecureQuestion(usernameValue)];
+                    return [4 /*yield*/, getSecureQuestion(getInputValue('username'))];
                 case 2:
                     response = _a.sent();
-                    console.log(response);
+                    if (response.status == 200) {
+                        console.log(response.data);
+                    }
+                    else {
+                        alert('존재하지 않는 이메일입니다. 다시 입력하세요.');
+                    }
                     return [3 /*break*/, 4];
                 case 3:
                     error_2 = _a.sent();
@@ -90,8 +99,8 @@ if (pwUpdate1Button) {
         });
     }); });
 }
-if (pwUpdate2Button) {
-    pwUpdate2Button.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
+if (questionBtn) {
+    questionBtn.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
         var answerValue, response, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -102,12 +111,18 @@ if (pwUpdate2Button) {
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, checkSecureQuestion({
-                            username: usernameValue,
+                            username: getInputValue('username'),
                             answer: answerValue,
                         })];
                 case 2:
                     response = _a.sent();
-                    console.log(response);
+                    if (response.status == 200) {
+                        console.log(response.data);
+                    }
+                    else {
+                        alert('보안 질문의 답변이 일치하지 않습니다. 다시 입력하세요.');
+                        console.log(response.data);
+                    }
                     return [3 /*break*/, 4];
                 case 3:
                     error_3 = _a.sent();
@@ -118,26 +133,32 @@ if (pwUpdate2Button) {
         });
     }); });
 }
-if (pwUpdate3Button) {
-    pwUpdate3Button.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
-        var passwordValue, urlParams, response, error_4;
+if (updateBtn) {
+    updateBtn.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
+        var urlParams, response, error_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     event.preventDefault();
-                    passwordValue = getInputValue('password');
                     urlParams = new URLSearchParams(window.location.search);
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, updatePassword({
-                            username: usernameValue,
-                            password: passwordValue,
+                            username: getInputValue('username'),
+                            password: getInputValue('password'),
                             token: urlParams.get('token'),
                         })];
                 case 2:
                     response = _a.sent();
-                    console.log(response);
+                    if (response.status == 200) {
+                        alert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
+                        window.location.href = '/front-end/html/auth/index.html';
+                    }
+                    else {
+                        alert('토큰이 만료되었습니다.');
+                        console.log(response.data);
+                    }
                     return [3 /*break*/, 4];
                 case 3:
                     error_4 = _a.sent();

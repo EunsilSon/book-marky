@@ -1,5 +1,5 @@
 import { join, checkDuplicateUsername, checkDuplicateNickname, checkDuplicateTel } from '../services/authService.js';
-import { getFormElement, getInputElement, getInputValue, showError, showAlert } from '../utils/domUtils.js';
+import { getButtonElement, getFormElement, getInputElement, getInputValue, showError, showAlert } from '../utils/domUtils.js';
 
 
 const usernameInput = getInputElement('username');

@@ -42,7 +42,6 @@ export const showAlert = (message) => {
 export const handleError = (error: any) => {
     if (axios.isAxiosError(error)) {
         console.error('Axios Error:', error.response?.data.message || 'No error message');
-    } else {
-        console.error('Error:', error);
-    }
+        return error.response.status;
+    } 
 }

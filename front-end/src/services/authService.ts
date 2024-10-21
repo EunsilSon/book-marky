@@ -20,17 +20,21 @@ export const login = async (user: User): Promise<any> => {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data;
+        return response;
 
     } catch (error) {
-        handleError(error);
+        if (axios.isAxiosError(error)) {
+            return error.response;
+        } else {
+            handleError(error);
+        }
     }
 }
 
 
 export const join = async (user: User) => {
     try {
-        const response = await instance.post(`user`, user);
+        const response = await instance.post(`registration`, user);
         return response.data;
 
     } catch (error) {
@@ -75,9 +79,9 @@ export const checkDuplicateTel = async (telephone: string) => {
 export const requestPasswordMail = async (username: string) => {
     try {
         const response = await instance.get(`user/mail/${username}`);
-        console.log(response);
+        return response;
     } catch (error) {
-        handleError(error);
+        return error.response;
     }
 }
 
@@ -85,9 +89,9 @@ export const requestPasswordMail = async (username: string) => {
 export const getSecureQuestion = async (username: string) => {
     try {
         const response = await instance.get(`user/question/${username}`);
-        console.log(response);
+        return response;
     } catch (error) {
-        handleError(error);
+        return error.response;
     }
 }
 
@@ -95,18 +99,18 @@ export const getSecureQuestion = async (username: string) => {
 export const checkSecureQuestion = async (userPasswordAnswer: UserPasswordAnswer) => {
     try {
         const response = await instance.post(`user/question`, userPasswordAnswer);
-        console.log(response);
+        return response;
     } catch (error) {
-        handleError(error);
+        return error.response;
     }
 }
 
 
 export const updatePassword = async (userPasswordToken: UserPasswordToken) => {
     try {
-        const response = await instance.put(`user`, userPasswordToken);
-        console.log(response);
+        const response = await instance.post(`user`, userPasswordToken);
+        return response;
     } catch (error) {
-        handleError(error);
+        return error.response;
     }
 }

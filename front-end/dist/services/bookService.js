@@ -34,57 +34,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { login } from '../services/authService.js';
-import { getButtonElement, getFormElement, getInputElement, getInputValue, showAlert } from '../utils/domUtils.js';
-var loginForm = getFormElement('login-form');
-var joinButton = getButtonElement('move-to-join');
-var pwButton = getButtonElement('move-to-pw');
-var loginFormProcess = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var usernameValue, passwordValue, response, error_1;
+import { handleError } from '../utils/domUtils.js';
+var instance = axios.create({
+    baseURL: "http://127.0.0.1:8000/",
+    withCredentials: true,
+});
+export var getAllBooks = function (order, page) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                event.preventDefault();
-                usernameValue = getInputValue('username');
-                passwordValue = getInputValue('password');
-                _a.label = 1;
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("books/saved?order=".concat(order, "&page=").concat(page))];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, login({
-                        username: usernameValue,
-                        password: passwordValue,
-                    })];
-            case 2:
                 response = _a.sent();
-                console.log('Login Result:', response);
-                if (response.status == 200) {
-                    localStorage.setItem('username', response.data);
-                    showAlert('로그인에 성공했습니다. 메인 페이지로 이동합니다.');
-                    window.location.href = '/front-end/html/book/index.html';
-                }
-                if (response.status == 401) {
-                    getInputElement('username').value = '';
-                    getInputElement('password').value = '';
-                    showAlert('아이디 또는 비밀번호가 맞지 않습니다. 다시 입력하세요.');
-                }
-                return [3 /*break*/, 4];
-            case 3:
+                console.log(response);
+                return [3 /*break*/, 3];
+            case 2:
                 error_1 = _a.sent();
-                console.error('Login Error:', error_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                handleError(error_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-var moveToJoin = function (event) {
-    event.preventDefault();
-    window.location.href = '/front-end/html/auth/join.html';
-};
-var moveToPw = function (event) {
-    event.preventDefault();
-    window.location.href = '/front-end/html/auth/request-password.html';
-};
-loginForm.addEventListener('submit', loginFormProcess);
-joinButton.addEventListener('click', moveToJoin);
-pwButton.addEventListener('click', moveToPw);
-//# sourceMappingURL=LoginForm.js.map
+// TODO: 책 상세정보 조회
+export var getBookDetail = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("book/".concat(id))];
+            case 1:
+                response = _a.sent();
+                console.log(response);
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                handleError(error_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+//# sourceMappingURL=bookService.js.map

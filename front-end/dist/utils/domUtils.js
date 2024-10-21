@@ -34,9 +34,7 @@ export var handleError = function (error) {
     var _a;
     if (axios.isAxiosError(error)) {
         console.error('Axios Error:', ((_a = error.response) === null || _a === void 0 ? void 0 : _a.data.message) || 'No error message');
-    }
-    else {
-        console.error('Error:', error);
+        return error.response.status;
     }
 };
 //# sourceMappingURL=domUtils.js.map
