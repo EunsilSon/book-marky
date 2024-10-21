@@ -1,0 +1,9 @@
+{
+  "name": "bookmarky",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@types/node": "^22.7.5",
+    "axios": "^1.7.7"
+  }
+}

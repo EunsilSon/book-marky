@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" , initial-scale="1.0">
+    <title>Bookmarky</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="../../dist/app.js"></script>
+    <script type="module"src="../../dist/components/JoinForm.js"></script>
+</head>
+
+<body>
+    <h1>Join</h1>
+    <form id="join-form">
+        <input type="email" id="username" name="username" placeholder="EMAIL" required>
+        <br>
+        <input type="password" id="password" name="password" placeholder="PASSWORD" required>
+        <br>
+        <input type="text" id="nickname" name="nickname" placeholder="NICKNAME" required>
+        <br>
+        <input type="tel" id="telephone" name="telephone" placeholder="PHONE" required>
+        <br>
+        <select id="secure-question-id" name="secure-question-id" required>
+            <option value="" disabled selected>QUESTION</option>
+            <option value="1">당신의 초등학교 이름은?</option>
+            <option value="2">가장 좋아하는 것은?</option>
+            <option value="3">가장 싫어하는 것은?</option>
+        </select>
+        <br>
+        <input type="text" id="answer" name="answer" placeholder="ANSWER" required>
+        <br>
+        <button id="join-submit" type="submit">Enter</button>
+    </form>
+    <button id="move-to-login">뒤로가기</button>
+
+</body>
+
+</html>
