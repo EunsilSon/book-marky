@@ -8,7 +8,6 @@ import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.domain.dto.PasswordDTO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.user.SecureAnswerRepository;
-import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +23,6 @@ public class UserAccountService {
 
     private final UserRepository userRepository;
     private final SecureAnswerRepository secureAnswerRepository;
-    private final SecureQuestionRepository secureQuestionRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MailService mailService;
     private final ResetTokenService resetTokenService;
@@ -65,16 +62,17 @@ public class UserAccountService {
      */
     public boolean checkSecureQuestion(SecureQuestionVO secureQuestionVO) {
         User user = userRepository.findByUsername(secureQuestionVO.getUsername());
-        SecureAnswer secureAnswer = secureAnswerRepository.findBySecureQuestionIdAndUserId(secureQuestionVO.getSecureQuestionId(), user.getId());
+        SecureAnswer secureAnswer = secureAnswerRepository.findBySecureQuestionIdAndUserId(
+                userRepository.findByUsername(secureQuestionVO.getUsername()).getSecureQuestion().getId(), user.getId());
         return secureAnswer.getContent().equals(secureQuestionVO.getAnswer());
     }
 
 
     /**
-     * 보안 질문 조회
+     * 특정 사용자의 보안 질문 조회
      */
-    public List<SecureQuestion> getSecureQuestion() {
-        return secureQuestionRepository.findAll();
+    public String getSecureQuestion(String username) {
+        return userRepository.findByUsername(username).getSecureQuestion().getContent();
     }
 
 
@@ -82,9 +80,8 @@ public class UserAccountService {
      * 사용자의 보안 질문과 답변 등록
      */
     @Transactional
-    public boolean registerSecureQuestion(User user, Long questionId, String answerContent) {
+    public boolean registerSecureQuestion(User user, SecureQuestion question, String answerContent) {
         try {
-            SecureQuestion question = secureQuestionRepository.findById(questionId).orElseThrow(null);
             SecureAnswer answer = SecureAnswer.builder()
                     .secureQuestion(question)
                     .user(user)
