@@ -1,6 +1,6 @@
 import { requestPasswordMail, getSecureQuestion, checkSecureQuestion, updatePassword } from '../services/authService.js';
 import { getButtonElement, getInputValue, getInputElement, showAlert } from '../utils/domUtils.js';
-import { renderSecureQuestion } from '../utils/renderUtils.js';
+import { renderSecureQuestion } from '../utils/authRenderUtils.js';
 
 
 const pwMailButton = getButtonElement('pw-mail-submit');
@@ -38,8 +38,8 @@ if (usernameBtn) {
 
             if (response.status == 200) {
                 showAlert('보안 질문의 답변을 입력하세요.');
-                renderSecureQuestion('question-container', response.data);
-                
+                renderSecureQuestion('title-container', response.data);
+
                 getInputElement('answer').disabled = false;
                 answerBtn.disabled = false;
             } else {
@@ -100,7 +100,7 @@ if (updateBtn) {
                 showAlert('토큰이 만료되었습니다.');
                 console.log(response.data);
             }
-            
+
         } catch (error) {
             console.error('Update Password Error:', error);
         }

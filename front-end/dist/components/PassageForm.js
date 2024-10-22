@@ -34,80 +34,75 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var instance = axios.create({
-    baseURL: "http://127.0.0.1:8000/",
-    withCredentials: true,
-});
-export var getPassages = function (bookId, page) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_1;
+import { getPassages, getPassageDetail, updatePassage, deletePassage } from "../services/passageService.js";
+import { getBookDetail } from "../services/bookService.js";
+import { getButtonElement, showError } from "../utils/domUtils.js";
+import { renderBookDetail } from "../utils/bookRenderUtils.js";
+import { renderPassages, renderPassageDetail } from "../utils/passageRenderUtils.js";
+var backBtn = getButtonElement('back');
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
+    var currentPath, bookId, bookResponse, passagesResponse, passageId, passageResponse, passageId, passageResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.get("passages?bookId=".concat(bookId, "&order=id&page=").concat(page))];
+                currentPath = window.location.pathname;
+                if (!currentPath.endsWith('passage-list.html')) return [3 /*break*/, 3];
+                console.log('잉?');
+                bookId = new URLSearchParams(window.location.search).get('id');
+                return [4 /*yield*/, getBookDetail(bookId)];
             case 1:
-                response = _a.sent();
-                return [2 /*return*/, response];
+                bookResponse = _a.sent();
+                renderBookDetail(bookResponse);
+                return [4 /*yield*/, getPassages(bookId, 0)];
             case 2:
-                error_1 = _a.sent();
-                return [2 /*return*/, error_1.response];
-            case 3: return [2 /*return*/];
+                passagesResponse = _a.sent();
+                renderPassages(passagesResponse.data);
+                _a.label = 3;
+            case 3:
+                if (!currentPath.endsWith('passage-detail.html')) return [3 /*break*/, 5];
+                passageId = new URLSearchParams(window.location.search).get('id');
+                return [4 /*yield*/, getPassageDetail(passageId)];
+            case 4:
+                passageResponse = _a.sent();
+                renderPassageDetail(passageResponse.data, false);
+                _a.label = 5;
+            case 5:
+                if (!currentPath.endsWith('update-passage.html')) return [3 /*break*/, 7];
+                passageId = new URLSearchParams(window.location.search).get('id');
+                return [4 /*yield*/, getPassageDetail(passageId)];
+            case 6:
+                passageResponse = _a.sent();
+                renderPassageDetail(passageResponse.data, false);
+                _a.label = 7;
+            case 7: return [2 /*return*/];
         }
     });
-}); };
-export var getPassageDetail = function (passageId) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_2;
+}); });
+export var updatePassageProcess = function (passage) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.get("passage/".concat(passageId))];
-            case 1:
-                response = _a.sent();
-                return [2 /*return*/, response];
-            case 2:
-                error_2 = _a.sent();
-                return [2 /*return*/, error_2.response];
-            case 3: return [2 /*return*/];
+        try {
+            updatePassage(passage);
         }
+        catch (error) {
+            return [2 /*return*/, showError(error)];
+        }
+        return [2 /*return*/];
     });
 }); };
-export var updatePassage = function (passage) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_3;
+export var deletePassageProcess = function (passageId) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.patch("passage", {
-                        passageId: passage.id,
-                        content: passage.content,
-                        pageNum: passage.pageNum,
-                    })];
-            case 1:
-                response = _a.sent();
-                return [2 /*return*/, response];
-            case 2:
-                error_3 = _a.sent();
-                return [2 /*return*/, error_3.response];
-            case 3: return [2 /*return*/];
+        try {
+            deletePassage(passageId);
         }
+        catch (error) {
+            return [2 /*return*/, showError(error)];
+        }
+        return [2 /*return*/];
     });
 }); };
-export var deletePassage = function (passageId) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.delete("passage/".concat(passageId))];
-            case 1:
-                response = _a.sent();
-                return [2 /*return*/, response];
-            case 2:
-                error_4 = _a.sent();
-                return [2 /*return*/, error_4.response];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); };
-//# sourceMappingURL=passageService.js.map
+var back = function (event) {
+    event.preventDefault();
+    window.history.back();
+};
+backBtn.addEventListener('click', back);
+//# sourceMappingURL=PassageForm.js.map

@@ -8,7 +8,6 @@ const instance = axios.create({
     withCredentials: true,
 })
 
-
 export const login = async (user: User): Promise<any> => {
     try {
         const formData = new FormData();
@@ -31,7 +30,6 @@ export const login = async (user: User): Promise<any> => {
     }
 }
 
-
 export const join = async (user: User) => {
     try {
         const response = await instance.post(`registration`, user);
@@ -41,7 +39,6 @@ export const join = async (user: User) => {
         handleError(error);
     }
 }
-
 
 export const checkDuplicateUsername = async (username: string) => {
     try {
@@ -53,7 +50,6 @@ export const checkDuplicateUsername = async (username: string) => {
     }
 }
 
-
 export const checkDuplicateNickname = async (nickname: string) => {
     try {
         const response = await instance.post(`registration/nickname/${nickname}`);
@@ -63,7 +59,6 @@ export const checkDuplicateNickname = async (nickname: string) => {
         handleError(error);
     }
 }
-
 
 export const checkDuplicateTel = async (telephone: string) => {
     try {
@@ -75,7 +70,6 @@ export const checkDuplicateTel = async (telephone: string) => {
     }
 }
 
-
 export const requestPasswordMail = async (username: string) => {
     try {
         const response = await instance.get(`user/mail/${username}`);
@@ -84,7 +78,6 @@ export const requestPasswordMail = async (username: string) => {
         return error.response;
     }
 }
-
 
 export const getSecureQuestion = async (username: string) => {
     try {
@@ -95,7 +88,6 @@ export const getSecureQuestion = async (username: string) => {
     }
 }
 
-
 export const checkSecureQuestion = async (userPasswordAnswer: UserPasswordAnswer) => {
     try {
         const response = await instance.post(`user/question`, userPasswordAnswer);
@@ -105,10 +97,18 @@ export const checkSecureQuestion = async (userPasswordAnswer: UserPasswordAnswer
     }
 }
 
-
 export const updatePassword = async (userPasswordToken: UserPasswordToken) => {
     try {
         const response = await instance.post(`user`, userPasswordToken);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const getNickname = async () => {
+    try {
+        const response = await instance.get(`user/nickname`);
         return response;
     } catch (error) {
         return error.response;

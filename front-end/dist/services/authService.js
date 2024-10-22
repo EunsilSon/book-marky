@@ -209,4 +209,21 @@ export var updatePassword = function (userPasswordToken) { return __awaiter(void
         }
     });
 }); };
+export var getNickname = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_10;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("user/nickname")];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_10 = _a.sent();
+                return [2 /*return*/, error_10.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
 //# sourceMappingURL=authService.js.map

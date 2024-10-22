@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { requestPasswordMail, getSecureQuestion, checkSecureQuestion, updatePassword } from '../services/authService.js';
 import { getButtonElement, getInputValue, getInputElement, showAlert } from '../utils/domUtils.js';
-import { renderSecureQuestion } from '../utils/renderUtils.js';
+import { renderSecureQuestion } from '../utils/authRenderUtils.js';
 var pwMailButton = getButtonElement('pw-mail-submit');
 var usernameBtn = getButtonElement('update-pw-username');
 var answerBtn = getButtonElement('update-pw-answer');
@@ -86,7 +86,7 @@ if (usernameBtn) {
                     response = _a.sent();
                     if (response.status == 200) {
                         showAlert('보안 질문의 답변을 입력하세요.');
-                        renderSecureQuestion('question-container', response.data);
+                        renderSecureQuestion('title-container', response.data);
                         getInputElement('answer').disabled = false;
                         answerBtn.disabled = false;
                     }

@@ -1,5 +1,3 @@
-import { handleError } from '../utils/domUtils.js';
-
 declare var axios: any;
 
 const instance = axios.create({
@@ -7,22 +5,20 @@ const instance = axios.create({
     withCredentials: true,
 })
 
-
 export const getAllBooks = async (order: string, page: number) => {
     try {
         const response = await instance.get(`books/saved?order=${order}&page=${page}`);
-        console.log(response);
+        return response.data;
     } catch (error) {
-        handleError(error);
+        return error.response;
     }
 }
 
-// TODO: 책 상세정보 조회
-export const getBookDetail = async (id: number) => {
+export const getBookDetail = async (id: string) => {
     try {
         const response = await instance.get(`book/${id}`);
-        console.log(response);
+        return response.data;
     } catch (error) {
-        handleError(error);
+        return error.response;
     }
 }
