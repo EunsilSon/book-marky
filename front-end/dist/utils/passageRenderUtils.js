@@ -1,5 +1,5 @@
 import { getElementById, showAlert } from "./domUtils.js";
-import { updatePassageProcess, deletePassageProcess } from "../components/PassageForm.js";
+import { updatePassageProcess, deletePassageProcess, createPassageProcess, restorePassageProcess } from "../components/PassageForm.js";
 export var renderPassages = function (passages) {
     var container = getElementById('passages-container');
     container.innerHTML = '';
@@ -66,8 +66,8 @@ export var renderPassageDetail = function (passage, isEditing) {
         }
     });
     deleteBtn.addEventListener('click', function () {
-        var confirmDelete = window.confirm('삭제하시겠습니까?');
-        if (confirmDelete) {
+        var confirm = window.confirm('삭제하시겠습니까?');
+        if (confirm) {
             deletePassageProcess(passage.id);
             showAlert('삭제되었습니다. 이전 페이지로 이동합니다.');
             window.history.back();
@@ -82,5 +82,69 @@ export var renderPassageDetail = function (passage, isEditing) {
     editDiv.appendChild(deleteBtn);
     container.appendChild(contentDiv);
     container.appendChild(editDiv);
+};
+export var renderPassageForm = function () {
+    var container = document.getElementById('passage-creation-container');
+    container.innerHTML = '';
+    var pageNumLabel = document.createElement('label');
+    pageNumLabel.innerText = 'page:';
+    var pageNumTextarea = document.createElement('textarea');
+    pageNumTextarea.placeholder = 'Write Here';
+    pageNumTextarea.rows = 1;
+    pageNumTextarea.style.resize = 'none';
+    var contentLabel = document.createElement('label');
+    contentLabel.innerText = 'content:';
+    var contentTextarea = document.createElement('textarea');
+    contentTextarea.placeholder = 'Write Here';
+    contentTextarea.rows = 4;
+    contentTextarea.style.resize = 'none';
+    var editContainer = document.createElement('div');
+    var saveButton = document.createElement('button');
+    saveButton.innerText = '저장';
+    saveButton.addEventListener('click', function () {
+        var content = contentTextarea.value;
+        var pageNum = pageNumTextarea.value;
+        createPassageProcess(content, pageNum);
+    });
+    editContainer.appendChild(saveButton);
+    container.appendChild(pageNumLabel);
+    container.appendChild(pageNumTextarea);
+    container.appendChild(contentLabel);
+    container.appendChild(contentTextarea);
+    container.appendChild(editContainer);
+};
+export var renderDeletedPassages = function (passages) {
+    var container = document.getElementById('deleted-passage-container');
+    passages.forEach(function (passage) {
+        var itemDiv = document.createElement('div');
+        itemDiv.className = 'passage-item';
+        var bookDiv = document.createElement('div');
+        bookDiv.className = 'book';
+        var bookP = document.createElement('p');
+        bookP.textContent = "\uCC45 \uC81C\uBAA9: ".concat(passage.bookId);
+        bookDiv.appendChild(bookP);
+        var contentDiv = document.createElement('div');
+        contentDiv.className = 'content';
+        var contentP = document.createElement('p');
+        contentP.textContent = passage.content;
+        contentDiv.appendChild(contentP);
+        var restoreDiv = document.createElement('div');
+        restoreDiv.className = 'restore';
+        var restoreBtn = document.createElement('button');
+        restoreBtn.innerText = '복구';
+        restoreDiv.appendChild(restoreBtn);
+        restoreBtn.addEventListener('click', function () {
+            var confirm = window.confirm('복구하시겠습니까?');
+            if (confirm) {
+                restorePassageProcess(passage.id);
+            }
+        });
+        var hr = document.createElement('hr');
+        itemDiv.appendChild(bookDiv);
+        itemDiv.appendChild(contentDiv);
+        itemDiv.appendChild(restoreDiv);
+        itemDiv.appendChild(hr);
+        container.appendChild(itemDiv);
+    });
 };
 //# sourceMappingURL=passageRenderUtils.js.map

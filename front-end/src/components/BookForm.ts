@@ -4,6 +4,7 @@ import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
 import { getButtonElement } from '../utils/domUtils.js';
 
 const createPassageBtn = getButtonElement('create-passage');
+const deletedPassageBtn = getButtonElement('deleted-passage');
 
 document.addEventListener('DOMContentLoaded', async () => {
     const nicknameResponse = await getNickname();
@@ -18,4 +19,10 @@ const moveToCreatePassage = (event: Event) => {
     window.location.href = '../book/create-passage.html';
 }
 
+const moveToDeletedPassage = (event: Event) => {
+    event.preventDefault();
+    window.location.href = '../book/deleted-passage.html';
+}
+
 createPassageBtn.addEventListener('click', moveToCreatePassage);
+deletedPassageBtn.addEventListener('click', moveToDeletedPassage);

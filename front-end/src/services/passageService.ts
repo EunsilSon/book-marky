@@ -23,6 +23,15 @@ export const getPassageDetail = async (passageId: string) => {
     }
 }
 
+export const getDeletedPassages = async () => {
+    try {
+        const response = await instance.get(`passages/deleted`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
 export const updatePassage = async (passage: Passage) => {
     try {
         const response = await instance.patch(`passage`, {
@@ -40,6 +49,24 @@ export const updatePassage = async (passage: Passage) => {
 export const deletePassage = async (passageId: string) => {
     try {
         const response = await instance.delete(`passage/${passageId}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const createPassage = async (newPassage: NewPassage) => {
+    try {
+        const response = await instance.post(`passage`, newPassage);
+        console.log(response);
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const restorePassage = async (passageId: string) => {
+    try {
+        const response = await instance.get(`passage/restore/${passageId}`);
         return response;
     } catch (error) {
         return error.response;

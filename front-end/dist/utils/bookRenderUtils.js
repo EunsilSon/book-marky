@@ -48,7 +48,7 @@ export var renderBookDetail = function (book) {
     closeContent.style.cursor = 'pointer';
     closeContent.style.display = 'none';
     moreContent.addEventListener('click', function () {
-        descriptionElement.innerText = book.description + '...   ';
+        descriptionElement.innerText = book.description + '   ';
         moreContent.style.display = 'none';
         closeContent.style.display = 'inline';
     });

@@ -39,6 +39,7 @@ import { getNickname } from '../services/authService.js';
 import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
 import { getButtonElement } from '../utils/domUtils.js';
 var createPassageBtn = getButtonElement('create-passage');
+var deletedPassageBtn = getButtonElement('deleted-passage');
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
     var nicknameResponse, booksResponse;
     return __generator(this, function (_a) {
@@ -59,5 +60,10 @@ var moveToCreatePassage = function (event) {
     event.preventDefault();
     window.location.href = '../book/create-passage.html';
 };
+var moveToDeletedPassage = function (event) {
+    event.preventDefault();
+    window.location.href = '../book/deleted-passage.html';
+};
 createPassageBtn.addEventListener('click', moveToCreatePassage);
+deletedPassageBtn.addEventListener('click', moveToDeletedPassage);
 //# sourceMappingURL=BookForm.js.map

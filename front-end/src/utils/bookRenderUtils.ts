@@ -62,7 +62,7 @@ export const renderBookDetail = (book: Book) => {
     closeContent.style.display = 'none';
 
     moreContent.addEventListener('click', () => {
-        descriptionElement.innerText = book.description + '...   ';
+        descriptionElement.innerText = book.description + '   ';
         moreContent.style.display = 'none';
         closeContent.style.display = 'inline';
     });

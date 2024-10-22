@@ -72,8 +72,25 @@ export var getPassageDetail = function (passageId) { return __awaiter(void 0, vo
         }
     });
 }); };
-export var updatePassage = function (passage) { return __awaiter(void 0, void 0, void 0, function () {
+export var getDeletedPassages = function () { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("passages/deleted")];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_3 = _a.sent();
+                return [2 /*return*/, error_3.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var updatePassage = function (passage) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -87,14 +104,14 @@ export var updatePassage = function (passage) { return __awaiter(void 0, void 0,
                 response = _a.sent();
                 return [2 /*return*/, response];
             case 2:
-                error_3 = _a.sent();
-                return [2 /*return*/, error_3.response];
+                error_4 = _a.sent();
+                return [2 /*return*/, error_4.response];
             case 3: return [2 /*return*/];
         }
     });
 }); };
 export var deletePassage = function (passageId) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_4;
+    var response, error_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -104,8 +121,43 @@ export var deletePassage = function (passageId) { return __awaiter(void 0, void 
                 response = _a.sent();
                 return [2 /*return*/, response];
             case 2:
-                error_4 = _a.sent();
-                return [2 /*return*/, error_4.response];
+                error_5 = _a.sent();
+                return [2 /*return*/, error_5.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var createPassage = function (newPassage) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.post("passage", newPassage)];
+            case 1:
+                response = _a.sent();
+                console.log(response);
+                return [3 /*break*/, 3];
+            case 2:
+                error_6 = _a.sent();
+                return [2 /*return*/, error_6.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var restorePassage = function (passageId) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("passage/restore/".concat(passageId))];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_7 = _a.sent();
+                return [2 /*return*/, error_7.response];
             case 3: return [2 /*return*/];
         }
     });

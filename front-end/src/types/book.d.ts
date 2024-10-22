@@ -8,9 +8,3 @@ interface Book {
     image: string;
     link: string;
 }
-
-interface Passage {
-    id: string;
-    pageNum: string;
-    content: string;
-}

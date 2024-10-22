@@ -34,20 +34,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { getPassages, getPassageDetail, updatePassage, deletePassage } from "../services/passageService.js";
+import { getPassages, getPassageDetail, getDeletedPassages, updatePassage, deletePassage, createPassage, restorePassage } from "../services/passageService.js";
 import { getBookDetail } from "../services/bookService.js";
-import { getButtonElement, showError } from "../utils/domUtils.js";
+import { showError } from "../utils/domUtils.js";
 import { renderBookDetail } from "../utils/bookRenderUtils.js";
-import { renderPassages, renderPassageDetail } from "../utils/passageRenderUtils.js";
-var backBtn = getButtonElement('back');
+import { renderPassages, renderPassageDetail, renderPassageForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
+import { showAlert } from "../utils/domUtils.js";
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var currentPath, bookId, bookResponse, passagesResponse, passageId, passageResponse, passageId, passageResponse;
+    var currentPath, bookId, bookResponse, passagesResponse, passageId, passageResponse, deletedPassages;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 currentPath = window.location.pathname;
                 if (!currentPath.endsWith('passage-list.html')) return [3 /*break*/, 3];
-                console.log('잉?');
                 bookId = new URLSearchParams(window.location.search).get('id');
                 return [4 /*yield*/, getBookDetail(bookId)];
             case 1:
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(voi
                 renderPassages(passagesResponse.data);
                 _a.label = 3;
             case 3:
-                if (!currentPath.endsWith('passage-detail.html')) return [3 /*break*/, 5];
+                if (!(currentPath.endsWith('passage-detail.html') || currentPath.endsWith('update-passage.html'))) return [3 /*break*/, 5];
                 passageId = new URLSearchParams(window.location.search).get('id');
                 return [4 /*yield*/, getPassageDetail(passageId)];
             case 4:
@@ -67,12 +66,14 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(voi
                 renderPassageDetail(passageResponse.data, false);
                 _a.label = 5;
             case 5:
-                if (!currentPath.endsWith('update-passage.html')) return [3 /*break*/, 7];
-                passageId = new URLSearchParams(window.location.search).get('id');
-                return [4 /*yield*/, getPassageDetail(passageId)];
+                if (currentPath.endsWith('create-passage.html')) {
+                    renderPassageForm();
+                }
+                if (!currentPath.endsWith('deleted-passage.html')) return [3 /*break*/, 7];
+                return [4 /*yield*/, getDeletedPassages()];
             case 6:
-                passageResponse = _a.sent();
-                renderPassageDetail(passageResponse.data, false);
+                deletedPassages = _a.sent();
+                renderDeletedPassages(deletedPassages.data);
                 _a.label = 7;
             case 7: return [2 /*return*/];
         }
@@ -100,9 +101,49 @@ export var deletePassageProcess = function (passageId) { return __awaiter(void 0
         return [2 /*return*/];
     });
 }); };
-var back = function (event) {
-    event.preventDefault();
-    window.history.back();
-};
-backBtn.addEventListener('click', back);
+export var createPassageProcess = function (content, pageNum) { return __awaiter(void 0, void 0, void 0, function () {
+    var newPassage;
+    return __generator(this, function (_a) {
+        try {
+            newPassage = {
+                isbn: '9788937833434',
+                content: content,
+                pageNum: pageNum,
+            };
+            createPassage(newPassage);
+        }
+        catch (error) {
+            return [2 /*return*/, showError(error)];
+        }
+        return [2 /*return*/];
+    });
+}); };
+export var deletedPassageProcess = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var response;
+    return __generator(this, function (_a) {
+        try {
+            response = getDeletedPassages();
+            showAlert('삭제되었습니다. 이전 페이지로 이동합니다.');
+            window.history.back();
+        }
+        catch (error) {
+            return [2 /*return*/, showError(error)];
+        }
+        return [2 /*return*/];
+    });
+}); };
+export var restorePassageProcess = function (passageId) { return __awaiter(void 0, void 0, void 0, function () {
+    var response;
+    return __generator(this, function (_a) {
+        try {
+            response = restorePassage(passageId);
+            showAlert('복구되었습니다. 메인 페이지로 이동합니다.');
+            window.location.href = "../../html/book/index.html";
+        }
+        catch (error) {
+            return [2 /*return*/, showError(error)];
+        }
+        return [2 /*return*/];
+    });
+}); };
 //# sourceMappingURL=PassageForm.js.map
