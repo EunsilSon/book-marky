@@ -21,3 +21,10 @@ if (getButtonElement('move-to-login')) {
     const loginButton = getButtonElement('move-to-login');
     loginButton.addEventListener('click', moveToLogin);
 }
+
+if (getButtonElement('back')) {
+    const backBtn = getButtonElement('back');
+    backBtn.addEventListener('click', () => {
+        window.history.back();
+    })
+}

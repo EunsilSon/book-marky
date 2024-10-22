@@ -37,6 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import { getAllBooks } from '../services/bookService.js';
 import { getNickname } from '../services/authService.js';
 import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
+import { getButtonElement } from '../utils/domUtils.js';
+var createPassageBtn = getButtonElement('create-passage');
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
     var nicknameResponse, booksResponse;
     return __generator(this, function (_a) {
@@ -53,4 +55,9 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(voi
         }
     });
 }); });
+var moveToCreatePassage = function (event) {
+    event.preventDefault();
+    window.location.href = '../book/create-passage.html';
+};
+createPassageBtn.addEventListener('click', moveToCreatePassage);
 //# sourceMappingURL=BookForm.js.map
