@@ -105,7 +105,7 @@ public class BookRecordService {
         filterManager.disableFilter("deletedBookRecordFilter");
 
         return bookList.stream()
-                .map(book -> new BookSimpleDTO(book.getId(), book.getTitle()))
+                .map(book -> new BookSimpleDTO(book.getIsbn(), book.getTitle()))
                 .collect(Collectors.toList());
     }
 
