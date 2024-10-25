@@ -6,6 +6,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 public class BookSimpleDTO {
-    public Long id;
+    public String isbn;
     public String title;
 }
