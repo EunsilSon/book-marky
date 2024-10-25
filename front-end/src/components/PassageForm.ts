@@ -51,13 +51,10 @@ export const deletePassageProcess = async (passageId: string) => {
     }
 }
 
-export const createPassageProcess = async (content: string, pageNum: string) => {
+export const createPassageProcess = async (isbn: string, content: string, pageNum: string) => {
     try {
-        // 책 선택
-
-        // api 호출
         const newPassage = {
-            isbn: '9788937833434',
+            isbn,
             content,
             pageNum,
         };

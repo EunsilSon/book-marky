@@ -22,3 +22,21 @@ export const getBookDetail = async (id: string) => {
         return error.response;
     }
 }
+
+export const getSavedBooks = async () => {
+    try {
+        const response = await instance.get(`books/titles`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const searchBooksByTitle = async (title: string, page: number) => {
+    try {
+        const response = await instance.get(`books?title=${title}&page=${page}`);
+        return response;
+    } catch (error) {
+        error.response;
+    }
+}

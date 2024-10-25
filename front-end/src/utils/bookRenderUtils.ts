@@ -1,4 +1,5 @@
 import { getElementById } from './domUtils.js';
+import { searchBooksProcess } from '../components/SearchBookForm.js';
 
 export const renderNickname = (elementId: string, nickname: string) => {
     const element = getElementById(elementId);
@@ -94,3 +95,96 @@ export const renderBookDetail = (book: Book) => {
     bookDiv.appendChild(linkElement);
     container.appendChild(bookDiv);
 }
+
+export const renderSearchBooks = (title: string, books: Book[]) => {
+    const titleDiv = document.getElementById('search-title-div');
+    
+    if (titleDiv.children.length == 0) { // 페이지의 제목은 한 번만 출력
+        const titleH = document.createElement('h1');
+        titleH.innerText = title;
+        const noticeMessage = document.createElement('p');
+        noticeMessage.innerText = '연관도가 높은 순으로 조회되며, 선택한 책은 자동 등록됩니다.';
+
+        titleDiv.appendChild(titleH);
+        titleDiv.appendChild(noticeMessage);
+    }
+
+    const resultDiv = document.getElementById('search-result-div');
+
+    books.forEach((book) => {
+        const bookDiv = document.createElement('div');
+        bookDiv.className = 'book-item';
+
+        const img = document.createElement('img');
+        img.src = book.image;
+        img.alt = book.title;
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => {
+            window.open(book.link, '_blank'); // 이미지 클릭 시 link로 이동
+        });
+
+        const title = document.createElement('p');
+        title.innerText = book.title;
+
+        const authorDiv = document.createElement('div');
+        const authorLabel = document.createElement('label');
+        authorLabel.innerText = '저자';
+        const authorP = document.createElement('p');
+        authorP.innerText = book.author;
+
+        authorDiv.appendChild(authorLabel);
+        authorDiv.appendChild(authorP);
+
+        const publisherDiv = document.createElement('div');
+        const publisherLabel = document.createElement('label');
+        publisherLabel.innerText = '출판';
+        const publisherP = document.createElement('p');
+        publisherP.innerText = book.publisher;
+
+        publisherDiv.appendChild(publisherLabel);
+        publisherDiv.appendChild(publisherP);
+
+        const checkboxLabel = document.createElement('label');
+        checkboxLabel.innerText = 'Select';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkboxLabel.appendChild(checkbox);
+
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                const confirm = window.confirm("책을 선택했습니다. 이전 페이지로 이동하시겠습니까?");
+                if (confirm) {
+                    localStorage.setItem('title', book.title);
+                    localStorage.setItem('isbn', book.isbn);
+                    window.history.back();
+                } else {
+                    localStorage.removeItem('title');
+                    localStorage.removeItem('isbn');
+                }
+            }
+        });
+
+        bookDiv.appendChild(img);
+        bookDiv.appendChild(title);
+        bookDiv.appendChild(authorDiv);
+        bookDiv.appendChild(publisherDiv);
+        bookDiv.appendChild(checkboxLabel);
+
+        resultDiv.appendChild(bookDiv);
+
+    });
+
+    // 더보기 버튼
+    let pageBtn = document.getElementById('page-btn');
+    if (!pageBtn) {
+        pageBtn = document.createElement('button');
+        pageBtn.id = 'page-btn';
+        pageBtn.innerText = '더보기';
+
+        pageBtn.addEventListener('click', async () => {
+            renderSearchBooks(title, await searchBooksProcess(title));
+        });
+    }
+
+    resultDiv.appendChild(pageBtn);
+};

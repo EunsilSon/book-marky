@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(voi
         switch (_a.label) {
             case 0:
                 currentPath = window.location.pathname;
-                if (!currentPath.endsWith('passage-list.html')) return [3 /*break*/, 3];
+                if (!currentPath.endsWith('all.html')) return [3 /*break*/, 3];
                 bookId = new URLSearchParams(window.location.search).get('id');
                 return [4 /*yield*/, getBookDetail(bookId)];
             case 1:
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(voi
                 renderPassages(passagesResponse.data);
                 _a.label = 3;
             case 3:
-                if (!(currentPath.endsWith('passage-detail.html') || currentPath.endsWith('update-passage.html'))) return [3 /*break*/, 5];
+                if (!(currentPath.endsWith('detail.html') || currentPath.endsWith('update.html'))) return [3 /*break*/, 5];
                 passageId = new URLSearchParams(window.location.search).get('id');
                 return [4 /*yield*/, getPassageDetail(passageId)];
             case 4:
@@ -66,10 +66,10 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(voi
                 renderPassageDetail(passageResponse.data, false);
                 _a.label = 5;
             case 5:
-                if (currentPath.endsWith('create-passage.html')) {
+                if (currentPath.endsWith('create.html')) {
                     renderPassageForm();
                 }
-                if (!currentPath.endsWith('deleted-passage.html')) return [3 /*break*/, 7];
+                if (!currentPath.endsWith('deleted.html')) return [3 /*break*/, 7];
                 return [4 /*yield*/, getDeletedPassages()];
             case 6:
                 deletedPassages = _a.sent();
@@ -101,12 +101,12 @@ export var deletePassageProcess = function (passageId) { return __awaiter(void 0
         return [2 /*return*/];
     });
 }); };
-export var createPassageProcess = function (content, pageNum) { return __awaiter(void 0, void 0, void 0, function () {
+export var createPassageProcess = function (isbn, content, pageNum) { return __awaiter(void 0, void 0, void 0, function () {
     var newPassage;
     return __generator(this, function (_a) {
         try {
             newPassage = {
-                isbn: '9788937833434',
+                isbn: isbn,
                 content: content,
                 pageNum: pageNum,
             };

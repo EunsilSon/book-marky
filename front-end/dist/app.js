@@ -20,6 +20,8 @@ if (getButtonElement('move-to-login')) {
 if (getButtonElement('back')) {
     var backBtn = getButtonElement('back');
     backBtn.addEventListener('click', function () {
+        localStorage.removeItem('title');
+        localStorage.removeItem('isbn');
         window.history.back();
     });
 }

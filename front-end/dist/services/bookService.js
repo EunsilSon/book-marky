@@ -72,4 +72,39 @@ export var getBookDetail = function (id) { return __awaiter(void 0, void 0, void
         }
     });
 }); };
+export var getSavedBooks = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("books/titles")];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_3 = _a.sent();
+                return [2 /*return*/, error_3.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var searchBooksByTitle = function (title, page) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("books?title=".concat(title, "&page=").concat(page))];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_4 = _a.sent();
+                error_4.response;
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
 //# sourceMappingURL=bookService.js.map

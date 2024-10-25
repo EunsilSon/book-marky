@@ -25,6 +25,8 @@ if (getButtonElement('move-to-login')) {
 if (getButtonElement('back')) {
     const backBtn = getButtonElement('back');
     backBtn.addEventListener('click', () => {
+        localStorage.removeItem('title');
+        localStorage.removeItem('isbn');
         window.history.back();
     })
 }

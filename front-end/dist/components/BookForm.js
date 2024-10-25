@@ -58,11 +58,11 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(voi
 }); });
 var moveToCreatePassage = function (event) {
     event.preventDefault();
-    window.location.href = '../book/create-passage.html';
+    window.location.href = '../passage/create.html';
 };
 var moveToDeletedPassage = function (event) {
     event.preventDefault();
-    window.location.href = '../book/deleted-passage.html';
+    window.location.href = '../passage/deleted.html';
 };
 createPassageBtn.addEventListener('click', moveToCreatePassage);
 deletedPassageBtn.addEventListener('click', moveToDeletedPassage);

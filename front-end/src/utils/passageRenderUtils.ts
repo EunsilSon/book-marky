@@ -1,5 +1,6 @@
 import { getElementById, showAlert } from "./domUtils.js";
 import { updatePassageProcess, deletePassageProcess, createPassageProcess, restorePassageProcess } from "../components/PassageForm.js";
+import { getSavedBooks } from '../services/bookService.js';
 
 export const renderPassages = (passages: Passage[]) => {
     const container = getElementById('passages-container');
@@ -108,37 +109,127 @@ export const renderPassageForm = () => {
     const container = document.getElementById('passage-creation-container');
     container.innerHTML = '';
 
-    const pageNumLabel = document.createElement('label');
-    pageNumLabel.innerText = 'page:';
-    const pageNumTextarea = document.createElement('textarea');
-    pageNumTextarea.placeholder = 'Write Here';
-    pageNumTextarea.rows = 1;
-    pageNumTextarea.style.resize = 'none';
+    // 책 제목
+    const bookTitleDiv = document.createElement('div');
+    const bookTitleLabel = document.createElement('label');
+    bookTitleLabel.innerText = '책 제목';
+    const bookTitleInput = document.createElement('input');
+    bookTitleInput.id = 'book-title';
 
-    const contentLabel = document.createElement('label');
-    contentLabel.innerText = 'content:';
+    const selectedTitle = localStorage.getItem('title'); // 책 검색을 통해 선택한 책의 제목 출력
+    if (selectedTitle) {
+        console.log(selectedTitle);
+        bookTitleInput.value = selectedTitle;
+        //localStorage.removeItem('title');
+    }
+
+    bookTitleDiv.appendChild(bookTitleLabel);
+    bookTitleDiv.appendChild(bookTitleInput);
+
+    // 이미 저장된 책 버튼
+    const getBookDiv = document.createElement('div');
+    const getBookBtn = document.createElement('button');
+    getBookBtn.innerText = '저장된 책 보기';
+    getBookBtn.addEventListener('click', async () => {
+        await renderOptions();
+    });
+    getBookDiv.appendChild(getBookBtn);
+
+    // 찾기 버튼
+    const searchBookDiv = document.createElement('div');
+    const searchBookBtn = document.createElement('button');
+    searchBookBtn.innerText = '찾기';
+    searchBookBtn.addEventListener('click', () => {
+        const title = bookTitleInput.value;
+        if (title) {
+            window.location.href = `../book/search.html?title=${bookTitleInput.value}`;
+        } else {
+            showAlert('검색 할 책 제목을 입력하세요.');
+        }
+    });
+    searchBookDiv.appendChild(searchBookBtn);
+
+    // 구절 내용
+    const contentDiv = document.createElement('div');
     const contentTextarea = document.createElement('textarea');
-    contentTextarea.placeholder = 'Write Here';
+    contentTextarea.placeholder = '구절 내용을 입력하세요.';
     contentTextarea.rows = 4;
     contentTextarea.style.resize = 'none';
+    contentDiv.appendChild(contentTextarea);
 
-    const editContainer = document.createElement('div');
+    // 쪽수
+    const pageDiv = document.createElement('div');
+    const pageNumInput = document.createElement('input');
+    pageNumInput.placeholder = '쪽수를 입력하세요';
+    pageDiv.appendChild(pageNumInput);
+
+    // 저장 버튼
+    const saveDiv = document.createElement('div');
     const saveButton = document.createElement('button');
     saveButton.innerText = '저장';
-
     saveButton.addEventListener('click', () => {
+        const isbn = localStorage.getItem('isbn');
         const content = contentTextarea.value;
-        const pageNum = pageNumTextarea.value;
+        const pageNum = pageNumInput.value;
 
-        createPassageProcess(content, pageNum);
+        localStorage.removeItem('isbn');
+
+        createPassageProcess(isbn, content, pageNum);
+
+        showAlert('생성이 완료되었습니다. 메인 페이지로 이동합니다.');
+        window.location.href = `../book/index.html`;
     });
+    saveDiv.appendChild(saveButton);
 
-    editContainer.appendChild(saveButton);
-    container.appendChild(pageNumLabel);
-    container.appendChild(pageNumTextarea);
-    container.appendChild(contentLabel);
-    container.appendChild(contentTextarea);
-    container.appendChild(editContainer);
+    container.appendChild(bookTitleDiv);
+    container.appendChild(getBookDiv);
+    container.appendChild(searchBookDiv);
+    container.appendChild(contentDiv);
+    container.appendChild(pageDiv);
+    container.appendChild(saveDiv);
+
+    // 옵션 렌더링 함수
+    const renderOptions = async () => {
+        try {
+            const response = await getSavedBooks();
+            console.log(response);
+            const bookTitles = response.data;
+
+            const existingSelect = document.getElementById('book-title-options');
+            if (existingSelect) {
+                existingSelect.remove();
+            }
+
+            const selectElement = document.createElement('select');
+            selectElement.id = 'book-title-options';
+            selectElement.innerHTML = '<option value="">책을 선택하세요</option>';
+
+            bookTitles.forEach((item: { isbn: string; title: string; }) => {
+                const option = document.createElement('option');
+                option.value = item.isbn;
+                option.innerText = item.title;
+                selectElement.appendChild(option);
+            });
+
+            getBookDiv.appendChild(selectElement);
+
+            selectElement.addEventListener('change', (event) => {
+                const target = event.target as HTMLSelectElement; // 타입 단언
+                const selectedOption = target.options[target.selectedIndex];
+
+                const selectedISBN = selectedOption.value;
+                const selectedTitle = selectedOption.innerText;
+
+                if (selectedTitle) {
+                    bookTitleInput.value = selectedTitle;
+                    selectElement.style.display = 'none';
+                    localStorage.setItem('isbn', selectedISBN);
+                }
+            });
+        } catch (error) {
+            console.error('데이터를 가져오는 중 오류 발생:', error);
+        }
+    };
 };
 
 export const renderDeletedPassages = (passages: DeletedPassage[]) => {
@@ -174,12 +265,9 @@ export const renderDeletedPassages = (passages: DeletedPassage[]) => {
             }
         });
 
-        const hr = document.createElement('hr');
-
         itemDiv.appendChild(bookDiv);
         itemDiv.appendChild(contentDiv);
         itemDiv.appendChild(restoreDiv);
-        itemDiv.appendChild(hr);
         container.appendChild(itemDiv);
     });
 };
