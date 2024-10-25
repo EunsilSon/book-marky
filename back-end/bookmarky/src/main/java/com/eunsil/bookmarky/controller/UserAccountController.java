@@ -1,17 +1,13 @@
 package com.eunsil.bookmarky.controller;
 
-import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
-import com.eunsil.bookmarky.domain.dto.PasswordDTO;
 import com.eunsil.bookmarky.service.user.UserAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,22 +19,21 @@ public class UserAccountController {
      * 비밀번호 변경 메일 요청
      */
     @GetMapping("/user/mail/{username}")
-    public ResponseEntity<PasswordDTO> sendResetEmail(@PathVariable String username) {
-        PasswordDTO passwordDTO = userAccountService.sendResetEmailWithToken(username);
-        if (passwordDTO == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<String> sendResetEmail(@PathVariable String username) {
+        if (userAccountService.sendResetEmailWithToken(username)) {
+            return ResponseEntity.status(HttpStatus.OK).body("ok");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(passwordDTO);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 
     /**
      * 비밀번호 변경
      */
-    @PutMapping("/user")
+    @PostMapping("/user")
     public ResponseEntity<String> resetPw(@Valid @RequestBody PasswordVO passwordVO) {
         if (userAccountService.resetPwWithValidateToken(passwordVO)) {
-            return ResponseEntity.status(HttpStatus.OK).body("Ok");
+            return ResponseEntity.status(HttpStatus.OK).body("ok");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token validation failed");
     }
@@ -51,7 +46,7 @@ public class UserAccountController {
     @PostMapping("/user/question")
     public ResponseEntity<String> checkSecureQuestion(@Valid @RequestBody SecureQuestionVO secureQuestionVO) {
         if (userAccountService.checkSecureQuestion(secureQuestionVO)) {
-            return ResponseEntity.status(HttpStatus.OK).body("Ok");
+            return ResponseEntity.status(HttpStatus.OK).body("ok");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not matched secure answer");
     }

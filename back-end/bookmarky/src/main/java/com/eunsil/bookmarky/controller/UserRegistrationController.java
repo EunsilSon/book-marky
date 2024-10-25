@@ -15,7 +15,7 @@ public class UserRegistrationController {
     private final UserRegistrationService userRegistrationService;
 
 
-    @PostMapping("/user")
+    @PostMapping("/registration")
     public boolean registerUser(@Valid @RequestBody UserVO userVO) {
         return userRegistrationService.registerUser(userVO);
     }

@@ -46,10 +46,11 @@ public class SecurityConfig {
                         .configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/login"
-                                , "/user"
+                                , "/registration"
                                 , "/registration/username/{username}"
                                 , "/registration/nickname/{nickname}"
                                 , "/registration/telephone/{telephone}"
+                                , "/user"
                                 , "/user/mail/{username}"
                                 , "/user/question/{username}"
                                 , "/user/question"
@@ -65,7 +66,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
