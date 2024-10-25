@@ -1,3 +1,7 @@
+export var getElementById = function (elementId) {
+    var element = document.getElementById(elementId);
+    return element;
+};
 export var getButtonElement = function (buttonId) {
     var buttonElement = document.getElementById(buttonId);
     return buttonElement;

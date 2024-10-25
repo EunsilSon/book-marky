@@ -1,5 +1,10 @@
 declare var axios: any;
 
+export const getElementById = (elementId: string): HTMLElement => {
+    const element = document.getElementById(elementId) as HTMLElement | null;
+    return element;
+};
+
 export const getButtonElement = (buttonId: string): HTMLButtonElement => {
     const buttonElement = document.getElementById(buttonId) as HTMLButtonElement | null;
     return buttonElement;

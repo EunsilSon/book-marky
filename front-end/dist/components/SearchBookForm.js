@@ -34,57 +34,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { login } from '../services/authService.js';
-import { getButtonElement, getFormElement, getInputElement, getInputValue, showAlert } from '../utils/domUtils.js';
-var loginForm = getFormElement('login-form');
-var joinButton = getButtonElement('move-to-join');
-var pwButton = getButtonElement('move-to-pw');
-var loginFormProcess = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var usernameValue, passwordValue, response, error_1;
+import { searchBooksByTitle } from '../services/bookService.js';
+import { renderSearchBooks } from '../utils/bookRenderUtils.js';
+var page = 0;
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
+    var urlParams, title, _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                urlParams = new URLSearchParams(window.location.search);
+                title = urlParams.get('title');
+                _a = renderSearchBooks;
+                _b = [title];
+                return [4 /*yield*/, searchBooksProcess(title)];
+            case 1:
+                _a.apply(void 0, _b.concat([_c.sent()]));
+                return [2 /*return*/];
+        }
+    });
+}); });
+export var searchBooksProcess = function (title) { return __awaiter(void 0, void 0, void 0, function () {
+    var booksResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                event.preventDefault();
-                usernameValue = getInputValue('username');
-                passwordValue = getInputValue('password');
-                _a.label = 1;
+                page += 1;
+                return [4 /*yield*/, searchBooksByTitle(title, page)];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, login({
-                        username: usernameValue,
-                        password: passwordValue,
-                    })];
-            case 2:
-                response = _a.sent();
-                console.log('Login Result:', response);
-                if (response.status == 200) {
-                    localStorage.setItem('username', response.data);
-                    showAlert('로그인에 성공했습니다. 메인 페이지로 이동합니다.');
-                    window.location.href = '/front-end/html/book/index.html';
-                }
-                if (response.status == 401) {
-                    getInputElement('username').value = '';
-                    getInputElement('password').value = '';
-                    showAlert('아이디 또는 비밀번호가 맞지 않습니다. 다시 입력하세요.');
-                }
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                console.error('Login Error:', error_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                booksResponse = _a.sent();
+                return [2 /*return*/, booksResponse.data];
         }
     });
 }); };
-var moveToJoin = function (event) {
-    event.preventDefault();
-    window.location.href = '/front-end/html/auth/join.html';
-};
-var moveToPw = function (event) {
-    event.preventDefault();
-    window.location.href = '/front-end/html/auth/request-pw.html';
-};
-loginForm.addEventListener('submit', loginFormProcess);
-joinButton.addEventListener('click', moveToJoin);
-pwButton.addEventListener('click', moveToPw);
-//# sourceMappingURL=LoginForm.js.map
+//# sourceMappingURL=SearchBookForm.js.map

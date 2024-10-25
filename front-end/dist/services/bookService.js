@@ -34,7 +34,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { handleError } from '../utils/domUtils.js';
 var instance = axios.create({
     baseURL: "http://127.0.0.1:8000/",
     withCredentials: true,
@@ -48,17 +47,14 @@ export var getAllBooks = function (order, page) { return __awaiter(void 0, void 
                 return [4 /*yield*/, instance.get("books/saved?order=".concat(order, "&page=").concat(page))];
             case 1:
                 response = _a.sent();
-                console.log(response);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, response.data];
             case 2:
                 error_1 = _a.sent();
-                handleError(error_1);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, error_1.response];
             case 3: return [2 /*return*/];
         }
     });
 }); };
-// TODO: 책 상세정보 조회
 export var getBookDetail = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_2;
     return __generator(this, function (_a) {
@@ -68,11 +64,44 @@ export var getBookDetail = function (id) { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, instance.get("book/".concat(id))];
             case 1:
                 response = _a.sent();
-                console.log(response);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, response.data];
             case 2:
                 error_2 = _a.sent();
-                handleError(error_2);
+                return [2 /*return*/, error_2.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var getSavedBooks = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("books/titles")];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_3 = _a.sent();
+                return [2 /*return*/, error_3.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var searchBooksByTitle = function (title, page) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.get("books?title=".concat(title, "&page=").concat(page))];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_4 = _a.sent();
+                error_4.response;
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }

@@ -35,10 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { requestPasswordMail, getSecureQuestion, checkSecureQuestion, updatePassword } from '../services/authService.js';
-import { getButtonElement, getInputValue } from '../utils/domUtils.js';
+import { getButtonElement, getInputValue, getInputElement, showAlert } from '../utils/domUtils.js';
+import { renderSecureQuestion } from '../utils/authRenderUtils.js';
 var pwMailButton = getButtonElement('pw-mail-submit');
 var usernameBtn = getButtonElement('update-pw-username');
-var questionBtn = getButtonElement('update-pw-question');
+var answerBtn = getButtonElement('update-pw-answer');
 var updateBtn = getButtonElement('update-pw');
 if (pwMailButton) {
     pwMailButton.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
@@ -53,12 +54,12 @@ if (pwMailButton) {
                     return [4 /*yield*/, requestPasswordMail(getInputValue('username'))];
                 case 2:
                     response = _a.sent();
-                    alert('메일함을 확인하세요.');
                     if (response.status == 200) {
                         console.log(response.data);
+                        showAlert('메일함을 확인하세요.');
                     }
                     else {
-                        alert('존재하지 않는 이메일입니다. 다시 입력하세요.');
+                        showAlert('존재하지 않는 이메일입니다. 다시 입력하세요.');
                     }
                     return [3 /*break*/, 4];
                 case 3:
@@ -84,10 +85,13 @@ if (usernameBtn) {
                 case 2:
                     response = _a.sent();
                     if (response.status == 200) {
-                        console.log(response.data);
+                        showAlert('보안 질문의 답변을 입력하세요.');
+                        renderSecureQuestion('title-container', response.data);
+                        getInputElement('answer').disabled = false;
+                        answerBtn.disabled = false;
                     }
                     else {
-                        alert('존재하지 않는 이메일입니다. 다시 입력하세요.');
+                        showAlert('존재하지 않는 이메일입니다. 다시 입력하세요.');
                     }
                     return [3 /*break*/, 4];
                 case 3:
@@ -99,8 +103,8 @@ if (usernameBtn) {
         });
     }); });
 }
-if (questionBtn) {
-    questionBtn.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
+if (answerBtn) {
+    answerBtn.addEventListener('click', function (event) { return __awaiter(void 0, void 0, void 0, function () {
         var answerValue, response, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -117,10 +121,12 @@ if (questionBtn) {
                 case 2:
                     response = _a.sent();
                     if (response.status == 200) {
-                        console.log(response.data);
+                        getInputElement('password').disabled = false;
+                        getButtonElement('update-pw').disabled = false;
+                        showAlert('새 비밀번호를 입력하세요.');
                     }
                     else {
-                        alert('보안 질문의 답변이 일치하지 않습니다. 다시 입력하세요.');
+                        showAlert('보안 질문의 답변이 일치하지 않습니다. 다시 입력하세요.');
                         console.log(response.data);
                     }
                     return [3 /*break*/, 4];
@@ -152,11 +158,11 @@ if (updateBtn) {
                 case 2:
                     response = _a.sent();
                     if (response.status == 200) {
-                        alert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
+                        showAlert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
                         window.location.href = '/front-end/html/auth/index.html';
                     }
                     else {
-                        alert('토큰이 만료되었습니다.');
+                        showAlert('토큰이 만료되었습니다.');
                         console.log(response.data);
                     }
                     return [3 /*break*/, 4];

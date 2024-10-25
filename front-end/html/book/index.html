@@ -11,14 +11,13 @@
 </head>
 
 <body>
-    <h1>님의 Bookmarky</h1>
-    <label>정렬 기준: </label>
-    <input type="checkbox" id="id" name="order" checked/>
-    <label for="order">생성일</label>
-    <input type="checkbox" id="title" name="order" />
-    <label for="order">제목</label>
-    <br>
+    <div id="title-container">
+        <span id="nickname"></span>
+    </div>
     <button type="click" id="logout">로그아웃</button>
+    <div id="book-list-container"></div>
+    <button type="click" id="create-passage">구절 생성</button>
+    <button type="click" id="deleted-passage">최근 삭제된 구절</button>
 </body>
 
 </html>

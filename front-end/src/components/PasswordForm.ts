@@ -1,10 +1,11 @@
 import { requestPasswordMail, getSecureQuestion, checkSecureQuestion, updatePassword } from '../services/authService.js';
-import { getButtonElement, getInputValue, showError, showAlert } from '../utils/domUtils.js';
+import { getButtonElement, getInputValue, getInputElement, showAlert } from '../utils/domUtils.js';
+import { renderSecureQuestion } from '../utils/authRenderUtils.js';
 
 
 const pwMailButton = getButtonElement('pw-mail-submit');
 const usernameBtn = getButtonElement('update-pw-username');
-const questionBtn = getButtonElement('update-pw-question');
+const answerBtn = getButtonElement('update-pw-answer');
 const updateBtn = getButtonElement('update-pw');
 
 if (pwMailButton) {
@@ -13,12 +14,12 @@ if (pwMailButton) {
 
         try {
             const response = await requestPasswordMail(getInputValue('username'));
-            alert('메일함을 확인하세요.');
 
             if (response.status == 200) {
                 console.log(response.data);
+                showAlert('메일함을 확인하세요.');
             } else {
-                alert('존재하지 않는 이메일입니다. 다시 입력하세요.');
+                showAlert('존재하지 않는 이메일입니다. 다시 입력하세요.');
             }
 
         } catch (error) {
@@ -36,9 +37,13 @@ if (usernameBtn) {
             const response = await getSecureQuestion(getInputValue('username'));
 
             if (response.status == 200) {
-                console.log(response.data);
+                showAlert('보안 질문의 답변을 입력하세요.');
+                renderSecureQuestion('title-container', response.data);
+
+                getInputElement('answer').disabled = false;
+                answerBtn.disabled = false;
             } else {
-                alert('존재하지 않는 이메일입니다. 다시 입력하세요.');
+                showAlert('존재하지 않는 이메일입니다. 다시 입력하세요.');
             }
 
         } catch (error) {
@@ -48,8 +53,8 @@ if (usernameBtn) {
 }
 
 
-if (questionBtn) {
-    questionBtn.addEventListener('click', async (event: Event) => {
+if (answerBtn) {
+    answerBtn.addEventListener('click', async (event: Event) => {
         event.preventDefault();
 
         const answerValue = getInputValue('answer');
@@ -61,9 +66,11 @@ if (questionBtn) {
             });
 
             if (response.status == 200) {
-                console.log(response.data);
+                getInputElement('password').disabled = false;
+                getButtonElement('update-pw').disabled = false;
+                showAlert('새 비밀번호를 입력하세요.');
             } else {
-                alert('보안 질문의 답변이 일치하지 않습니다. 다시 입력하세요.');
+                showAlert('보안 질문의 답변이 일치하지 않습니다. 다시 입력하세요.');
                 console.log(response.data);
             }
 
@@ -87,13 +94,13 @@ if (updateBtn) {
             });
 
             if (response.status == 200) {
-                alert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
+                showAlert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
                 window.location.href = '/front-end/html/auth/index.html';
             } else {
-                alert('토큰이 만료되었습니다.');
+                showAlert('토큰이 만료되었습니다.');
                 console.log(response.data);
             }
-            
+
         } catch (error) {
             console.error('Update Password Error:', error);
         }
