@@ -16,12 +16,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 const moveToCreatePassage = (event: Event) => {
     event.preventDefault();
-    window.location.href = '../book/create-passage.html';
+    window.location.href = '../passage/create.html';
 }
 
 const moveToDeletedPassage = (event: Event) => {
     event.preventDefault();
-    window.location.href = '../book/deleted-passage.html';
+    window.location.href = '../passage/deleted.html';
 }
 
 createPassageBtn.addEventListener('click', moveToCreatePassage);

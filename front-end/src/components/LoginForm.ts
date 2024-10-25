@@ -42,7 +42,7 @@ const moveToJoin = (event: Event) => {
 
 const moveToPw = (event: Event) => {
     event.preventDefault();
-    window.location.href = '/front-end/html/auth/request-password.html';
+    window.location.href = '/front-end/html/auth/request-pw.html';
 }
 
 loginForm.addEventListener('submit', loginFormProcess);

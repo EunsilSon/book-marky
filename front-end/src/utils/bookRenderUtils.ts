@@ -20,7 +20,7 @@ export const renderBooks = (books: Book[]) => {
         imgElement.id = book.id;
 
         bookDiv.addEventListener('click', () => {
-            window.location.href = `../book/passage-list.html?id=${book.id}`;
+            window.location.href = `../passage/all.html?id=${book.id}`;
         });
 
         bookDiv.appendChild(imgElement);

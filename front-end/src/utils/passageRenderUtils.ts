@@ -7,7 +7,7 @@ export const renderPassages = (passages: Passage[]) => {
 
     passages.forEach(passage => {
         const link = document.createElement('a');
-        link.href = `../book/passage-detail.html?id=${passage.id}`;
+        link.href = `../passage/detail.html?id=${passage.id}`;
         link.style.textDecoration = 'none';
         link.style.cursor = 'pointer';
         link.style.color = 'inherit';

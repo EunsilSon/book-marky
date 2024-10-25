@@ -8,7 +8,7 @@ import { showAlert } from "../utils/domUtils.js";
 document.addEventListener('DOMContentLoaded', async () => {
     const currentPath = window.location.pathname;
 
-    if (currentPath.endsWith('passage-list.html')) {
+    if (currentPath.endsWith('all.html')) {
         const bookId = new URLSearchParams(window.location.search).get('id');
 
         const bookResponse = await getBookDetail(bookId);
@@ -18,17 +18,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderPassages(passagesResponse.data);
     }
 
-    if (currentPath.endsWith('passage-detail.html') || currentPath.endsWith('update-passage.html')) {
+    if (currentPath.endsWith('detail.html') || currentPath.endsWith('update.html')) {
         const passageId = new URLSearchParams(window.location.search).get('id');
         const passageResponse = await getPassageDetail(passageId);
         renderPassageDetail(passageResponse.data, false);
     }
 
-    if (currentPath.endsWith('create-passage.html')) {
+    if (currentPath.endsWith('create.html')) {
         renderPassageForm();
     }
 
-    if (currentPath.endsWith('deleted-passage.html')) {
+    if (currentPath.endsWith('deleted.html')) {
         const deletedPassages = await getDeletedPassages();
         renderDeletedPassages(deletedPassages.data);
     }
