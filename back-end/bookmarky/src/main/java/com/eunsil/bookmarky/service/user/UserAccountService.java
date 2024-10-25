@@ -5,7 +5,6 @@ import com.eunsil.bookmarky.domain.entity.SecureAnswer;
 import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
-import com.eunsil.bookmarky.domain.dto.PasswordDTO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.user.SecureAnswerRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
@@ -31,12 +30,12 @@ public class UserAccountService {
     /**
      * 비밀번호 변경을 위한 토큰 생성 후 변경 링크를 메일로 전달
      */
-    public PasswordDTO sendResetEmailWithToken(String username) {
+    public boolean sendResetEmailWithToken(String username) {
         if (userRepository.existsByUsername(username)) {
             String uuid = resetTokenService.generateToken(username); // 일회용 토큰 생성
-            return new PasswordDTO(username, mailService.generateEmail(username, uuid)); // 토큰을 포함한 메일 생성
+            return mailService.generateEmail(username, uuid); // 토큰을 포함한 메일 생성
         }
-        return null;
+        return false;
     }
 
 
@@ -49,7 +48,10 @@ public class UserAccountService {
             User user = userRepository.findByUsername(passwordVO.getUsername());
             user.setPassword(bCryptPasswordEncoder.encode(passwordVO.getPassword()));
             userRepository.save(user);
+
             resetTokenService.invalidateToken(passwordVO.getToken());
+
+            log.info("Reset password validated");
             return true;
         }
         return false;

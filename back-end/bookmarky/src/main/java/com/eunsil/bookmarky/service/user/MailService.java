@@ -16,22 +16,24 @@ import java.io.UnsupportedEncodingException;
 public class MailService {
 
     @Value("${spring.mail.username}")
-    private String fromEmail;
+    private String FROM_EMAIL;
     @Value("${spring.props.reset-password-url}")
-    private String resetPwUrl;
+    private String RESET_PASSWORD_URL;
 
     private final JavaMailSender mailSender;
 
 
-    public String generateEmail(String username, String uuid) {
+    public boolean generateEmail(String username, String uuid) {
+        String URL_PARAM = "?token=";
+
         String title = "[북마키] 비밀번호 재설정 링크입니다.";
         String content = "아래 링크에 접속하여 비밀번호를 재설정 해주세요.<br><br>"
-                + "<a href=\"" + resetPwUrl + "/" + uuid + "\"> "
-                + resetPwUrl + "/" + uuid + "</a>"
-                + "<br><br>해당 링크는 24시간 동안 유효하며, 1회 변경 가능합니다.<br>"; // 임시 주소
+                + "<a href=\"" + RESET_PASSWORD_URL + URL_PARAM + uuid + "\"> "
+                + RESET_PASSWORD_URL + URL_PARAM + uuid + "</a>"
+                + "<br><br>해당 링크는 24시간 동안 유효하며, 1회 변경 가능합니다.<br>";
 
         sendEmail(username, title, content);
-        return uuid;
+        return true;
     }
 
 
@@ -40,7 +42,7 @@ public class MailService {
 
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
-            helper.setFrom(new InternetAddress(fromEmail, "북마키"));
+            helper.setFrom(new InternetAddress(FROM_EMAIL, "북마키"));
             helper.setTo(username);
             helper.setSubject(title);
             helper.setText(content, true); // true=html
