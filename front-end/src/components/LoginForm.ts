@@ -1,5 +1,5 @@
 import { login } from '../services/authService.js';
-import { getButtonElement, getFormElement, getInputElement, getInputValue, showAlert, showError } from '../utils/domUtils.js';
+import { getButtonElement, getFormElement, getInputElement, getInputValue, showAlert } from '../utils/domUtils.js';
 
 const loginForm = getFormElement('login-form');
 const joinButton = getButtonElement('move-to-join');

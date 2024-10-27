@@ -1,8 +1,9 @@
 import { getAllBooks } from '../services/bookService.js';
-import { getNickname } from '../services/authService.js';
+import { logout, getNickname } from '../services/authService.js';
 import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
-import { getButtonElement } from '../utils/domUtils.js';
+import { getButtonElement, showAlert } from '../utils/domUtils.js';
 
+const logoutElement = getButtonElement('logout');
 const createPassageBtn = getButtonElement('create-passage');
 const deletedPassageBtn = getButtonElement('deleted-passage');
 
@@ -24,5 +25,20 @@ const moveToDeletedPassage = (event: Event) => {
     window.location.href = '../passage/deleted.html';
 }
 
+const logoutProcess = async (event: Event) => {
+    event.preventDefault();
+
+    const response = await logout();
+
+    if (response.status == 200) {
+        showAlert('로그아웃 되었습니다.');
+
+        localStorage.removeItem('username');
+        window.history.replaceState(null, '', '/front-end/html/auth/index.html');
+        window.location.href = '/front-end/html/auth/index.html';
+    }
+}
+
+logoutElement.addEventListener('click', logoutProcess);
 createPassageBtn.addEventListener('click', moveToCreatePassage);
 deletedPassageBtn.addEventListener('click', moveToDeletedPassage);

@@ -30,6 +30,15 @@ export const login = async (user: User): Promise<any> => {
     }
 }
 
+export const logout = async () => {
+    try {
+        const response = await instance.post(`logout`);
+        return response;
+    } catch(error) {
+        return error.response;
+    }
+}
+
 export const join = async (user: User) => {
     try {
         const response = await instance.post(`registration`, user);
