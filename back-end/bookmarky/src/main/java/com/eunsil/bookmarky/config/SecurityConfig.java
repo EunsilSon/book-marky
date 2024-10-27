@@ -2,6 +2,7 @@ package com.eunsil.bookmarky.config;
 
 import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationFailureHandler;
 import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationSuccessHandler;
+import com.eunsil.bookmarky.config.auth.handler.CustomLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,6 +47,7 @@ public class SecurityConfig {
                         .configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/login"
+                                , "/logout"
                                 , "/registration"
                                 , "/registration/username/{username}"
                                 , "/registration/nickname/{nickname}"
@@ -60,6 +62,13 @@ public class SecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler())
                         .failureHandler(customAuthenticationFailureHandler())
                         .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // 기본 제공 로그아웃 엔드포인트
+                        .deleteCookies("JSESSIONID")
+                        .invalidateHttpSession(true)
+                        .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                        .permitAll()
+                )
                 .build();
     }
 

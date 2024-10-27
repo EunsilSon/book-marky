@@ -3,6 +3,7 @@ package com.eunsil.bookmarky.controller;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.service.user.UserAccountService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -72,5 +73,6 @@ public class UserAccountController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(nickname);
     }
+
 
 }
