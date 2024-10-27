@@ -1,5 +1,5 @@
 # 북마키 (BookMarky)
-- 마지막 업데이트 일자는 **24.10.26**이며, 현재 Front-end 개발 진행 중입니다.  
+- 마지막 업데이트 일자는 **24.10.27**이며, 현재 Front-end 개발 진행 중입니다.  
 - 개발 완료 된 사항들은 `main` 브랜치에서 확인 가능합니다.
 
 <br>
@@ -51,7 +51,7 @@
 |  | JavaMailSender | 이메일 생성 및 전송 |
 |  | Redis | 토큰 발급 및 관리 |
 |  | MySQL |  |
-|  | TypeScript |  |
+|  | TypeScript | [[Web] TypeScript 이슈 모음](https://velog.io/@eunsilson/Web-TypeScript-%EC%9D%B4%EC%8A%88) |
 |  | Axios | API 통신 라이브러리  |
 
 <br>
@@ -76,7 +76,6 @@
 |  |  구절 상세 조회  |  |
 |  |  구절 목록 조회  |  |
 |  |  삭제된 구절 목록 조회  |  |
-
 <br>
 
 # API 명세
