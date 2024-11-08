@@ -18,6 +18,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        log.info(exception.getMessage());
+        log.warn("Login Failed: {} | Status: {}", request.getParameter("username"), response.getStatus());
     }
 }
