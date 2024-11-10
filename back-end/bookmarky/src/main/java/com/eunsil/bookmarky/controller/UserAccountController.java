@@ -1,11 +1,13 @@
 package com.eunsil.bookmarky.controller;
 
+import com.eunsil.bookmarky.domain.entity.SecureQuestion;
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.service.user.UserAccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +47,7 @@ public class UserAccountController {
      * :비밀번호 변경 시 토큰 탈취 방지를 위한 2차 검증
      */
     @PostMapping("/user/question")
-    public ResponseEntity<String> checkSecureQuestion(@Valid @RequestBody SecureQuestionVO secureQuestionVO) {
+    public ResponseEntity<String> checkSecureQuestion(@RequestBody SecureQuestionVO secureQuestionVO) {
         if (userAccountService.checkSecureQuestion(secureQuestionVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("ok");
         }

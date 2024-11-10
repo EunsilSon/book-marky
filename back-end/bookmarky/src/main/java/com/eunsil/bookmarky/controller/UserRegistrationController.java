@@ -16,8 +16,11 @@ public class UserRegistrationController {
 
 
     @PostMapping("/registration")
-    public boolean registerUser(@Valid @RequestBody UserVO userVO) {
-        return userRegistrationService.registerUser(userVO);
+    public ResponseEntity<String> registerUser(@Valid @RequestBody UserVO userVO) {
+        if (userRegistrationService.registerUser(userVO)) {
+            return ResponseEntity.status(HttpStatus.OK).body("User registered successfully");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create security question.");
     }
 
 

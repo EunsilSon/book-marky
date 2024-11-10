@@ -26,7 +26,7 @@ public class PassageController {
         if (passageService.createPassage(passageVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("Ok");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BOOK NOT FOUND");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found book");
     }
 
 
@@ -38,7 +38,7 @@ public class PassageController {
         if (passageService.update(passageUpdateVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("Ok");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passage Not Found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not Found Passage");
     }
 
 
@@ -50,7 +50,7 @@ public class PassageController {
         if (passageService.delete(id)) {
             return ResponseEntity.status(HttpStatus.OK).body("Ok");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passage Not Found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not Found Passage");
     }
 
 
