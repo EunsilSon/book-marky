@@ -11,6 +11,7 @@ import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -74,7 +75,8 @@ public class UserAccountService {
      * 특정 사용자의 보안 질문 조회
      */
     public String getSecureQuestion(String username) {
-        return userRepository.findByUsername(username).getSecureQuestion().getContent();
+        User user = userRepository.findByUsername(username);
+        return user.getSecureQuestion().getContent();
     }
 
 

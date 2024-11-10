@@ -5,6 +5,7 @@ import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.domain.vo.UserVO;
 import com.eunsil.bookmarky.repository.user.SecureQuestionRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
+import com.sun.jdi.request.DuplicateRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,19 +38,19 @@ public class UserRegistrationService {
     public boolean registerUser(UserVO userVO) {
 
         if (isDuplicateUsername(userVO.getUsername())) {
-            throw new RuntimeException("Username is already taken");
+            throw new DuplicateRequestException("Username is already exists.");
         }
 
         if (isDuplicateNickname(userVO.getNickname())) {
-            throw new RuntimeException("Nickname is already taken");
+            throw new DuplicateRequestException("Nickname is already exists.");
         }
 
         if (isDuplicateTelephone(userVO.getTelephone())) {
-            throw new RuntimeException("Telephone is already taken");
+            throw new DuplicateRequestException("Telephone is already exists.");
         }
 
         try {
-            // 유저 등록
+            // User 생성
             SecureQuestion secureQuestion = secureQuestionRepository.findById(userVO.getSecureQuestionId()).orElseThrow(null);
 
             User user = User.builder()
@@ -62,10 +63,10 @@ public class UserRegistrationService {
                     .build();
             userRepository.save(user);
 
-            // 보안 질문 등록 (실패 시 롤백)
+            // 보안 질문 생성
             return userAccountService.registerSecureQuestion(user, secureQuestion, userVO.getAnswerContent());
         } catch(Exception e) {
-            log.info("[{}] User registration has been rolled back.", userVO.getUsername());
+            log.warn("[{}] User registration has been rolled back.", userVO.getUsername());
             return false;
         }
     }

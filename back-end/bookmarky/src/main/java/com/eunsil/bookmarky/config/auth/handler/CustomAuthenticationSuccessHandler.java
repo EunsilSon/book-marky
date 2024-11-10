@@ -19,6 +19,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(authentication.getName());
-        log.info(authentication.getName());
+        log.info("Login Success: {}", authentication.getName());
     }
 }
