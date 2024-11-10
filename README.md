@@ -84,7 +84,7 @@
 <br>
 
 # API 명세
-<img width="90%" alt="api" src="https://github.com/user-attachments/assets/7abf7918-2ac3-4541-93fc-a77c2872355a">
+<img width="70%" alt="api" src="https://github.com/user-attachments/assets/a02ab04f-c35e-4b97-9418-78e5d084f446">
 
 <br>
 
