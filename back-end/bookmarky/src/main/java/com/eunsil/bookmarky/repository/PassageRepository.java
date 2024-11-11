@@ -1,6 +1,8 @@
 package com.eunsil.bookmarky.repository;
 
+import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.Passage;
+import com.eunsil.bookmarky.domain.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +12,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-
 
 @Repository
 public interface PassageRepository extends JpaRepository<Passage, Long> {
@@ -26,4 +27,6 @@ public interface PassageRepository extends JpaRepository<Passage, Long> {
     @Transactional
     @Query("DELETE FROM Passage p WHERE p.isDeleted = true AND p.deletedAt < :date")
     void deleteByIsDeletedTrueAndDeletedAtBefore(LocalDate date);
+
+    Long countByIsDeletedAndBookAndUser(Boolean isDeleted, Book book, User user);
 }

@@ -121,4 +121,12 @@ public class BookRecordService {
         log.info("삭제 30일 경과된 BookRecord 영구 삭제");
     }
 
+    /**
+     * 저장한 책 개수
+     */
+    public Long getCount() {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        return bookRecordRepository.countByIsDeletedAndUser(false, user);
+    }
+
 }
