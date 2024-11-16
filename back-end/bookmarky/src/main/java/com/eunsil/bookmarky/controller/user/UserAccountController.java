@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.controller;
+package com.eunsil.bookmarky.controller.user;
 
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.service.user.UserAccountService;

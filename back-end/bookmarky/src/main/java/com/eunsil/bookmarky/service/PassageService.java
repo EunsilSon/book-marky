@@ -53,7 +53,7 @@ public class PassageService {
     @Transactional
     public boolean createPassage(PassageVO passageVO) {
         try {
-            User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+            User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
             Book book;
 
             if (bookRepository.existsByIsbn(passageVO.getIsbn())) {
@@ -100,7 +100,7 @@ public class PassageService {
     }
 
     public List<PassageDTO> getPassages(Long bookId, String order, int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(order).descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
@@ -120,12 +120,12 @@ public class PassageService {
 
     public Long getCountByBookAndUser(Long bookId) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new NoSuchElementException("Book not found"));
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
         return passageRepository.countByIsDeletedAndBookAndUser(false, book, user);
     }
 
     public List<PassageDTO> getDeletedPassages(int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by("id").descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);

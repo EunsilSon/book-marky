@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserRegistrationService {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final SecureQuestionRepository secureQuestionRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final UserAccountService userAccountService;
+    private final SecureQuestionService secureQuestionService;
 
     public boolean isDuplicateUsername(String username) {
         return userRepository.existsByUsername(username);
@@ -64,7 +64,7 @@ public class UserRegistrationService {
             userRepository.save(user);
 
             // 보안 질문 생성
-            return userAccountService.registerSecureQuestion(user, secureQuestion, userVO.getAnswerContent());
+            return secureQuestionService.registerSecureQuestion(user, secureQuestion, userVO.getAnswerContent());
         } catch(Exception e) {
             log.warn("[{}] User registration has been rolled back.", userVO.getUsername());
             return false;
