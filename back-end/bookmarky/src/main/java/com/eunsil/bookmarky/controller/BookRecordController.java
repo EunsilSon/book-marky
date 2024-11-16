@@ -44,4 +44,9 @@ public class BookRecordController {
         return new ResponseEntity<>("Book Record is not existed", HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/book/count")
+    public ResponseEntity<Long> getCount() {
+        return new ResponseEntity<>(bookRecordService.getCount(), HttpStatus.OK);
+    }
+
 }

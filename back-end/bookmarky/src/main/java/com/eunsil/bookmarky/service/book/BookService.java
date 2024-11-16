@@ -1,5 +1,6 @@
 package com.eunsil.bookmarky.service.book;
 
+import com.eunsil.bookmarky.config.SecurityUtil;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.repository.BookRepository;
@@ -16,6 +17,7 @@ public class BookService {
     private final NaverOpenApiSearch naverOpenApiSearch;
     private final OpenApiResponseParser openApiResponseParser;
     private final BookRepository bookRepository;
+    private final SecurityUtil securityUtil;
 
     /**
      * Open Api 를 통해 제목으로 책 검색

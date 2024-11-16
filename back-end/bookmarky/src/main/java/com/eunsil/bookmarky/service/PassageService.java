@@ -53,7 +53,7 @@ public class PassageService {
     @Transactional
     public boolean createPassage(PassageVO passageVO) {
         try {
-            User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+            User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
             Book book;
 
             if (bookRepository.existsByIsbn(passageVO.getIsbn())) {
@@ -77,10 +77,6 @@ public class PassageService {
         }
     }
 
-
-    /**
-     * 구절 수정
-     */
     @Transactional
     public boolean update(PassageUpdateVO passageUpdateVO) {
         Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElseThrow(() -> new NoSuchElementException("Passage not found"));
@@ -90,10 +86,6 @@ public class PassageService {
         return true;
     }
 
-
-    /**
-     * 구절 상세 조회
-     */
     public PassageDTO getPassageDetails(Long id) {
         Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage not found"));
 
@@ -107,12 +99,8 @@ public class PassageService {
                 .build();
     }
 
-
-    /**
-     * 구절 목록 조회
-     */
     public List<PassageDTO> getPassages(Long bookId, String order, int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(order).descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
@@ -130,12 +118,14 @@ public class PassageService {
                 .collect(Collectors.toList());
     }
 
+    public Long getCountByBookAndUser(Long bookId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new NoSuchElementException("Book not found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        return passageRepository.countByIsDeletedAndBookAndUser(false, book, user);
+    }
 
-    /**
-     * 최근 삭제 내역 조회 (30일 보관)
-     */
     public List<PassageDTO> getDeletedPassages(int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by("id").descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
@@ -153,11 +143,6 @@ public class PassageService {
                 .collect(Collectors.toList());
     }
 
-
-    /**
-     * 구절 삭제
-     * soft delete: 30일간 보존 후 영구 삭제
-     */
     @Transactional
     public boolean delete(Long id) {
         Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage not found"));
@@ -169,10 +154,6 @@ public class PassageService {
         return true;
     }
 
-
-    /**
-     * 삭제된 구절 복구
-     */
     @Transactional
     public boolean restoreDeletedPassage(String id) {
         try {

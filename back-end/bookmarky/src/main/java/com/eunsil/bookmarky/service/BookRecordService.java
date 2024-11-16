@@ -60,7 +60,7 @@ public class BookRecordService {
      */
     @Transactional
     public boolean deleteBookRecordById(String id) {
-        Long userId = userRepository.findByUsername(securityUtil.getCurrentUsername()).getId();
+        Long userId = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found")).getId();
         bookRecordRepository.deleteByBookIdAndUserId(Long.valueOf(id), userId);
         passageRepository.deleteByBookIdAndUserId(Long.valueOf(id), userId);
         return true;
@@ -71,7 +71,7 @@ public class BookRecordService {
      * 저장된 책 목록 조회
      */
     public List<BookDTO> getSavedBooks(int page, String order, int size) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername());
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, size, Sort.by(order).descending());
 
         filterManager.enableFilter("deletedBookRecordFilter", "isDeleted", false);
@@ -119,6 +119,14 @@ public class BookRecordService {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         bookRecordRepository.deleteByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
         log.info("삭제 30일 경과된 BookRecord 영구 삭제");
+    }
+
+    /**
+     * 저장한 책 개수
+     */
+    public Long getCount() {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        return bookRecordRepository.countByIsDeletedAndUser(false, user);
     }
 
 }

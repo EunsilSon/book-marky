@@ -6,7 +6,7 @@ spring:
     name: BookMarky
 
   jpa:
-    # show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -27,7 +27,6 @@ spring:
           auth: true
           starttls:
             enable: true
-        debug: true
 
   profiles:
     active: private # DB, MAIL, SMTP 연결 정보 숨김
