@@ -16,25 +16,21 @@ public class ResetTokenService {
     private static final String TOKEN_PREFIX = "password-reset-token: ";
     private final RedisTemplate<String, String> redisTemplate;
 
-
     @Transactional
     public String generateToken(String username) {
         String token = UUID.randomUUID().toString();
         String key = TOKEN_PREFIX + token;
 
-        // 토큰 저장 + 24시간 유효
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         ops.set(key, username, Duration.ofHours(24));
 
         return token;
     }
 
-
     public boolean isValidToken(String token) {
-        String key = TOKEN_PREFIX + token; // TOKEN_PREFIX = "password-reset-token: "
+        String key = TOKEN_PREFIX + token;
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
-
 
     @Transactional
     public void invalidateToken(String token) {
