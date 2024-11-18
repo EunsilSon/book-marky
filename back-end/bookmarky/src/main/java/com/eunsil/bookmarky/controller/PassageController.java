@@ -28,7 +28,7 @@ public class PassageController {
 
     @PatchMapping("/passage")
     public ResponseEntity<String> update(@Valid @RequestBody PassageUpdateVO passageUpdateVO) {
-        if (passageService.update(passageUpdateVO)) {
+        if (passageService.updatePassage(passageUpdateVO)) {
             return ResponseEntity.status(HttpStatus.OK).body("Ok");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not Found Passage");
@@ -36,7 +36,7 @@ public class PassageController {
 
     @DeleteMapping("/passage/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        if (passageService.delete(id)) {
+        if (passageService.deletePassage(id)) {
             return ResponseEntity.status(HttpStatus.OK).body("Ok");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not Found Passage");

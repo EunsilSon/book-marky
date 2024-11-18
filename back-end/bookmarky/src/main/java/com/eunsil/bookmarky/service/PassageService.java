@@ -46,23 +46,24 @@ public class PassageService {
     private final PassageRepository passageRepository;
     private final BookRecordRepository bookRecordRepository;
 
+    private Book getOrCreateBook(String isbn, User user) {
+        Book book;
+        if (bookRepository.existsByIsbn(isbn)) {
+            book = bookRepository.findByIsbn(isbn);
+        } else {
+            book = bookService.addNewBook(isbn);
+            bookRecordService.create(book, user);
+        }
+        return book;
+    }
 
-    /**
-     * 구절 생성
-     * :DB에 없는 책의 경우, 책 저장 후 구절 생성
-     */
     @Transactional
     public boolean createPassage(PassageVO passageVO) {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+
         try {
-            User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
-
-            if (!bookRepository.existsByIsbn(passageVO.getIsbn())) {
-                Book book = bookService.addNewBook(passageVO.getIsbn());
-                bookRecordService.create(book, user);
-            }
-
             Passage passage = Passage.builder()
-                    .book(bookRepository.findByIsbn(passageVO.getIsbn()))
+                    .book(getOrCreateBook(passageVO.getIsbn(), user))
                     .user(user)
                     .content(passageVO.getContent())
                     .pageNum(passageVO.getPageNum())
@@ -76,7 +77,7 @@ public class PassageService {
     }
 
     @Transactional
-    public boolean update(PassageUpdateVO passageUpdateVO) {
+    public boolean updatePassage(PassageUpdateVO passageUpdateVO) {
         Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElseThrow(() -> new NoSuchElementException("Passage not found"));
         passage.setContent(passageUpdateVO.getContent());
         passage.setPageNum(passageUpdateVO.getPageNum());
@@ -136,7 +137,7 @@ public class PassageService {
     }
 
     @Transactional
-    public boolean delete(Long id) {
+    public boolean deletePassage(Long id) {
         Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage not found"));
         passageRepository.delete(passage);
         return true;
@@ -157,7 +158,6 @@ public class PassageService {
             return false;
         }
     }
-
 
     /**
      * 삭제한 지 30일 지난 구절 영구 제거
