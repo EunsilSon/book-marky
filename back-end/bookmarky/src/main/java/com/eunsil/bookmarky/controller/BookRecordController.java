@@ -17,36 +17,35 @@ public class BookRecordController {
     private static final int DEFAULT_BOOK_SIZE = 6;
     private final BookRecordService bookRecordService;
 
-    /**
-     * 책 목록 조회
-     */
     @GetMapping("/books/saved")
     public ResponseEntity<List<BookDTO>> getSavedBooks(@RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
         return new ResponseEntity<>(bookRecordService.getSavedBooks(page, order, DEFAULT_BOOK_SIZE), HttpStatus.OK);
     }
 
-    /**
-     * 책 제목만 조회
-     */
     @GetMapping("/books/titles")
     public ResponseEntity<List<BookSimpleDTO>> getSavedBookTitles(@RequestParam(defaultValue = "0") int page) {
         return new ResponseEntity<>(bookRecordService.getSavedBookTitles(page), HttpStatus.OK);
     }
 
-    /**
-     * 저장한 책 삭제
-     */
     @DeleteMapping("/book/{id}")
-    public ResponseEntity<String> deleteRecord(@PathVariable String id) {
-        if (bookRecordService.deleteBookRecordById(id)) {
+    public ResponseEntity<String> delete(@PathVariable String id) {
+        if (bookRecordService.deleteByBookId(id)) {
+            return new ResponseEntity<>("Ok", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Book Record is not existed", HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/book-all/{id}")
+    public ResponseEntity<String> deleteAll(@PathVariable String id) {
+        if (bookRecordService.deleteAllWithPassages(id)) {
             return new ResponseEntity<>("Ok", HttpStatus.OK);
         }
         return new ResponseEntity<>("Book Record is not existed", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/book/count")
-    public ResponseEntity<Long> getCount() {
-        return new ResponseEntity<>(bookRecordService.getCount(), HttpStatus.OK);
+    public ResponseEntity<Long> getCount(@RequestParam String username) {
+        return new ResponseEntity<>(bookRecordService.getCount(username), HttpStatus.OK);
     }
 
 }

@@ -52,11 +52,6 @@ public class PassageController {
         return ResponseEntity.ok(passageService.getPassages(bookId, order, page));
     }
 
-    @GetMapping("/passages/count/{bookId}")
-    public ResponseEntity<Long> getCount(@PathVariable Long bookId) {
-        return new ResponseEntity<>(passageService.getCountByBookAndUser(bookId), HttpStatus.OK);
-    }
-
     @GetMapping("/passages/deleted")
     public ResponseEntity<List<PassageDTO>> getDeletedPassages(@RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok(passageService.getDeletedPassages(page));

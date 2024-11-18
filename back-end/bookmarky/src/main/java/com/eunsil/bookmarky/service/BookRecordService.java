@@ -13,15 +13,19 @@ import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,41 +41,40 @@ public class BookRecordService {
     private final UserRepository userRepository;
     private final BookRecordRepository bookRecordRepository;
     private final PassageRepository passageRepository;
+    private final CacheManager cacheManager;
 
-    /**
-     * 책 기록 생성
-     */
-    public boolean createBookRecord(Book book, User user) {
-        try {
-            BookRecord bookRecord = BookRecord.builder()
-                    .user(user)
-                    .book(book)
-                    .createdAt(LocalDate.now())
-                    .build();
-            bookRecordRepository.save(bookRecord);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public void create(Book book, User user) {
+        BookRecord bookRecord = BookRecord.builder()
+                .user(user)
+                .book(book)
+                .createdAt(LocalDate.now())
+                .build();
+        bookRecordRepository.save(bookRecord);
+
+        Objects.requireNonNull(cacheManager.getCache("bookCount")).put(user.getUsername(), getCount(user.getUsername()));
     }
 
-    /**
-     * 책 기록 삭제
-     */
     @Transactional
-    public boolean deleteBookRecordById(String id) {
-        Long userId = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found")).getId();
-        bookRecordRepository.deleteByBookIdAndUserId(Long.valueOf(id), userId);
-        passageRepository.deleteByBookIdAndUserId(Long.valueOf(id), userId);
+    public boolean deleteByBookId(String id) {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+        bookRecordRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
+
+        Objects.requireNonNull(cacheManager.getCache("bookCount")).put(user.getUsername(), getCount(user.getUsername()));
         return true;
     }
 
+    @Transactional
+    public boolean deleteAllWithPassages(String id) {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+        bookRecordRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
+        passageRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
 
-    /**
-     * 저장된 책 목록 조회
-     */
+        Objects.requireNonNull(cacheManager.getCache("bookCount")).put(user.getUsername(), getCount(user.getUsername()));
+        return true;
+    }
+
     public List<BookDTO> getSavedBooks(int page, String order, int size) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, size, Sort.by(order).descending());
 
         filterManager.enableFilter("deletedBookRecordFilter", "isDeleted", false);
@@ -95,10 +98,6 @@ public class BookRecordService {
                 .collect(Collectors.toList());
     }
 
-
-    /**
-     * 저장된 책의 제목만 조회
-     */
     public List<BookSimpleDTO> getSavedBookTitles(int page) {
         filterManager.enableFilter("deletedBookRecordFilter", "isDeleted", false);
         List<BookDTO> bookList = getSavedBooks(page, DEFAULT_BOOK_TITLE_LIST_TYPE, DEFAULT_BOOK_TITLE_LIST_SIZE); // 책의 모든 정보
@@ -109,24 +108,21 @@ public class BookRecordService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "bookCount", key = "#username")
+    public Long getCount(String username) {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+        return bookRecordRepository.countByIsDeletedAndUser(false, user);
+    }
 
     /**
      * 삭제한 지 30일 지난 책 기록 영구 제거
      * :매일 자정에 실행됨
      */
     @Scheduled(cron = "0 0 0 * * ?")
-    public void dailyCleanUpOfDeletedPassages() {
+    public void dailyCleanUpOfDeletedBookRecords() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         bookRecordRepository.deleteByIsDeletedTrueAndDeletedAtBefore(thirtyDaysAgo);
         log.info("삭제 30일 경과된 BookRecord 영구 삭제");
-    }
-
-    /**
-     * 저장한 책 개수
-     */
-    public Long getCount() {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
-        return bookRecordRepository.countByIsDeletedAndUser(false, user);
     }
 
 }
