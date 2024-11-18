@@ -8,6 +8,7 @@ import com.eunsil.bookmarky.repository.user.SecureAnswerRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -33,13 +34,13 @@ public class SecureQuestionService {
     }
 
     public boolean checkSecureQuestion(SecureQuestionVO secureQuestionVO) {
-        User user = userRepository.findByUsername(secureQuestionVO.getUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        User user = userRepository.findByUsername(secureQuestionVO.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         SecureAnswer secureAnswer = secureAnswerRepository.findBySecureQuestionIdAndUserId(user.getSecureQuestion().getId(), user.getId());
         return secureAnswer.getContent().equals(secureQuestionVO.getAnswer());
     }
 
     public String getSecureQuestion(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         return user.getSecureQuestion().getContent();
     }
 }

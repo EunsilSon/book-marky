@@ -14,8 +14,6 @@ import java.time.LocalDate;
 
 @Repository
 public interface BookRecordRepository extends JpaRepository<BookRecord, Long> {
-    void deleteByBookIdAndUserId(Long bookId, Long userId);
-
     Page<BookRecord> findByUserId(Long userId, Pageable pageable);
 
     BookRecord findByBookId(Long bookId);
@@ -25,5 +23,9 @@ public interface BookRecordRepository extends JpaRepository<BookRecord, Long> {
     @Query("DELETE FROM Passage p WHERE p.isDeleted = true AND p.deletedAt < :date")
     void deleteByIsDeletedTrueAndDeletedAtBefore(LocalDate date);
 
+    void deleteByBookIdAndUserId(Long bookId, Long userId);
+
     Long countByIsDeletedAndUser(Boolean isDeleted, User user);
+
+    Boolean existsByBookIdAndUserId(Long BookId, Long userId);
 }

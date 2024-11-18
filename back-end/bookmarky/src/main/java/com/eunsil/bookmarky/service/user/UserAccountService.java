@@ -7,6 +7,7 @@ import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,12 +60,12 @@ public class UserAccountService {
     }
 
     private void resetPassword(String username, String newPassword) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         user.setPassword(bCryptPasswordEncoder.encode(newPassword));
     }
 
     public String getNickname() {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         return user.getNickname();
     }
 

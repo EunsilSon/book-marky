@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -53,18 +54,15 @@ public class PassageService {
     @Transactional
     public boolean createPassage(PassageVO passageVO) {
         try {
-            User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
-            Book book;
+            User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
 
-            if (bookRepository.existsByIsbn(passageVO.getIsbn())) {
-                book = bookRepository.findByIsbn(passageVO.getIsbn());
-            } else {
-                book = bookService.addNewBook(passageVO.getIsbn());
-                bookRecordService.createBookRecord(book, user);
+            if (!bookRepository.existsByIsbn(passageVO.getIsbn())) {
+                Book book = bookService.addNewBook(passageVO.getIsbn());
+                bookRecordService.create(book, user);
             }
 
             Passage passage = Passage.builder()
-                    .book(book)
+                    .book(bookRepository.findByIsbn(passageVO.getIsbn()))
                     .user(user)
                     .content(passageVO.getContent())
                     .pageNum(passageVO.getPageNum())
@@ -100,7 +98,7 @@ public class PassageService {
     }
 
     public List<PassageDTO> getPassages(Long bookId, String order, int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(order).descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
@@ -118,14 +116,8 @@ public class PassageService {
                 .collect(Collectors.toList());
     }
 
-    public Long getCountByBookAndUser(Long bookId) {
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new NoSuchElementException("Book not found"));
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
-        return passageRepository.countByIsDeletedAndBookAndUser(false, book, user);
-    }
-
     public List<PassageDTO> getDeletedPassages(int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new RuntimeException("Username Not Found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by("id").descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
@@ -147,10 +139,6 @@ public class PassageService {
     public boolean delete(Long id) {
         Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage not found"));
         passageRepository.delete(passage);
-
-        if (!passageRepository.existsByBookIdAndIsDeletedFalse(passage.getBook().getId())) {
-            bookRecordRepository.delete(bookRecordRepository.findByBookId(passage.getBook().getId()));
-        }
         return true;
     }
 
