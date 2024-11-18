@@ -1,12 +1,14 @@
 package com.eunsil.bookmarky.service.book;
 
 import com.eunsil.bookmarky.domain.dto.BookDTO;
+import com.eunsil.bookmarky.exception.CustomParsingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
@@ -39,7 +41,7 @@ public class OpenApiResponseParser {
             }
             return bookList;
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing JSON response");
+            throw new CustomParsingException("JSON parsing failed");
         }
     }
 
@@ -48,37 +50,41 @@ public class OpenApiResponseParser {
      * XML -> Book 객체 변환
      * @param responseBody XML 형식의 open api 응답 값
      */
-    public BookDTO xmlToBook(String responseBody) throws Exception {
+    public BookDTO xmlToBook(String responseBody) {
 
-        // xml 파싱 -> 함수로 빼기
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(new InputSource(new StringReader(responseBody)));
+        try {
+            // xml 파싱 -> 함수로 빼기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new InputSource(new StringReader(responseBody)));
 
-        List<String> bookInfo = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            if (i == 4 || i == 6) {
-                continue;
+            List<String> bookInfo = new ArrayList<>();
+            for (int i = 0; i < 9; i++) {
+                if (i == 4 || i == 6) {
+                    continue;
+                }
+
+                String info = document
+                        .getElementsByTagName("item")
+                        .item(0)
+                        .getChildNodes()
+                        .item(i) // 가져올 값
+                        .getTextContent();
+
+                bookInfo.add(info); // title 0, link 1, image 2, author 3, publisher 5, isbn 7, description 8;
             }
 
-            String info = document
-                    .getElementsByTagName("item")
-                    .item(0)
-                    .getChildNodes()
-                    .item(i) // 가져올 값
-                    .getTextContent();
-
-            bookInfo.add(info); // title 0, link 1, image 2, author 3, publisher 5, isbn 7, description 8;
+            return BookDTO.builder()
+                    .title(bookInfo.get(0))
+                    .link(bookInfo.get(1))
+                    .image(bookInfo.get(2))
+                    .author(bookInfo.get(3))
+                    .publisher(bookInfo.get(4))
+                    .isbn(bookInfo.get(5))
+                    .description(bookInfo.get(6))
+                    .build();
+        } catch (Exception e) {
+            throw new CustomParsingException("XML parsing failed");
         }
-
-        return BookDTO.builder()
-                .title(bookInfo.get(0))
-                .link(bookInfo.get(1))
-                .image(bookInfo.get(2))
-                .author(bookInfo.get(3))
-                .publisher(bookInfo.get(4))
-                .isbn(bookInfo.get(5))
-                .description(bookInfo.get(6))
-                .build();
     }
 }

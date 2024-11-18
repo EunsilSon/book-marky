@@ -32,4 +32,9 @@ public class Handler {
     public ResponseEntity<String> handleUserException(DuplicateRequestException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(CustomParsingException.class)
+    public ResponseEntity<String> handleParsingException(DuplicateRequestException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
