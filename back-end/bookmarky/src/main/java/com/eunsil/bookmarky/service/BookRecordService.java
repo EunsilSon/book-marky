@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,12 +41,12 @@ public class BookRecordService {
     private final UserRepository userRepository;
     private final BookRecordRepository bookRecordRepository;
     private final PassageRepository passageRepository;
-    private final CacheManager cacheManager;
 
     public String getCacheKey() {
         return securityUtil.getCurrentUsername();
     }
 
+    @CacheEvict(value = "bookCount", key = "#root.target.getCacheKey()")
     public void create(Book book, User user) {
         BookRecord bookRecord = BookRecord.builder()
                 .user(user)
@@ -55,8 +54,6 @@ public class BookRecordService {
                 .createdAt(LocalDate.now())
                 .build();
         bookRecordRepository.save(bookRecord);
-
-        Objects.requireNonNull(cacheManager.getCache("bookCount")).put(user.getUsername(), getCount(user.getUsername()));
     }
 
     @CacheEvict(value = "bookCount", key = "#root.target.getCacheKey()")
@@ -74,6 +71,12 @@ public class BookRecordService {
         bookRecordRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
         passageRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
         return true;
+    }
+
+    @Cacheable(value = "bookCount", key = "#root.target.getCacheKey()")
+    public Long getCount(String username) {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+        return bookRecordRepository.countByIsDeletedAndUser(false, user);
     }
 
     public List<BookDTO> getSavedBooks(int page, String order, int size) {
@@ -109,12 +112,6 @@ public class BookRecordService {
         return bookList.stream()
                 .map(book -> new BookSimpleDTO(book.getIsbn(), book.getTitle()))
                 .collect(Collectors.toList());
-    }
-
-    @Cacheable(value = "bookCount", key = "#root.target.getCacheKey()")
-    public Long getCount(String username) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
-        return bookRecordRepository.countByIsDeletedAndUser(false, user);
     }
 
     /**
