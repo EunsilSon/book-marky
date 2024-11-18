@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +44,10 @@ public class BookRecordService {
     private final PassageRepository passageRepository;
     private final CacheManager cacheManager;
 
+    public String getCacheKey() {
+        return securityUtil.getCurrentUsername();
+    }
+
     public void create(Book book, User user) {
         BookRecord bookRecord = BookRecord.builder()
                 .user(user)
@@ -54,22 +59,20 @@ public class BookRecordService {
         Objects.requireNonNull(cacheManager.getCache("bookCount")).put(user.getUsername(), getCount(user.getUsername()));
     }
 
+    @CacheEvict(value = "bookCount", key = "#root.target.getCacheKey()")
     @Transactional
     public boolean deleteByBookId(String id) {
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         bookRecordRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
-
-        Objects.requireNonNull(cacheManager.getCache("bookCount")).put(user.getUsername(), getCount(user.getUsername()));
         return true;
     }
 
+    @CacheEvict(value = "bookCount", key = "#root.target.getCacheKey()")
     @Transactional
     public boolean deleteAllWithPassages(String id) {
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         bookRecordRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
         passageRepository.deleteByBookIdAndUserId(Long.valueOf(id), user.getId());
-
-        Objects.requireNonNull(cacheManager.getCache("bookCount")).put(user.getUsername(), getCount(user.getUsername()));
         return true;
     }
 
@@ -108,7 +111,7 @@ public class BookRecordService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "bookCount", key = "#username")
+    @Cacheable(value = "bookCount", key = "#root.target.getCacheKey()")
     public Long getCount(String username) {
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         return bookRecordRepository.countByIsDeletedAndUser(false, user);
