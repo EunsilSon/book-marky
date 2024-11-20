@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config;
+package com.eunsil.bookmarky.config.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

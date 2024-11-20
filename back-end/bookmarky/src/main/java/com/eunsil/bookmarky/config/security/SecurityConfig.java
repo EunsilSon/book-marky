@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config;
+package com.eunsil.bookmarky.config.security;
 
 import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationFailureHandler;
 import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationSuccessHandler;
