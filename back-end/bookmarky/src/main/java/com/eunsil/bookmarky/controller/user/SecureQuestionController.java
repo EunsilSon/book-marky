@@ -15,16 +15,16 @@ public class SecureQuestionController {
     private final SecureQuestionService secureQuestionService;
 
     @PostMapping("/user/question")
-    public ApiResponse<String> checkSecureQuestion(@RequestBody SecureQuestionVO secureQuestionVO) {
-        if (secureQuestionService.checkSecureQuestion(secureQuestionVO)) {
+    public ApiResponse<String> checkQuestion(@RequestBody SecureQuestionVO secureQuestionVO) {
+        if (secureQuestionService.checkQuestion(secureQuestionVO)) {
             return ResponseUtil.createSuccessResponse();
         }
-        return ResponseUtil.createErrorResponse(HttpStatus.UNAUTHORIZED, "Security Answer Not Matched.");
+        return ResponseUtil.createErrorResponse(HttpStatus.UNAUTHORIZED, "Incorrect Security Answer.");
     }
 
     @GetMapping("/user/question/{username}")
-    public ApiResponse<String> getSecureQuestion(@PathVariable String username) {
-        return ResponseUtil.createSuccessResponse(secureQuestionService.getSecureQuestion(username));
+    public ApiResponse<String> getQuestion(@PathVariable String username) {
+        return ResponseUtil.createSuccessResponse(secureQuestionService.getQuestion(username));
     }
 
 }

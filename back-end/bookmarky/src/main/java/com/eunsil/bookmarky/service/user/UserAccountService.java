@@ -23,6 +23,7 @@ public class UserAccountService {
     private final MailService mailService;
     private final ResetTokenService resetTokenService;
 
+
     public boolean sendResetEmailWithToken(String username) {
         if (userRepository.existsByUsername(username)) {
             String token = generateToken(username);
@@ -30,7 +31,6 @@ public class UserAccountService {
         }
         return false;
     }
-
     private String generateToken(String username) {
         return resetTokenService.generateToken(username);
     }

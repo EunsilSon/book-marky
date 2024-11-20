@@ -21,12 +21,12 @@ public class UserRegistrationController {
         if (userRegistrationService.registerUser(userVO)) {
             return ResponseUtil.createSuccessResponse();
         }
-        return ResponseUtil.createErrorResponse(HttpStatus.BAD_REQUEST, "Failed to Create Security Question.");
+        return ResponseUtil.createErrorResponse(HttpStatus.BAD_REQUEST, "Failed Register User");
     }
 
     @PostMapping("/registration/username/{username}")
     public ApiResponse<String> checkUsername(@PathVariable String username) {
-        if (userRegistrationService.isDuplicateUsername(username)) {
+        if (userRegistrationService.isUsernameDuplicate(username)) {
             return ResponseUtil.createErrorResponse(HttpStatus.CONFLICT, "Username already exists.");
         }
         return ResponseUtil.createSuccessResponse();
@@ -34,7 +34,7 @@ public class UserRegistrationController {
 
     @PostMapping("/registration/nickname/{nickname}")
     public ApiResponse<String> checkNickname(@PathVariable String nickname) {
-        if (userRegistrationService.isDuplicateNickname(nickname)) {
+        if (userRegistrationService.isNicknameDuplicate(nickname)) {
             return ResponseUtil.createErrorResponse(HttpStatus.CONFLICT, "Nickname already exists.");
         }
         return ResponseUtil.createSuccessResponse();
@@ -42,7 +42,7 @@ public class UserRegistrationController {
 
     @PostMapping("/registration/telephone/{telephone}")
     public ApiResponse<String> checkTelephone(@PathVariable String telephone) {
-        if (userRegistrationService.isDuplicateTelephone(telephone)) {
+        if (userRegistrationService.isTelephoneDuplicate(telephone)) {
             return ResponseUtil.createErrorResponse(HttpStatus.CONFLICT, "Telephone already exists.");
         }
         return ResponseUtil.createSuccessResponse();
