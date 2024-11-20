@@ -1,5 +1,5 @@
 # 북마키 (BookMarky)
-- 마지막 업데이트 일자는 **24.11.08**이며, 추가하고자 하는 기능이 있을 때마다 수시로 개발 중입니다.  
+- 마지막 업데이트 일자는 **24.11.20**이며, 추가 및 수정하고자 하는 사항이 있을 때마다 수시로 개발 중입니다.  
 - 개발 완료 된 사항들은 `main` 브랜치에서 확인 가능합니다.
 
 - Front-end: 서버 연동, 응답 데이터 렌더링 완료
@@ -51,7 +51,8 @@
 | Back-end | Spring Boot 3 | MVC 패턴의 REST API 서버 |
 |  | Spring Data JPA |  |
 |  | Spring Security | 사용자 인증 |
-|  | Spring AOP | 로깅 |
+|  | Spring AOP | 호출된 API, 수행 시간 파악 |
+|  | Spring Cache | 저장한 책 개수 조회 기능 |
 |  | JavaMailSender | 이메일 생성 및 전송 |
 |  | Redis | 토큰 발급 및 관리 |
 |  | MySQL |  |
@@ -81,6 +82,7 @@
 |  |  구절 목록 조회  |  |
 |  |  삭제된 구절 목록 조회  |  |
 |  |  호출된 API, 메서드 실행 시간 로깅 | [[Spring Boot] AOP 기능으로 어떤 API가 호출됐는지 로그 생성하기](https://velog.io/@eunsilson/Spring-Boot-AOP-%EA%B8%B0%EB%8A%A5%EC%9C%BC%EB%A1%9C-%EC%96%B4%EB%96%A4-API%EA%B0%80-%ED%98%B8%EC%B6%9C%EB%90%90%EB%8A%94%EC%A7%80-%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0)
+
 <br>
 
 # API 명세
