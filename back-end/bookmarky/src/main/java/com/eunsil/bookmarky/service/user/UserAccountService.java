@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.service.user;
 
-import com.eunsil.bookmarky.config.SecurityUtil;
+import com.eunsil.bookmarky.config.security.SecurityUtil;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.user.UserRepository;
@@ -23,6 +23,7 @@ public class UserAccountService {
     private final MailService mailService;
     private final ResetTokenService resetTokenService;
 
+
     public boolean sendResetEmailWithToken(String username) {
         if (userRepository.existsByUsername(username)) {
             String token = generateToken(username);
@@ -30,7 +31,6 @@ public class UserAccountService {
         }
         return false;
     }
-
     private String generateToken(String username) {
         return resetTokenService.generateToken(username);
     }

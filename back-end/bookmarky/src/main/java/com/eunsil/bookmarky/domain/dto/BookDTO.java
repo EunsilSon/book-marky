@@ -9,7 +9,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
 public class BookDTO {
     private Long id;

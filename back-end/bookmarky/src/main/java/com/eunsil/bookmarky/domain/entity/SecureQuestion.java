@@ -3,6 +3,8 @@ package com.eunsil.bookmarky.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -16,4 +18,7 @@ public class SecureQuestion {
 
     @Column(nullable = false, length = 50)
     private String content;
+
+    @OneToMany(mappedBy = "secureQuestion")
+    private List<User> users;
 }

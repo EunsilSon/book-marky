@@ -2,10 +2,11 @@ package com.eunsil.bookmarky.controller;
 
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.BookSimpleDTO;
+import com.eunsil.bookmarky.response.ApiResponse;
+import com.eunsil.bookmarky.response.ResponseUtil;
 import com.eunsil.bookmarky.service.BookRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,34 +19,34 @@ public class BookRecordController {
     private final BookRecordService bookRecordService;
 
     @GetMapping("/books/saved")
-    public ResponseEntity<List<BookDTO>> getSavedBooks(@RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
-        return new ResponseEntity<>(bookRecordService.getSavedBooks(page, order, DEFAULT_BOOK_SIZE), HttpStatus.OK);
+    public ApiResponse<List<BookDTO>> getSavedBooks(@RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
+        return ResponseUtil.createSuccessResponse(bookRecordService.getSavedBooks(page, order, DEFAULT_BOOK_SIZE));
     }
 
     @GetMapping("/books/titles")
-    public ResponseEntity<List<BookSimpleDTO>> getSavedBookTitles(@RequestParam(defaultValue = "0") int page) {
-        return new ResponseEntity<>(bookRecordService.getSavedBookTitles(page), HttpStatus.OK);
+    public ApiResponse<List<BookSimpleDTO>> getSavedBookTitles(@RequestParam(defaultValue = "0") int page) {
+        return ResponseUtil.createSuccessResponse(bookRecordService.getSavedBookTitles(page));
     }
 
     @DeleteMapping("/book/{id}")
-    public ResponseEntity<String> delete(@PathVariable String id) {
+    public ApiResponse<String> delete(@PathVariable String id) {
         if (bookRecordService.deleteByBookId(id)) {
-            return new ResponseEntity<>("Ok", HttpStatus.OK);
+            return ResponseUtil.createSuccessResponse();
         }
-        return new ResponseEntity<>("Book Record is not existed", HttpStatus.BAD_REQUEST);
+        return ResponseUtil.createErrorResponse(HttpStatus.NOT_FOUND, "Book Record Not Found.");
     }
 
     @DeleteMapping("/book-all/{id}")
-    public ResponseEntity<String> deleteAll(@PathVariable String id) {
+    public ApiResponse<String> deleteAll(@PathVariable String id) {
         if (bookRecordService.deleteAllWithPassages(id)) {
-            return new ResponseEntity<>("Ok", HttpStatus.OK);
+            return ResponseUtil.createSuccessResponse();
         }
-        return new ResponseEntity<>("Book Record is not existed", HttpStatus.BAD_REQUEST);
+        return ResponseUtil.createErrorResponse(HttpStatus.NOT_FOUND, "Book Record Not Found");
     }
 
     @GetMapping("/book/count")
-    public ResponseEntity<Long> getCount(@RequestParam String username) {
-        return new ResponseEntity<>(bookRecordService.getCount(username), HttpStatus.OK);
+    public ApiResponse<Long> getCount() {
+        return ResponseUtil.createSuccessResponse(bookRecordService.getCount());
     }
 
 }

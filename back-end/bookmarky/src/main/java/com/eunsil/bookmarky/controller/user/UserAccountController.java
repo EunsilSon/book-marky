@@ -1,11 +1,12 @@
 package com.eunsil.bookmarky.controller.user;
 
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
+import com.eunsil.bookmarky.response.ApiResponse;
+import com.eunsil.bookmarky.response.ResponseUtil;
 import com.eunsil.bookmarky.service.user.UserAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -15,28 +16,28 @@ public class UserAccountController {
     private final UserAccountService userAccountService;
 
     @GetMapping("/user/mail/{username}")
-    public ResponseEntity<String> emailForResetPassword(@PathVariable String username) {
+    public ApiResponse<String> emailForResetPassword(@PathVariable String username) {
         if (userAccountService.sendResetEmailWithToken(username)) {
-            return ResponseEntity.status(HttpStatus.OK).body("ok");
+            return ResponseUtil.createSuccessResponse();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseUtil.createErrorResponse(HttpStatus.UNAUTHORIZED, "Password Reset Email Request Failed.");
     }
 
     @PostMapping("/user")
-    public ResponseEntity<String> resetPassword(@Valid @RequestBody PasswordVO passwordVO) {
+    public ApiResponse<String> resetPassword(@Valid @RequestBody PasswordVO passwordVO) {
         if (userAccountService.resetPwWithToken(passwordVO)) {
-            return ResponseEntity.status(HttpStatus.OK).body("ok");
+            return ResponseUtil.createSuccessResponse();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token validation failed");
+        return ResponseUtil.createErrorResponse(HttpStatus.UNAUTHORIZED, "Token Validation Failed.");
     }
 
     @GetMapping("/user/nickname")
-    public ResponseEntity<String> getNickname() {
+    public ApiResponse<String> getNickname() {
         String nickname = userAccountService.getNickname();
-        if (nickname == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (nickname.isEmpty()) {
+            return ResponseUtil.createErrorResponse(HttpStatus.NOT_FOUND, "Nickname Not Found.");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(nickname);
+        return ResponseUtil.createSuccessResponse(nickname);
     }
 
 }

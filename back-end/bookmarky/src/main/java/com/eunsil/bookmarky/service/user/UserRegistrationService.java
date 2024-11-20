@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -20,53 +22,59 @@ public class UserRegistrationService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final SecureQuestionRepository secureQuestionRepository;
-    private final SecureQuestionService secureQuestionService;
 
-    public boolean isDuplicateUsername(String username) {
+    public boolean isUsernameDuplicate(String username) {
         return userRepository.existsByUsername(username);
     }
 
-    public boolean isDuplicateNickname(String nickname) {
+    public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
 
-    public boolean isDuplicateTelephone(String telephone) {
+    public boolean isTelephoneDuplicate(String telephone) {
         return userRepository.existsByTelephone(telephone);
+    }
+
+    private void checkUserDuplication(UserVO userVO) {
+        if (isUsernameDuplicate(userVO.getUsername())) {
+            throw new DuplicateRequestException("Username already exists.");
+        }
+        if (isNicknameDuplicate(userVO.getNickname())) {
+            throw new DuplicateRequestException("Nickname already exists.");
+        }
+        if (isTelephoneDuplicate(userVO.getTelephone())) {
+            throw new DuplicateRequestException("Telephone already exists.");
+        }
+    }
+
+    private void createUser(UserVO userVO, SecureQuestion secureQuestion) {
+        User user = User.builder()
+                .username(userVO.getUsername())
+                .password(bCryptPasswordEncoder.encode(userVO.getPassword()))
+                .nickname(userVO.getNickname())
+                .telephone(userVO.getTelephone())
+                .secureQuestion(secureQuestion)
+                .secureAnswer(userVO.getAnswerContent())
+                .role("ROLE_USER")
+                .build();
+        userRepository.save(user);
     }
 
     @Transactional
     public boolean registerUser(UserVO userVO) {
-
-        if (isDuplicateUsername(userVO.getUsername())) {
-            throw new DuplicateRequestException("Username is already exists.");
-        }
-
-        if (isDuplicateNickname(userVO.getNickname())) {
-            throw new DuplicateRequestException("Nickname is already exists.");
-        }
-
-        if (isDuplicateTelephone(userVO.getTelephone())) {
-            throw new DuplicateRequestException("Telephone is already exists.");
-        }
-
         try {
-            // User 생성
-            SecureQuestion secureQuestion = secureQuestionRepository.findById(userVO.getSecureQuestionId()).orElseThrow(null);
+            checkUserDuplication(userVO);
 
-            User user = User.builder()
-                    .username(userVO.getUsername())
-                    .password(bCryptPasswordEncoder.encode(userVO.getPassword()))
-                    .nickname(userVO.getNickname())
-                    .telephone(userVO.getTelephone())
-                    .secureQuestion(secureQuestion)
-                    .role("ROLE_USER")
-                    .build();
-            userRepository.save(user);
+            SecureQuestion secureQuestion = secureQuestionRepository.findById(userVO.getSecureQuestionId())
+                    .orElseThrow(() -> new NoSuchElementException("Secure Question Not Found."));
 
-            // 보안 질문 생성
-            return secureQuestionService.registerSecureQuestion(user, secureQuestion, userVO.getAnswerContent());
+            createUser(userVO, secureQuestion);
+            return true;
+        } catch(NoSuchElementException e) {
+            log.warn("[{}] Secure question with ID '{}' not found.", userVO.getUsername(), userVO.getSecureQuestionId());
+            return false;
         } catch(Exception e) {
-            log.warn("[{}] User registration has been rolled back.", userVO.getUsername());
+            log.warn("[{}] {}", userVO.getUsername(), e.getMessage());
             return false;
         }
     }
