@@ -17,10 +17,9 @@ public class BookService {
     private final OpenApiResponseParser openApiResponseParser;
     private final BookRepository bookRepository;
 
-    public BookDTO getBookDetails(long id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Book Not Found"));
-
-        return BookDTO.builder()
+    public Optional<BookDTO> getBookDetails(long id) {
+        return bookRepository.findById(id)
+                .map(book -> BookDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())
                 .author(book.getAuthor())
@@ -29,7 +28,7 @@ public class BookService {
                 .image(book.getImage())
                 .isbn(book.getIsbn())
                 .description(book.getDescription())
-                .build();
+                .build());
     }
 
     public List<BookDTO> searchBooksByTitleFromOpenApi(String title, int page) {

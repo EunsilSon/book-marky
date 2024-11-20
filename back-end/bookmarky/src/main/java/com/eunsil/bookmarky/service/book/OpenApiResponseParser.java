@@ -41,7 +41,7 @@ public class OpenApiResponseParser {
             }
             return bookList;
         } catch (Exception e) {
-            throw new CustomParsingException("JSON parsing failed");
+            throw new CustomParsingException("JSON Parsing Failed.");
         }
     }
 
@@ -84,7 +84,7 @@ public class OpenApiResponseParser {
                     .description(bookInfo.get(6))
                     .build();
         } catch (Exception e) {
-            throw new CustomParsingException("XML parsing failed");
+            throw new CustomParsingException("XML Parsing Failed.");
         }
     }
 }

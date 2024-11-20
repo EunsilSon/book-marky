@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.service.user;
 
-import com.eunsil.bookmarky.config.SecurityUtil;
+import com.eunsil.bookmarky.config.security.SecurityUtil;
 import com.eunsil.bookmarky.domain.vo.PasswordVO;
 import com.eunsil.bookmarky.domain.entity.User;
 import com.eunsil.bookmarky.repository.user.UserRepository;

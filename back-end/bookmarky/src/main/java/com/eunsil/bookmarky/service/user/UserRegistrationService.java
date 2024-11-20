@@ -38,15 +38,15 @@ public class UserRegistrationService {
     public boolean registerUser(UserVO userVO) {
 
         if (isDuplicateUsername(userVO.getUsername())) {
-            throw new DuplicateRequestException("Username is already exists.");
+            throw new DuplicateRequestException("Username already exists.");
         }
 
         if (isDuplicateNickname(userVO.getNickname())) {
-            throw new DuplicateRequestException("Nickname is already exists.");
+            throw new DuplicateRequestException("Nickname already exists.");
         }
 
         if (isDuplicateTelephone(userVO.getTelephone())) {
-            throw new DuplicateRequestException("Telephone is already exists.");
+            throw new DuplicateRequestException("Telephone already exists.");
         }
 
         try {
@@ -66,7 +66,7 @@ public class UserRegistrationService {
             // 보안 질문 생성
             return secureQuestionService.registerSecureQuestion(user, secureQuestion, userVO.getAnswerContent());
         } catch(Exception e) {
-            log.warn("[{}] User registration has been rolled back.", userVO.getUsername());
+            log.warn("[{}] User Registration Rolled Back.", userVO.getUsername());
             return false;
         }
     }

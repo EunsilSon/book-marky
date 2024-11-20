@@ -24,17 +24,17 @@ public class Handler {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleElementException(DuplicateRequestException e) {
+    public ResponseEntity<String> handleElementException(NoSuchElementException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<String> handleUserException(DuplicateRequestException e) {
+    public ResponseEntity<String> handleUserException(UsernameNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CustomParsingException.class)
-    public ResponseEntity<String> handleParsingException(DuplicateRequestException e) {
+    public ResponseEntity<String> handleParsingException(CustomParsingException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

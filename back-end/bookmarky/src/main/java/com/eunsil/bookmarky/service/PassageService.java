@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.config.SecurityUtil;
+import com.eunsil.bookmarky.config.security.SecurityUtil;
 import com.eunsil.bookmarky.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
 import com.eunsil.bookmarky.domain.entity.Book;
@@ -59,7 +59,7 @@ public class PassageService {
 
     @Transactional
     public boolean createPassage(PassageVO passageVO) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found."));
 
         try {
             Passage passage = Passage.builder()
@@ -78,7 +78,7 @@ public class PassageService {
 
     @Transactional
     public boolean updatePassage(PassageUpdateVO passageUpdateVO) {
-        Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElseThrow(() -> new NoSuchElementException("Passage not found"));
+        Passage passage = passageRepository.findById(passageUpdateVO.getPassageId()).orElseThrow(() -> new NoSuchElementException("Passage Not Found."));
         passage.setContent(passageUpdateVO.getContent());
         passage.setPageNum(passageUpdateVO.getPageNum());
         passage.setCreatedAt(LocalDate.now());
@@ -86,7 +86,7 @@ public class PassageService {
     }
 
     public PassageDTO getPassageDetails(Long id) {
-        Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage not found"));
+        Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage Not Found."));
 
         return PassageDTO.builder()
                 .id(passage.getId())
@@ -99,7 +99,7 @@ public class PassageService {
     }
 
     public List<PassageDTO> getPassages(Long bookId, String order, int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found."));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by(order).descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", false);
@@ -118,7 +118,7 @@ public class PassageService {
     }
 
     public List<PassageDTO> getDeletedPassages(int page) {
-        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found."));
         Pageable pageable = PageRequest.of(page, DEFAULT_PASSAGE_SIZE, Sort.by("id").descending());
 
         filterManager.enableFilter("deletedPassageFilter", "isDeleted", true);
@@ -138,7 +138,7 @@ public class PassageService {
 
     @Transactional
     public boolean deletePassage(Long id) {
-        Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage not found"));
+        Passage passage = passageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Passage Not Found."));
         passageRepository.delete(passage);
         return true;
     }
@@ -146,7 +146,7 @@ public class PassageService {
     @Transactional
     public boolean restoreDeletedPassage(String id) {
         try {
-            Passage passage = passageRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NoSuchElementException("Passage Not Found"));
+            Passage passage = passageRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NoSuchElementException("Passage Not Found."));
             passage.setIsDeleted(false);
             passage.setDeletedAt(null);
 

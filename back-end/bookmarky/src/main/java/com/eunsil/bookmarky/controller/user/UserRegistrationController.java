@@ -1,11 +1,12 @@
 package com.eunsil.bookmarky.controller.user;
 
 import com.eunsil.bookmarky.domain.vo.UserVO;
+import com.eunsil.bookmarky.response.ApiResponse;
+import com.eunsil.bookmarky.response.ResponseUtil;
 import com.eunsil.bookmarky.service.user.UserRegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -16,38 +17,35 @@ public class UserRegistrationController {
 
 
     @PostMapping("/registration")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserVO userVO) {
+    public ApiResponse<String> registerUser(@Valid @RequestBody UserVO userVO) {
         if (userRegistrationService.registerUser(userVO)) {
-            return ResponseEntity.status(HttpStatus.OK).body("User registered successfully");
+            return ResponseUtil.createSuccessResponse();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create security question.");
+        return ResponseUtil.createErrorResponse(HttpStatus.BAD_REQUEST, "Failed to Create Security Question.");
     }
-
 
     @PostMapping("/registration/username/{username}")
-    public ResponseEntity<Void> checkUsername(@PathVariable String username) {
+    public ApiResponse<String> checkUsername(@PathVariable String username) {
         if (userRegistrationService.isDuplicateUsername(username)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return ResponseUtil.createErrorResponse(HttpStatus.CONFLICT, "Username already exists.");
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseUtil.createSuccessResponse();
     }
-
 
     @PostMapping("/registration/nickname/{nickname}")
-    public ResponseEntity<Void> checkNickname(@PathVariable String nickname) {
+    public ApiResponse<String> checkNickname(@PathVariable String nickname) {
         if (userRegistrationService.isDuplicateNickname(nickname)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return ResponseUtil.createErrorResponse(HttpStatus.CONFLICT, "Nickname already exists.");
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseUtil.createSuccessResponse();
     }
 
-
     @PostMapping("/registration/telephone/{telephone}")
-    public ResponseEntity<Void> checkTelephone(@PathVariable String telephone) {
+    public ApiResponse<String> checkTelephone(@PathVariable String telephone) {
         if (userRegistrationService.isDuplicateTelephone(telephone)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return ResponseUtil.createErrorResponse(HttpStatus.CONFLICT, "Telephone already exists.");
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseUtil.createSuccessResponse();
     }
 
 }

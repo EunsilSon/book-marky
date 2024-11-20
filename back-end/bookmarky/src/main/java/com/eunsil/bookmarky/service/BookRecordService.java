@@ -1,6 +1,6 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.config.SecurityUtil;
+import com.eunsil.bookmarky.config.security.SecurityUtil;
 import com.eunsil.bookmarky.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.BookSimpleDTO;
@@ -13,7 +13,6 @@ import com.eunsil.bookmarky.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -74,7 +73,7 @@ public class BookRecordService {
     }
 
     @Cacheable(value = "bookCount", key = "#root.target.getCacheKey()")
-    public Long getCount(String username) {
+    public Long getCount() {
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
         return bookRecordRepository.countByIsDeletedAndUser(false, user);
     }
