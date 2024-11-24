@@ -1,14 +1,13 @@
-package com.eunsil.bookmarky.service.book;
+package com.eunsil.bookmarky.service.openApi;
 
 import com.eunsil.bookmarky.domain.dto.BookDTO;
-import com.eunsil.bookmarky.exception.CustomParsingException;
+import com.eunsil.bookmarky.global.exception.CustomParsingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;

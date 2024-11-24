@@ -1,8 +1,10 @@
-package com.eunsil.bookmarky.service.book;
+package com.eunsil.bookmarky.service;
 
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.repository.BookRepository;
+import com.eunsil.bookmarky.service.openApi.NaverOpenApiSearch;
+import com.eunsil.bookmarky.service.openApi.OpenApiResponseParser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

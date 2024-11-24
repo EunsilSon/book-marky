@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.config.security.SecurityUtil;
-import com.eunsil.bookmarky.config.filter.FilterManager;
+import com.eunsil.bookmarky.global.config.security.SecurityUtil;
+import com.eunsil.bookmarky.global.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.PassageDTO;
 import com.eunsil.bookmarky.domain.entity.Book;
 import com.eunsil.bookmarky.domain.entity.BookRecord;
@@ -13,7 +13,6 @@ import com.eunsil.bookmarky.repository.BookRecordRepository;
 import com.eunsil.bookmarky.repository.BookRepository;
 import com.eunsil.bookmarky.repository.PassageRepository;
 import com.eunsil.bookmarky.repository.user.UserRepository;
-import com.eunsil.bookmarky.service.book.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

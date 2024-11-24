@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.response;
+package com.eunsil.bookmarky.global.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

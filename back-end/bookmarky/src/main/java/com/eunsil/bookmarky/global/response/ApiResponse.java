@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.response;
+package com.eunsil.bookmarky.global.response;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatusCode;

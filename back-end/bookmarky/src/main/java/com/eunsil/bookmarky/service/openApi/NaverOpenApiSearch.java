@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.service.book;
+package com.eunsil.bookmarky.service.openApi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

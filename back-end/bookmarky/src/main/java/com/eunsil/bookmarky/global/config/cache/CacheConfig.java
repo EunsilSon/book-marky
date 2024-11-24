@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config.cache;
+package com.eunsil.bookmarky.global.config.cache;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config.auth.handler;
+package com.eunsil.bookmarky.global.config.auth.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
