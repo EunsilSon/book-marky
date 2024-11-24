@@ -1,9 +1,9 @@
 package com.eunsil.bookmarky.controller;
 
 import com.eunsil.bookmarky.domain.dto.BookDTO;
-import com.eunsil.bookmarky.response.ApiResponse;
-import com.eunsil.bookmarky.response.ResponseUtil;
-import com.eunsil.bookmarky.service.book.BookService;
+import com.eunsil.bookmarky.global.response.ApiResponse;
+import com.eunsil.bookmarky.global.response.ResponseUtil;
+import com.eunsil.bookmarky.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

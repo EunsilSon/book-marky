@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config.auth;
+package com.eunsil.bookmarky.global.config.auth;
 
 import com.eunsil.bookmarky.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

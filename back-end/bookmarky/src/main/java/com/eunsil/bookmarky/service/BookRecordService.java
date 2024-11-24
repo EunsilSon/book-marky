@@ -1,7 +1,7 @@
 package com.eunsil.bookmarky.service;
 
-import com.eunsil.bookmarky.config.security.SecurityUtil;
-import com.eunsil.bookmarky.config.filter.FilterManager;
+import com.eunsil.bookmarky.global.config.security.SecurityUtil;
+import com.eunsil.bookmarky.global.config.filter.FilterManager;
 import com.eunsil.bookmarky.domain.dto.BookDTO;
 import com.eunsil.bookmarky.domain.dto.BookSimpleDTO;
 import com.eunsil.bookmarky.domain.entity.Book;

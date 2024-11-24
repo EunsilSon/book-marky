@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config.auth;
+package com.eunsil.bookmarky.global.config.auth;
 
 import com.eunsil.bookmarky.domain.entity.User;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,8 +1,8 @@
-package com.eunsil.bookmarky.config.security;
+package com.eunsil.bookmarky.global.config.security;
 
-import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationFailureHandler;
-import com.eunsil.bookmarky.config.auth.handler.CustomAuthenticationSuccessHandler;
-import com.eunsil.bookmarky.config.auth.handler.CustomLogoutSuccessHandler;
+import com.eunsil.bookmarky.global.config.auth.handler.CustomAuthenticationFailureHandler;
+import com.eunsil.bookmarky.global.config.auth.handler.CustomAuthenticationSuccessHandler;
+import com.eunsil.bookmarky.global.config.auth.handler.CustomLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,16 +46,16 @@ public class SecurityConfig {
                 .cors((cors) -> cors
                         .configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login"
-                                , "/logout"
-                                , "/registration"
-                                , "/registration/username/{username}"
-                                , "/registration/nickname/{nickname}"
-                                , "/registration/telephone/{telephone}"
-                                , "/user"
-                                , "/user/mail/{username}"
-                                , "/user/question/{username}"
-                                , "/user/question"
+                        .requestMatchers(
+                                "/login",
+                                "/logout",
+                                "/registration",
+                                "/registration/username/{username}",
+                                "/registration/nickname/{nickname}",
+                                "/registration/telephone/{telephone}",
+                                "/user", "/user/mail/{username}",
+                                "/user/question/{username}",
+                                "/user/question"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login -> login

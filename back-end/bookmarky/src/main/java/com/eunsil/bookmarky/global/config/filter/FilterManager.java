@@ -1,4 +1,4 @@
-package com.eunsil.bookmarky.config.filter;
+package com.eunsil.bookmarky.global.config.filter;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;

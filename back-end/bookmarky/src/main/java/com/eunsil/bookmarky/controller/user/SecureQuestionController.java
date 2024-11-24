@@ -1,8 +1,8 @@
 package com.eunsil.bookmarky.controller.user;
 
 import com.eunsil.bookmarky.domain.vo.SecureQuestionVO;
-import com.eunsil.bookmarky.response.ApiResponse;
-import com.eunsil.bookmarky.response.ResponseUtil;
+import com.eunsil.bookmarky.global.response.ApiResponse;
+import com.eunsil.bookmarky.global.response.ResponseUtil;
 import com.eunsil.bookmarky.service.user.SecureQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
