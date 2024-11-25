@@ -1,9 +1,7 @@
 # 북마키 (BookMarky)
-- 마지막 업데이트 일자는 **24.11.20**이며, 추가 및 수정하고자 하는 사항이 있을 때마다 수시로 개발 중입니다.  
 - 개발 완료 된 사항들은 `main` 브랜치에서 확인 가능합니다.
-
 - Front-end: 서버 연동, 응답 데이터 렌더링 완료
-- Back-end: 인증, CRUD, Soft Delete, 예외 처리, 로깅 완료
+- Back-end: 인증, CRUD, Soft Delete, 예외 처리, 로깅, 캐싱 완료
 
 <br>
 
@@ -52,7 +50,7 @@
 |  | Spring Data JPA |  |
 |  | Spring Security | 사용자 인증 |
 |  | Spring AOP | 호출된 API, 수행 시간 파악 |
-|  | Spring Cache | 저장한 책 개수 조회 기능 |
+|  | Spring Cache | 저장한 책 개수 조회 |
 |  | JavaMailSender | 이메일 생성 및 전송 |
 |  | Redis | 토큰 발급 및 관리 |
 |  | MySQL |  |
@@ -91,4 +89,4 @@
 <br>
 
 # ERD
-<img width="100%" alt="erd" src="https://github.com/user-attachments/assets/204b616a-b070-4671-9b5a-6b677e1afd41">
+<img width="100%" alt="erd" src="https://github.com/user-attachments/assets/64bc4b16-64b9-4617-847e-715a28c2e8b0">
