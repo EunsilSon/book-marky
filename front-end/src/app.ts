@@ -2,7 +2,7 @@ import { getButtonElement } from '../dist/utils/domUtils.js';
 
 const moveToLogin = (event: Event) => {
     event.preventDefault();
-    window.location.href = '/front-end/html/auth/index.html';
+    window.location.href = '/html/auth/index.html';
 }
 
 if (getButtonElement('move-to-login')) {

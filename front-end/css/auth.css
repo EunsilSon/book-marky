@@ -1,0 +1,92 @@
+html {
+    height: 100%;
+    margin: 0;
+    background-color: #eeeeee;
+}
+
+#service-title {
+    margin-top: 30px;
+    margin-bottom: 50px;
+    text-align: center;
+    font-weight: bold;
+    color: rgb(223, 98, 26);
+}
+
+#page-title {
+    margin-left: 350px;
+    margin-bottom: 10px;
+}
+
+#main-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-box h1 {
+    text-align: left;
+}
+
+#main-box p {
+    margin-bottom: 20px;
+    color: dimgray;
+}
+
+#sub-box {
+    width: 1000px;
+    padding-top: 50px;
+    padding-bottom: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: 2px;
+    border-top: solid 5px rgb(253, 115, 36);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: white;
+}
+
+form {
+    display: flex;
+    flex-flow: column;
+}
+
+#input-box input {
+    width: 330px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+#input-box button {
+    margin-top: 30px;
+    padding: 10px;
+    border: 0px;
+    border-radius: 3px;
+    color: white;
+    font-weight: bold;
+    background: #FB7552;
+    cursor: pointer;
+}
+
+#input-box button:hover {
+    background-color: #ff9277;
+}
+
+#btn-box {
+    margin-top: 20px;
+}
+
+#btn-box button {
+    border: 0px;
+    padding: 10px;
+    background-color: white;
+}
+
+#btn-box button:hover {
+    color: rgb(253, 114, 33);
+}
+
+select {
+    padding: 10px;
+    margin-bottom: 5px;
+}

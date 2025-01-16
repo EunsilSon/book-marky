@@ -35,9 +35,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { getAllBooks } from '../services/bookService.js';
-import { getNickname } from '../services/authService.js';
+import { logout, getNickname } from '../services/authService.js';
 import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
-import { getButtonElement } from '../utils/domUtils.js';
+import { getButtonElement, showAlert } from '../utils/domUtils.js';
+var logoutElement = getButtonElement('logout');
 var createPassageBtn = getButtonElement('create-passage');
 var deletedPassageBtn = getButtonElement('deleted-passage');
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -64,6 +65,26 @@ var moveToDeletedPassage = function (event) {
     event.preventDefault();
     window.location.href = '../passage/deleted.html';
 };
+var logoutProcess = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                event.preventDefault();
+                return [4 /*yield*/, logout()];
+            case 1:
+                response = _a.sent();
+                if (response.status == 200) {
+                    showAlert('로그아웃 되었습니다.');
+                    localStorage.removeItem('username');
+                    window.history.replaceState(null, '', '/front-end/html/auth/index.html');
+                    window.location.href = '/front-end/html/auth/index.html';
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+logoutElement.addEventListener('click', logoutProcess);
 createPassageBtn.addEventListener('click', moveToCreatePassage);
 deletedPassageBtn.addEventListener('click', moveToDeletedPassage);
 //# sourceMappingURL=BookForm.js.map

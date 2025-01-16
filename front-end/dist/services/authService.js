@@ -69,31 +69,30 @@ export var login = function (user) { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
-export var join = function (user) { return __awaiter(void 0, void 0, void 0, function () {
+export var logout = function () { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("registration", user)];
+                return [4 /*yield*/, instance.post("logout")];
             case 1:
                 response = _a.sent();
-                return [2 /*return*/, response.data];
+                return [2 /*return*/, response];
             case 2:
                 error_2 = _a.sent();
-                handleError(error_2);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, error_2.response];
             case 3: return [2 /*return*/];
         }
     });
 }); };
-export var checkDuplicateUsername = function (username) { return __awaiter(void 0, void 0, void 0, function () {
+export var join = function (user) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("registration/username/".concat(username))];
+                return [4 /*yield*/, instance.post("registration", user)];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -105,13 +104,13 @@ export var checkDuplicateUsername = function (username) { return __awaiter(void 
         }
     });
 }); };
-export var checkDuplicateNickname = function (nickname) { return __awaiter(void 0, void 0, void 0, function () {
+export var checkDuplicateUsername = function (username) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("registration/nickname/".concat(nickname))];
+                return [4 /*yield*/, instance.post("registration/username/".concat(username))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -123,13 +122,13 @@ export var checkDuplicateNickname = function (nickname) { return __awaiter(void 
         }
     });
 }); };
-export var checkDuplicateTel = function (telephone) { return __awaiter(void 0, void 0, void 0, function () {
+export var checkDuplicateNickname = function (nickname) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("registration/telephone/".concat(telephone))];
+                return [4 /*yield*/, instance.post("registration/nickname/".concat(nickname))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response.data];
@@ -141,30 +140,31 @@ export var checkDuplicateTel = function (telephone) { return __awaiter(void 0, v
         }
     });
 }); };
-export var requestPasswordMail = function (username) { return __awaiter(void 0, void 0, void 0, function () {
+export var checkDuplicateTel = function (telephone) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.get("user/mail/".concat(username))];
+                return [4 /*yield*/, instance.post("registration/telephone/".concat(telephone))];
             case 1:
                 response = _a.sent();
-                return [2 /*return*/, response];
+                return [2 /*return*/, response.data];
             case 2:
                 error_6 = _a.sent();
-                return [2 /*return*/, error_6.response];
+                handleError(error_6);
+                return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); };
-export var getSecureQuestion = function (username) { return __awaiter(void 0, void 0, void 0, function () {
+export var requestPasswordMail = function (username) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_7;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.get("user/question/".concat(username))];
+                return [4 /*yield*/, instance.get("user/mail/".concat(username))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response];
@@ -175,13 +175,13 @@ export var getSecureQuestion = function (username) { return __awaiter(void 0, vo
         }
     });
 }); };
-export var checkSecureQuestion = function (userPasswordAnswer) { return __awaiter(void 0, void 0, void 0, function () {
+export var getSecureQuestion = function (username) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_8;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("user/question", userPasswordAnswer)];
+                return [4 /*yield*/, instance.get("user/question/".concat(username))];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response];
@@ -192,13 +192,13 @@ export var checkSecureQuestion = function (userPasswordAnswer) { return __awaite
         }
     });
 }); };
-export var updatePassword = function (userPasswordToken) { return __awaiter(void 0, void 0, void 0, function () {
+export var checkSecureQuestion = function (userPasswordAnswer) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_9;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, instance.post("user", userPasswordToken)];
+                return [4 /*yield*/, instance.post("user/question", userPasswordAnswer)];
             case 1:
                 response = _a.sent();
                 return [2 /*return*/, response];
@@ -209,8 +209,25 @@ export var updatePassword = function (userPasswordToken) { return __awaiter(void
         }
     });
 }); };
-export var getNickname = function () { return __awaiter(void 0, void 0, void 0, function () {
+export var updatePassword = function (userPasswordToken) { return __awaiter(void 0, void 0, void 0, function () {
     var response, error_10;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, instance.post("user", userPasswordToken)];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response];
+            case 2:
+                error_10 = _a.sent();
+                return [2 /*return*/, error_10.response];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+export var getNickname = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_11;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -220,8 +237,8 @@ export var getNickname = function () { return __awaiter(void 0, void 0, void 0, 
                 response = _a.sent();
                 return [2 /*return*/, response];
             case 2:
-                error_10 = _a.sent();
-                return [2 /*return*/, error_10.response];
+                error_11 = _a.sent();
+                return [2 /*return*/, error_11.response];
             case 3: return [2 /*return*/];
         }
     });
