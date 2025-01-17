@@ -1,5 +1,4 @@
 import { getElementById } from './domUtils.js';
-import { searchBooksProcess } from '../components/SearchBookForm.js';
 
 export const renderNickname = (elementId: string, nickname: string) => {
     const element = getElementById(elementId);
@@ -7,26 +6,32 @@ export const renderNickname = (elementId: string, nickname: string) => {
 }
 
 export const renderBooks = (books: Book[]) => {
-    const container = getElementById('book-list-container');
-    container.innerHTML = '';
 
-    books.forEach(book => {
-        const bookDiv = document.createElement('div');
-        bookDiv.classList.add('book-item');
+    if (books == null) {
+        console.log("없음");
+    } else {
+        const container = getElementById('book-list-container');
+        container.innerHTML = '';
 
-        const imgElement = document.createElement('img');
-        imgElement.src = book.image;
-        imgElement.alt = book.title;
-        imgElement.style.width = '150px';
-        imgElement.id = book.id;
+        books.forEach(book => {
+            const bookDiv = document.createElement('div');
+            bookDiv.classList.add('book-item');
 
-        bookDiv.addEventListener('click', () => {
-            window.location.href = `../passage/all.html?id=${book.id}`;
-        });
+            const imgElement = document.createElement('img');
+            imgElement.src = book.image;
+            imgElement.alt = book.title;
+            imgElement.style.width = '150px';
+            imgElement.id = book.id;
 
-        bookDiv.appendChild(imgElement);
-        container.appendChild(bookDiv);
-    })
+            bookDiv.addEventListener('click', () => {
+                window.location.href = `../passage/all.html?id=${book.id}`;
+            });
+
+            bookDiv.appendChild(imgElement);
+            container.appendChild(bookDiv);
+        })
+    }
+    
 }
 
 export const renderBookDetail = (book: Book) => {
@@ -182,6 +187,7 @@ export const renderSearchBooks = (title: string, books: Book[]) => {
         pageBtn.innerText = '더보기';
 
         pageBtn.addEventListener('click', async () => {
+            const { searchBooksProcess } = await import('../components/SearchBookForm.js');
             renderSearchBooks(title, await searchBooksProcess(title));
         });
     }
