@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Bookmarky</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/book.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module" src="../../dist/components/PassageForm.js"></script>
 </head>
 
 <body>
-    <button type="click" id="back">◀ 메인페이지</button>
+    <div id="top-menu-box">
+        <button type="click" id="back">◀ 메인페이지</button>
+        <h1 id="yes-login-app-name">BOOKMARKY</h1>
+    </div>
     <div id="book-detail-container"></div>
     <div id="passages-container"></div>
 </body>

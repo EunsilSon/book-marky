@@ -19,6 +19,9 @@ export const login = async (user: User): Promise<any> => {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        
+        console.log(response);
+
         return response;
 
     } catch (error) {
@@ -51,7 +54,7 @@ export const join = async (user: User) => {
 
 export const checkDuplicateUsername = async (username: string) => {
     try {
-        const response = await instance.post(`registration/username/${username}`);
+        const response = await instance.post(`registration/username`, username);
         return response.data;
 
     } catch (error) {
@@ -61,7 +64,7 @@ export const checkDuplicateUsername = async (username: string) => {
 
 export const checkDuplicateNickname = async (nickname: string) => {
     try {
-        const response = await instance.post(`registration/nickname/${nickname}`);
+        const response = await instance.post(`registration/nickname`, nickname);
         return response.data;
 
     } catch (error) {
@@ -71,7 +74,7 @@ export const checkDuplicateNickname = async (nickname: string) => {
 
 export const checkDuplicateTel = async (telephone: string) => {
     try {
-        const response = await instance.post(`registration/telephone/${telephone}`);
+        const response = await instance.post(`registration/telephone`, telephone);
         return response.data;
 
     } catch (error) {
@@ -118,7 +121,7 @@ export const updatePassword = async (userPasswordToken: UserPasswordToken) => {
 export const getNickname = async () => {
     try {
         const response = await instance.get(`user/nickname`);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }

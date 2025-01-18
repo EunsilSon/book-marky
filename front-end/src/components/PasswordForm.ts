@@ -95,7 +95,7 @@ if (updateBtn) {
 
             if (response.status == 200) {
                 showAlert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
-                window.location.href = '/front-end/html/auth/index.html';
+                window.location.href = '/html/auth/index.html';
             } else {
                 showAlert('토큰이 만료되었습니다.');
                 console.log(response.data);

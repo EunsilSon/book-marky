@@ -16,11 +16,9 @@ const loginFormProcess = async (event: Event) => {
             username: usernameValue,
             password: passwordValue,
         });
-        console.log('Login Result:', response);
 
         if (response.status == 200) {
             localStorage.setItem('username', response.data);
-            showAlert('로그인에 성공했습니다. 메인 페이지로 이동합니다.');
             window.location.href = '/html/book/index.html';
         }
 

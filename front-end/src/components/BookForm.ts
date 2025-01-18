@@ -1,18 +1,32 @@
 import { getAllBooks } from '../services/bookService.js';
 import { logout, getNickname } from '../services/authService.js';
 import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
-import { getButtonElement, showAlert } from '../utils/domUtils.js';
+import { getElementById, getButtonElement, showAlert } from '../utils/domUtils.js';
 
-const logoutElement = getButtonElement('logout');
-const createPassageBtn = getButtonElement('create-passage');
-const deletedPassageBtn = getButtonElement('deleted-passage');
+let page = -1;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const nicknameResponse = await getNickname();
-    renderNickname('nickname', nicknameResponse.data);
+    const nameElement = getElementById('nickname');
+    if (nameElement) {
+        const nicknameResponse = await getNickname();
+        renderNickname(nicknameResponse.data);
+        getNextAllBooksProcess();
+    }
 
-    const booksResponse = await getAllBooks('id', 0);
-    renderBooks(booksResponse);
+    const logoutElement = getButtonElement('logout');
+    if (logoutElement) {
+        logoutElement.addEventListener('click', logoutProcess);
+    }
+
+    const createPassageBtn = getButtonElement('create-passage');
+    if (createPassageBtn) {
+        createPassageBtn.addEventListener('click', moveToCreatePassage);
+    }
+
+    const deletedPassageBtn = getButtonElement('deleted-passage');
+    if (deletedPassageBtn) {
+        deletedPassageBtn.addEventListener('click', moveToDeletedPassage);
+    }
 })
 
 const moveToCreatePassage = (event: Event) => {
@@ -34,11 +48,21 @@ const logoutProcess = async (event: Event) => {
         showAlert('로그아웃 되었습니다.');
 
         localStorage.removeItem('username');
-        window.history.replaceState(null, '', '/front-end/html/auth/index.html');
-        window.location.href = '/front-end/html/auth/index.html';
+        window.history.replaceState(null, '', '/html/auth/index.html');
+        window.location.href = '/html/auth/index.html';
     }
 }
 
-logoutElement.addEventListener('click', logoutProcess);
-createPassageBtn.addEventListener('click', moveToCreatePassage);
-deletedPassageBtn.addEventListener('click', moveToDeletedPassage);
+export const getNextAllBooksProcess = async () => {
+    const booksResponse = await getAllBooks('id', ++page);
+    renderBooks(booksResponse);
+}
+
+export const getPrevAllBooksProcess = async () => {
+    const booksResponse = await getAllBooks('id', --page);
+    renderBooks(booksResponse);
+}
+
+export function getPageNumber(): number {
+    return page;
+}

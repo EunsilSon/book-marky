@@ -8,7 +8,7 @@ const instance = axios.create({
 export const getPassages = async (bookId: string, page: number) => {
     try {
         const response = await instance.get(`passages?bookId=${bookId}&order=id&page=${page}`);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -17,7 +17,7 @@ export const getPassages = async (bookId: string, page: number) => {
 export const getPassageDetail = async (passageId: string) => {
     try {
         const response = await instance.get(`passage/${passageId}`);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -26,7 +26,7 @@ export const getPassageDetail = async (passageId: string) => {
 export const getDeletedPassages = async () => {
     try {
         const response = await instance.get(`passages/deleted`);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -39,7 +39,7 @@ export const updatePassage = async (passage: Passage) => {
             content: passage.content,
             pageNum: passage.pageNum,
         });
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -49,7 +49,7 @@ export const updatePassage = async (passage: Passage) => {
 export const deletePassage = async (passageId: string) => {
     try {
         const response = await instance.delete(`passage/${passageId}`);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -58,7 +58,7 @@ export const deletePassage = async (passageId: string) => {
 export const createPassage = async (newPassage: NewPassage) => {
     try {
         const response = await instance.post(`passage`, newPassage);
-        console.log(response);
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -67,7 +67,7 @@ export const createPassage = async (newPassage: NewPassage) => {
 export const restorePassage = async (passageId: string) => {
     try {
         const response = await instance.get(`passage/restore/${passageId}`);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }

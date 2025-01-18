@@ -1,0 +1,67 @@
+#logout {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff6b6b;
+    color: white;
+    cursor: pointer;
+}
+
+#sub-box {
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 2px;
+}
+
+#book-list-container {
+    height: 300px;
+    padding: 50px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}
+
+.book-list {
+    display: flex;
+    justify-content: center;
+}
+
+.book-list img {
+    width: 180px;
+    object-fit: fill;
+    cursor: pointer;
+    margin-right: 30px;
+}
+
+#book-menu-box {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 10px;
+}
+
+#main-box button {
+    margin: 5px;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    border: #fe5454 1px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fe5454;
+    background: #f8f9fa;
+}
+
+#main-box button:hover {
+    background-color: #ffe3e3;
+}
+
+#page-button-box {
+    display: flex;
+    justify-content: center;
+}

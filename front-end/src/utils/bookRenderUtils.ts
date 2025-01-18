@@ -1,38 +1,86 @@
 import { getElementById } from './domUtils.js';
+import { getNextAllBooksProcess, getPrevAllBooksProcess, getPageNumber } from '../components/BookForm.js';
+import { getBookCount } from '../services/bookService.js';
 
-export const renderNickname = (elementId: string, nickname: string) => {
-    const element = getElementById(elementId);
-    element.textContent = nickname + '님의 Bookmarky';
+export const renderNickname = (nickname: string) => {
+    const name = getElementById('nickname');
+    name.textContent = nickname + '님의 책장';
 }
 
-export const renderBooks = (books: Book[]) => {
+const setupPrevPageButton = (pageButtonBox: HTMLElement, currentPage: number) => {
+    let prevPageBtn = document.getElementById('prev-page-btn') as HTMLButtonElement;
 
-    if (books == null) {
-        console.log("없음");
-    } else {
-        const container = getElementById('book-list-container');
-        container.innerHTML = '';
+    if (!prevPageBtn) {
+        prevPageBtn = document.createElement('button');
+        prevPageBtn.id = 'prev-page-btn';
+        prevPageBtn.innerText = '이전 페이지';
+        prevPageBtn.addEventListener('click', async () => {
+            await getPrevAllBooksProcess();
+        });
+        pageButtonBox.appendChild(prevPageBtn);
+    }
+
+    prevPageBtn.style.display = currentPage >= 1 ? 'block' : 'none';
+};
+
+const setupNextPageButton = (pageButtonBox: HTMLElement, currentPage: number) => {
+    let nextPageBtn = document.getElementById('next-page-btn') as HTMLButtonElement;
+
+    if (!nextPageBtn) {
+        nextPageBtn = document.createElement('button');
+        nextPageBtn.id = 'next-page-btn';
+        nextPageBtn.innerText = '다음 페이지';
+        nextPageBtn.addEventListener('click', async () => {
+            await getNextAllBooksProcess();
+        });
+        pageButtonBox.appendChild(nextPageBtn);
+    }
+
+    getBookCount()
+    .then(bookCount => {
+        let totalBookPage = Math.round(bookCount.data / 5);
+        nextPageBtn.style.display = currentPage >= totalBookPage ? 'none' : 'block';
+    })
+    .catch(error => {
+        console.error('ERROR total book page:', error);
+    });
+};
+
+const renderBookList = (container: HTMLElement, books: Book[]) => {
+    container.innerHTML = '';
+
+    if (books) {
+        const div = document.createElement('div');
+        div.classList.add('book-list');
 
         books.forEach(book => {
-            const bookDiv = document.createElement('div');
-            bookDiv.classList.add('book-item');
-
             const imgElement = document.createElement('img');
             imgElement.src = book.image;
             imgElement.alt = book.title;
-            imgElement.style.width = '150px';
-            imgElement.id = book.id;
 
-            bookDiv.addEventListener('click', () => {
+            imgElement.addEventListener('click', () => {
                 window.location.href = `../passage/all.html?id=${book.id}`;
             });
 
-            bookDiv.appendChild(imgElement);
-            container.appendChild(bookDiv);
-        })
+            div.appendChild(imgElement);
+        });
+
+        container.appendChild(div);
+    } else {
+        container.innerHTML = '<p>비어있음</p>';
     }
-    
-}
+};
+
+export const renderBooks = (books: Book[]) => {
+    const container = document.getElementById('book-list-container');
+    const mainBox = document.getElementById('main-box');
+    const pageButtonBox = document.getElementById('page-button-box');
+
+    let currentPage = getPageNumber();
+    setupPrevPageButton(pageButtonBox, currentPage);
+    setupNextPageButton(pageButtonBox, currentPage);
+    renderBookList(container, books);
+};
 
 export const renderBookDetail = (book: Book) => {
     const container = document.getElementById('book-detail-container');
@@ -104,7 +152,7 @@ export const renderBookDetail = (book: Book) => {
 export const renderSearchBooks = (title: string, books: Book[]) => {
     const titleDiv = document.getElementById('search-title-div');
     
-    if (titleDiv.children.length == 0) { // 페이지의 제목은 한 번만 출력
+    if (titleDiv.children.length == 0) {
         const titleH = document.createElement('h1');
         titleH.innerText = title;
         const noticeMessage = document.createElement('p');
@@ -180,17 +228,12 @@ export const renderSearchBooks = (title: string, books: Book[]) => {
     });
 
     // 더보기 버튼
-    let pageBtn = document.getElementById('page-btn');
-    if (!pageBtn) {
-        pageBtn = document.createElement('button');
-        pageBtn.id = 'page-btn';
-        pageBtn.innerText = '더보기';
+    let pageBtn = document.getElementById('search-book-page-btn');
 
-        pageBtn.addEventListener('click', async () => {
-            const { searchBooksProcess } = await import('../components/SearchBookForm.js');
-            renderSearchBooks(title, await searchBooksProcess(title));
-        });
-    }
+    pageBtn.addEventListener('click', async () => {
+        const { searchBooksProcess } = await import('../components/SearchBookForm.js');
+        renderSearchBooks(title, await searchBooksProcess(title));
+    });
 
     resultDiv.appendChild(pageBtn);
 };

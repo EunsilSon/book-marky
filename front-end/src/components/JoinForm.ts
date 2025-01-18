@@ -13,8 +13,9 @@ const checkUsername = async (event: Event) => {
 
     try {
         const response = await checkDuplicateUsername(usernameInput.value);
+        console.log(response);
 
-        if (response) {
+        if (response.status == 409) {
             showAlert('중복되는 아이디입니다. 다시 입력하세요.')
             usernameInput.value = '';
         }
@@ -32,9 +33,9 @@ const checkNickname = async (event: Event) => {
     try {
         const response = await checkDuplicateNickname(nicknameInput.value);
 
-        if (response) {
+        if (response.status == 409) {
             showAlert('중복되는 닉네임입니다. 다시 입력하세요.')
-            usernameInput.value = '';
+            nicknameInput.value = '';
         }
 
     } catch (error) {
@@ -50,9 +51,9 @@ const checkTelephone = async (event: Event) => {
     try {
         const response = await checkDuplicateTel(telephoneInput.value);
 
-        if (response) {
+        if (response.status == 409) {
             showAlert('중복되는 연락처입니다. 다시 입력하세요.')
-            usernameInput.value = '';
+            telephoneInput.value = '';
         }
 
     } catch (error) {
@@ -70,7 +71,7 @@ const joinFormProcess = async (event: Event) => {
     const telephoneValue = telephoneInput.value;
     const passwordValue = getInputValue('password');
     const secureQuestionIdValue = getInputValue('secure-question-id');
-    const answerContentValue = getInputValue('answer-content');
+    const answerValue = getInputValue('answer');
 
     try {
         const response = await join({
@@ -79,9 +80,13 @@ const joinFormProcess = async (event: Event) => {
             nickname: nicknameValue,
             telephone: telephoneValue,
             secureQuestionId: secureQuestionIdValue,
-            answerContent: answerContentValue,
+            answerContent: answerValue,
         });
-        console.log('Join Result:', response);
+
+        if (response.status == 200) {
+            showAlert('회원 가입이 완료됐습니다. 로그인 페이지로 이동합니다.')
+            window.location.href = '/html/auth/index.html';
+        }
 
     } catch (error) {
         showError('Join failed. Please check your credentials.');

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const bookId = new URLSearchParams(window.location.search).get('id');
 
         const bookResponse = await getBookDetail(bookId);
-        renderBookDetail(bookResponse);
+        renderBookDetail(bookResponse.data);
 
         const passagesResponse = await getPassages(bookId, 0);
         renderPassages(passagesResponse.data);
@@ -58,7 +58,7 @@ export const createPassageProcess = async (isbn: string, content: string, pageNu
             content,
             pageNum,
         };
-        createPassage(newPassage);
+        return createPassage(newPassage);
     } catch (error) {
         return showError(error);
     }
@@ -66,7 +66,7 @@ export const createPassageProcess = async (isbn: string, content: string, pageNu
 
 export const deletedPassageProcess = async () => {
     try {
-        const response = getDeletedPassages();
+        getDeletedPassages();
         showAlert('삭제되었습니다. 이전 페이지로 이동합니다.');
         window.history.back();
     } catch (error) {
@@ -76,7 +76,7 @@ export const deletedPassageProcess = async () => {
 
 export const restorePassageProcess = async (passageId: string) => {
     try {
-        const response = restorePassage(passageId);
+        restorePassage(passageId);
         showAlert('복구되었습니다. 메인 페이지로 이동합니다.');
         window.location.href = `../../html/book/index.html`;
     } catch (error) {

@@ -9,6 +9,7 @@ export const renderPassages = (passages: Passage[]) => {
     passages.forEach(passage => {
         const link = document.createElement('a');
         link.href = `../passage/detail.html?id=${passage.id}`;
+        // style은 css로 하기
         link.style.textDecoration = 'none';
         link.style.cursor = 'pointer';
         link.style.color = 'inherit';
@@ -16,10 +17,10 @@ export const renderPassages = (passages: Passage[]) => {
         const passageDiv = document.createElement('div');
         passageDiv.classList.add('passage-item');
 
-        const passageElement = document.createElement('p');
-        passageElement.innerText = `${passage.content}`;
+        const passageContent = document.createElement('p');
+        passageContent.innerText = `${passage.content}`;
 
-        passageDiv.appendChild(passageElement);
+        passageDiv.appendChild(passageContent);
         link.appendChild(passageDiv);
         container.appendChild(link);
     });
@@ -34,6 +35,7 @@ export const renderPassageDetail = (passage: Passage, isEditing: boolean) => {
 
     // 수정 모드
     if (isEditing) {
+        const editTitle = document.createElement('p');
         const pageNumInput = document.createElement('textarea');
         pageNumInput.value = passage.pageNum;
         contentDiv.appendChild(pageNumInput);
@@ -107,20 +109,25 @@ export const renderPassageDetail = (passage: Passage, isEditing: boolean) => {
 
 export const renderPassageForm = () => {
     const container = document.getElementById('passage-creation-container');
-    container.innerHTML = '';
 
     // 책 제목
     const bookTitleDiv = document.createElement('div');
+
     const bookTitleLabel = document.createElement('label');
     bookTitleLabel.innerText = '책 제목';
+
     const bookTitleInput = document.createElement('input');
     bookTitleInput.id = 'book-title';
 
-    const selectedTitle = localStorage.getItem('title'); // 책 검색을 통해 선택한 책의 제목 출력
+    if (localStorage.getItem('title')) {
+        bookTitleInput.id = localStorage.getItem('title');
+    } else {
+        bookTitleInput.innerText = '';
+    }
+
+    const selectedTitle = localStorage.getItem('title');
     if (selectedTitle) {
-        console.log(selectedTitle);
         bookTitleInput.value = selectedTitle;
-        //localStorage.removeItem('title');
     }
 
     bookTitleDiv.appendChild(bookTitleLabel);
@@ -144,7 +151,7 @@ export const renderPassageForm = () => {
         if (title) {
             window.location.href = `../book/search.html?title=${bookTitleInput.value}`;
         } else {
-            showAlert('검색 할 책 제목을 입력하세요.');
+            showAlert('검색할 책 제목을 입력하세요.');
         }
     });
     searchBookDiv.appendChild(searchBookBtn);
@@ -174,16 +181,24 @@ export const renderPassageForm = () => {
 
         localStorage.removeItem('isbn');
 
-        createPassageProcess(isbn, content, pageNum);
-
-        showAlert('생성이 완료되었습니다. 메인 페이지로 이동합니다.');
-        window.location.href = `../book/index.html`;
+        createPassageProcess(isbn, content, pageNum)
+        .then(response => {
+            if (response.status == 200) {
+                showAlert('생성이 완료되었습니다. 메인 페이지로 이동합니다.');
+                window.location.href = `../book/index.html`;
+            } else {
+                console.log(response);
+            }
+        })
+        .catch((error) => {
+            console.log('데이터를 가져오는 중 오류 발생:', error);
+        })
     });
-    saveDiv.appendChild(saveButton);
 
+    saveDiv.appendChild(saveButton);
     container.appendChild(bookTitleDiv);
-    container.appendChild(getBookDiv);
     container.appendChild(searchBookDiv);
+    container.appendChild(getBookDiv);
     container.appendChild(contentDiv);
     container.appendChild(pageDiv);
     container.appendChild(saveDiv);
@@ -192,7 +207,6 @@ export const renderPassageForm = () => {
     const renderOptions = async () => {
         try {
             const response = await getSavedBooks();
-            console.log(response);
             const bookTitles = response.data;
 
             const existingSelect = document.getElementById('book-title-options');
@@ -242,7 +256,7 @@ export const renderDeletedPassages = (passages: DeletedPassage[]) => {
         const bookDiv = document.createElement('div');
         bookDiv.className = 'book';
         const bookP = document.createElement('p');
-        bookP.textContent = `책 제목: ${passage.bookId}`;
+        bookP.textContent = `${passage.title}`;
         bookDiv.appendChild(bookP);
 
         const contentDiv = document.createElement('div');

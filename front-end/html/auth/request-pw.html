@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Bookmarky</title>
+    <link rel="stylesheet" href="../../css/common.css">
     <link rel="stylesheet" href="../../css/auth.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
@@ -12,19 +13,19 @@
 </head>
 
 <body>
-    <h1 id="service-title">BOOKMARKY</h1>
-    <h1 id="page-title">비밀번호 찾기</h1>
+    <h1 id="no-login-app-name">BOOKMARKY</h1>
     <div id="main-box">
         <div id="sub-box">
-            <p>비밀번호를 찾고자하는 이메일을 입력해주세요.</p>
+            <h1>비밀번호 찾기</h1>
             <div id="input-box">
+                <p>비밀번호를 찾고자하는 이메일을 입력해주세요.</p>
                 <form id="pw-mail-form">
                     <input type="email" id="username" name="username" placeholder="이메일" required>
                     <button id="pw-mail-submit" type="submit">발송하기</button>
                 </form>
-            </div>
-            <div id="btn-box">
-                <button id="move-to-login">뒤로가기</button>
+                <div id="btn-box">
+                    <button id="move-to-login">뒤로가기</button>
+                </div>
             </div>
         </div>
     </div>
