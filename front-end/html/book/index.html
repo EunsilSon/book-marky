@@ -7,6 +7,7 @@
     <title>Bookmarky</title>
     <link rel="stylesheet" href="../../css/common.css">
     <link rel="stylesheet" href="../../css/book.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module" src="../../dist/components/BookForm.js"></script>
@@ -25,7 +26,10 @@
                 <button type="click" id="deleted-passage">최근 삭제 내역 보기</button>
             </div>
             <div id="book-list-container"></div>
-            <div id="page-button-box"></div>
+            <div id="page-navigate-box">
+                <button id="prev">◀ 이전</button>
+                <button id="next">다음 ▶</button>
+            </div>
         </div>
     </div>
 </body>

@@ -1,3 +1,5 @@
+declare var swal: any;
+
 import { join, checkDuplicateUsername, checkDuplicateNickname, checkDuplicateTel } from '../services/authService.js';
 import { getFormElement, getInputElement, getInputValue, showError, showAlert } from '../utils/domUtils.js';
 
@@ -16,7 +18,7 @@ const checkUsername = async (event: Event) => {
         console.log(response);
 
         if (response.status == 409) {
-            showAlert('중복되는 아이디입니다. 다시 입력하세요.')
+            swal("중복되는 아이디입니다. 다시 입력하세요.", "warning");
             usernameInput.value = '';
         }
 
@@ -34,7 +36,7 @@ const checkNickname = async (event: Event) => {
         const response = await checkDuplicateNickname(nicknameInput.value);
 
         if (response.status == 409) {
-            showAlert('중복되는 닉네임입니다. 다시 입력하세요.')
+            swal("중복되는 닉네임입니다. 다시 입력하세요.", "warning");
             nicknameInput.value = '';
         }
 
@@ -52,7 +54,7 @@ const checkTelephone = async (event: Event) => {
         const response = await checkDuplicateTel(telephoneInput.value);
 
         if (response.status == 409) {
-            showAlert('중복되는 연락처입니다. 다시 입력하세요.')
+            swal("중복되는 연락처입니다. 다시 입력하세요.", "warning");
             telephoneInput.value = '';
         }
 
@@ -84,7 +86,7 @@ const joinFormProcess = async (event: Event) => {
         });
 
         if (response.status == 200) {
-            showAlert('회원 가입이 완료됐습니다. 로그인 페이지로 이동합니다.')
+            swal("회원가입 완료", "로그인 페이지로 이동합니다.", "success");
             window.location.href = '/html/auth/index.html';
         }
 

@@ -6,6 +6,7 @@
     <title>Bookmarky</title>
     <link rel="stylesheet" href="../../css/common.css">
     <link rel="stylesheet" href="../../css/book.css">
+    <link rel="stylesheet" href="../../css/passage.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module" src="../../dist/components/PassageForm.js"></script>
@@ -16,8 +17,13 @@
         <button type="click" id="back">◀ 메인페이지</button>
         <h1 id="yes-login-app-name">BOOKMARKY</h1>
     </div>
-    <div id="book-detail-container"></div>
-    <div id="passages-container"></div>
+    <div id="main-box">
+        <div id="passage-sub-box">
+            <div id="book-detail-container">
+            </div>
+            <div id="passage-container"></div>
+        </div>
+    </div>
 </body>
 
 </html>

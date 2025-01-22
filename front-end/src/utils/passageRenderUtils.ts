@@ -1,24 +1,23 @@
+declare var swal: any;
+
 import { getElementById, showAlert } from "./domUtils.js";
 import { updatePassageProcess, deletePassageProcess, createPassageProcess, restorePassageProcess } from "../components/PassageForm.js";
 import { getSavedBooks } from '../services/bookService.js';
 
 export const renderPassages = (passages: Passage[]) => {
-    const container = getElementById('passages-container');
+    const container = getElementById('passage-container');
     container.innerHTML = '';
 
     passages.forEach(passage => {
         const link = document.createElement('a');
         link.href = `../passage/detail.html?id=${passage.id}`;
-        // style은 css로 하기
-        link.style.textDecoration = 'none';
-        link.style.cursor = 'pointer';
-        link.style.color = 'inherit';
 
         const passageDiv = document.createElement('div');
         passageDiv.classList.add('passage-item');
 
         const passageContent = document.createElement('p');
-        passageContent.innerText = `${passage.content}`;
+        const shortContent = passage.content.length > 50 ? passage.content.substring(0, 50) + '...' : passage.content;
+        passageContent.innerText = shortContent;
 
         passageDiv.appendChild(passageContent);
         link.appendChild(passageDiv);
@@ -27,88 +26,129 @@ export const renderPassages = (passages: Passage[]) => {
 };
 
 export const renderPassageDetail = (passage: Passage, isEditing: boolean) => {
-    const container = getElementById('passage-detail-container');
-    container.innerHTML = '';
+    getElementById('update').style.display = isEditing ? 'none' : 'block';
+    getElementById('delete').style.display = isEditing ? 'none' : 'block';
+    
+    if (isEditing) {
+        switchToEditMode(passage);
+    } else {
+        switchToViewMode(passage);
+    }
+
+    setupButtonEventListeners(passage);
+};
+
+const switchToEditMode = (passage: Passage) => {
+    getElementById('cancel').style.display = 'block';
+    getElementById('save').style.display = 'block';
+
+    const passageDetail = getElementById('passage-detail');
+    passageDetail.innerHTML = '';
+
+    const pageDiv = document.createElement('div');
+    const pageNumInput = document.createElement('textarea');
+    const pageNumLabel = document.createElement('label');
+    pageNumInput.value = passage.pageNum;
+    pageNumInput.id = 'update-page-num';
+    pageNumLabel.innerText = '쪽수';
+
+    pageDiv.appendChild(pageNumLabel);
+    pageDiv.appendChild(pageNumInput);
 
     const contentDiv = document.createElement('div');
-    const editDiv = document.createElement('div');
+    const contentInput = document.createElement('textarea');
+    const contentLabel = document.createElement('label');
+    contentInput.value = passage.content;
+    contentInput.id = 'update-content';
+    contentLabel.innerText = '내용';
 
-    // 수정 모드
-    if (isEditing) {
-        const editTitle = document.createElement('p');
-        const pageNumInput = document.createElement('textarea');
-        pageNumInput.value = passage.pageNum;
-        contentDiv.appendChild(pageNumInput);
+    contentDiv.appendChild(contentLabel);
+    contentDiv.appendChild(contentInput);
 
-        const contentInput = document.createElement('textarea');
-        contentInput.value = passage.content;
-        contentDiv.appendChild(contentInput);
+    passageDetail.appendChild(pageDiv);
+    passageDetail.appendChild(contentDiv);
+};
 
-        const saveBtn = document.createElement('button');
-        saveBtn.innerText = '저장';
+const switchToViewMode = (passage: Passage) => {
+    const passageDetail = getElementById('passage-detail');
+    passageDetail.innerHTML = '';
 
-        saveBtn.addEventListener('click', () => {
-            // 수정된 내용 가져오기
-            const updatedPageNum = pageNumInput.value;
-            const updatedContent = contentInput.value;
+    const pageNumText = document.createElement('p');
+    const contentText = document.createElement('p');
+    pageNumText.innerText = 'page.' + passage.pageNum;
+    contentText.innerText = passage.content;
 
-            // API 호출을 위한 Passage 객체
-            const updatedPassage = { id: passage.id, content: updatedContent, pageNum: updatedPageNum };
-            updatePassageProcess(updatedPassage);
+    pageNumText.id = 'passage-detail-page-num';
+    contentText.id = 'passage-detail-content';
 
-            showAlert('수정되었습니다.');
-            window.location.reload();
-        });
+    passageDetail.appendChild(pageNumText);
+    passageDetail.appendChild(contentText);
+};
 
-        contentDiv.appendChild(saveBtn); // 저장 버튼 추가
-    } else {
-        const pageNumText = document.createElement('p');
-        pageNumText.innerText = passage.pageNum;
-        contentDiv.appendChild(pageNumText);
+const setupButtonEventListeners = (passage: Passage) => {
+    const updateButton = getElementById('update');
+    const deleteButton = getElementById('delete');
+    const saveButton = getElementById('save');
+    const cancelButton = getElementById('cancel');
 
-        const contentText = document.createElement('p');
-        contentText.innerText = passage.content;
-        contentDiv.appendChild(contentText);
-    }
-
-    const updateBtn = document.createElement('button');
-    updateBtn.innerText = '수정';
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.innerText = '삭제';
-
-    updateBtn.addEventListener('click', () => {
-        if (isEditing) {
-            renderPassageDetail(passage, false);
-        } else {
-            renderPassageDetail(passage, true);
-        }
+    updateButton.addEventListener('click', () => {
+        renderPassageDetail(passage, true);
     });
 
-    deleteBtn.addEventListener('click', () => {
-        const confirm = window.confirm('삭제하시겠습니까?');
-
+    deleteButton.addEventListener('click', () => {
+        swal({
+            title: "삭제하시겠습니까?",
+            text: "30일간 보관되며, '최근 삭제한 하이라이트'에서 확인할 수 있습니다.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((confirm) => {
         if (confirm) {
             deletePassageProcess(passage.id);
-            showAlert('삭제되었습니다. 이전 페이지로 이동합니다.');
-            window.history.back();
+            swal({
+                position: "top-end",
+                icon: "success",
+                title: "삭제 완료",
+                timer: 1500
+            })
+            .then(() => {
+                window.history.back();
+            })
         }
+        });
     });
 
-    // 수정 모드일 때는 버튼을 숨김
-    if (isEditing) {
-        updateBtn.style.display = 'none'; // 수정 버튼 숨기기
-        deleteBtn.style.display = 'none'; // 삭제 버튼 숨기기
-    }
+    saveButton.addEventListener('click', () => {
+        const pageNumInput = getElementById('update-page-num') as HTMLTextAreaElement;
+        const contentInput = getElementById('update-content') as HTMLTextAreaElement;
 
-    editDiv.appendChild(updateBtn);
-    editDiv.appendChild(deleteBtn);
-    container.appendChild(contentDiv);
-    container.appendChild(editDiv);
-}
+        const updatedPassage = {
+            id: passage.id,
+            content: contentInput.value,
+            pageNum: pageNumInput.value,
+        };
 
-export const renderPassageForm = () => {
-    const container = document.getElementById('passage-creation-container');
+        updatePassageProcess(updatedPassage);
+
+        swal({
+            position: "top-end",
+            icon: "success",
+            title: "수정 완료",
+            timer: 1500
+        })
+        .then(() => {
+            window.location.reload();
+        })
+    });
+
+    cancelButton.addEventListener('click', () => {
+        window.location.reload();
+    });
+};
+
+export const renderPassageCreateForm = () => {
+    const container = getElementById('passage-creation-container');
 
     // 책 제목
     const bookTitleDiv = document.createElement('div');
@@ -209,7 +249,7 @@ export const renderPassageForm = () => {
             const response = await getSavedBooks();
             const bookTitles = response.data;
 
-            const existingSelect = document.getElementById('book-title-options');
+            const existingSelect = getElementById('book-title-options');
             if (existingSelect) {
                 existingSelect.remove();
             }
@@ -247,7 +287,7 @@ export const renderPassageForm = () => {
 };
 
 export const renderDeletedPassages = (passages: DeletedPassage[]) => {
-    const container = document.getElementById('deleted-passage-container');
+    const container = getElementById('deleted-passage-container');
 
     passages.forEach((passage) => {
         const itemDiv = document.createElement('div');

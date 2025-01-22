@@ -1,16 +1,18 @@
+declare var swal: any;
+
 import { getAllBooks } from '../services/bookService.js';
 import { logout, getNickname } from '../services/authService.js';
 import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
-import { getElementById, getButtonElement, showAlert } from '../utils/domUtils.js';
+import { getElementById, getButtonElement } from '../utils/domUtils.js';
 
-let page = -1;
+let page = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
     const nameElement = getElementById('nickname');
     if (nameElement) {
         const nicknameResponse = await getNickname();
         renderNickname(nicknameResponse.data);
-        getNextAllBooksProcess();
+        renderBooks(await getAllBooks('id', page));
     }
 
     const logoutElement = getButtonElement('logout');
@@ -40,25 +42,26 @@ const moveToDeletedPassage = (event: Event) => {
 }
 
 const logoutProcess = async (event: Event) => {
-    event.preventDefault();
+    event.preventDefault(); 
 
     const response = await logout();
 
     if (response.status == 200) {
-        showAlert('로그아웃 되었습니다.');
-
-        localStorage.removeItem('username');
-        window.history.replaceState(null, '', '/html/auth/index.html');
-        window.location.href = '/html/auth/index.html';
+        swal("로그아웃 되었습니다.", "Have A Book Day!", "success")
+        .then((value) => {
+            localStorage.removeItem('username');
+            window.history.replaceState(null, '', '/html/auth/index.html');
+            window.location.href = '/html/auth/index.html';
+        });
     }
 }
 
-export const getNextAllBooksProcess = async () => {
+export const getNextBooksProcess = async () => {
     const booksResponse = await getAllBooks('id', ++page);
     renderBooks(booksResponse);
 }
 
-export const getPrevAllBooksProcess = async () => {
+export const getPrevBooksProcess = async () => {
     const booksResponse = await getAllBooks('id', --page);
     renderBooks(booksResponse);
 }

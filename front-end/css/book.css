@@ -15,14 +15,56 @@
     width: 1200px;
     display: flex;
     flex-direction: column;
-    border-radius: 2px;
+    border-radius: 5px;
+}
+
+#book-menu-box {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 10px;
+}
+
+#book-menu-box button {
+    margin: 5px;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    border: #fe5454 1.5px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fe5454;
+    background: #f8f9fa;
+}
+
+#book-menu-box button:hover {
+    background-color: #ffe3e3;
+}
+
+#page-navigate-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#page-navigate-box button {
+    border: 0px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fe5454;
+    cursor: pointer;
+}
+
+#page-navigate-box button:disabled {
+    color: #a0a0a0;
+    cursor: text;
 }
 
 #book-list-container {
     height: 300px;
     padding: 50px;
     margin-bottom: 20px;
-    border-radius: 2px;
+    border-radius: 5px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
     background-color: #f8f9fa;
 }
@@ -39,29 +81,78 @@
     margin-right: 30px;
 }
 
-#book-menu-box {
-    display: flex;
-    justify-content: end;
-    margin-bottom: 10px;
+#search-result-box {
+    height: 500px;
+    padding: 50px 50px 30px 50px;
+    margin-bottom: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
 }
 
-#main-box button {
+#search-page-btn {
     margin: 5px;
     padding: 8px 16px;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bold;
-    border: #fe5454 1px solid;
+    border: #fe5454 1.5px solid;
     border-radius: 5px;
     cursor: pointer;
     color: #fe5454;
     background: #f8f9fa;
 }
 
-#main-box button:hover {
+#search-page-btn:hover {
     background-color: #ffe3e3;
 }
 
-#page-button-box {
+.book-search-item {
     display: flex;
-    justify-content: center;
+    margin-bottom: 30px;
+    padding: 30px;
+    background-color: #e2e2e2;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+
+.book-search-item input { /* 체크박스 */
+    width: 40px;
+}
+
+#book-title {
+    font-size: 24px;
+    color:black;
+    font-weight: bold;
+}
+
+.search-cover {
+    padding: 0px 30px 0px 30px;
+}
+
+.search-cover img {
+    width: 150px;
+    cursor: pointer;
+}
+
+.search-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 0px 20px 0px;
+}
+
+.search-info label {
+    font-size: 20px;
+    margin-right: 10px;
+    color: #707070;
+}
+
+.search-info p {
+    margin: 0;
+    font-size: 20px;
+}
+
+.search-info div {
+    display: flex;
 }

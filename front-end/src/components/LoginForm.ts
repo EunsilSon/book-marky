@@ -1,5 +1,7 @@
+declare var swal: any;
+
 import { login } from '../services/authService.js';
-import { getButtonElement, getFormElement, getInputElement, getInputValue, showAlert } from '../utils/domUtils.js';
+import { getButtonElement, getFormElement, getInputElement, getInputValue } from '../utils/domUtils.js';
 
 const loginForm = getFormElement('login-form');
 const joinButton = getButtonElement('move-to-join');
@@ -25,7 +27,7 @@ const loginFormProcess = async (event: Event) => {
         if (response.status == 401) {
             getInputElement('username').value = '';
             getInputElement('password').value = '';
-            showAlert('아이디 또는 비밀번호가 맞지 않습니다. 다시 입력하세요.');
+            swal("로그인 실패", "아이디 또는 비밀번호가 맞지 않습니다.", "error");
         }
 
     } catch (error) {

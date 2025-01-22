@@ -2,7 +2,7 @@ import { getPassages, getPassageDetail, getDeletedPassages, updatePassage, delet
 import { getBookDetail } from "../services/bookService.js";
 import { showError } from "../utils/domUtils.js";
 import { renderBookDetail } from "../utils/bookRenderUtils.js";
-import { renderPassages, renderPassageDetail, renderPassageForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
+import { renderPassages, renderPassageDetail, renderPassageCreateForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
 import { showAlert } from "../utils/domUtils.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (currentPath.endsWith('create.html')) {
-        renderPassageForm();
+        renderPassageCreateForm();
     }
 
     if (currentPath.endsWith('deleted.html')) {
