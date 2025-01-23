@@ -94,7 +94,7 @@ export const requestPasswordMail = async (username: string) => {
 export const getSecureQuestion = async (username: string) => {
     try {
         const response = await instance.get(`user/question/${username}`);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -103,7 +103,7 @@ export const getSecureQuestion = async (username: string) => {
 export const checkSecureQuestion = async (userPasswordAnswer: UserPasswordAnswer) => {
     try {
         const response = await instance.post(`user/question`, userPasswordAnswer);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
@@ -112,7 +112,7 @@ export const checkSecureQuestion = async (userPasswordAnswer: UserPasswordAnswer
 export const updatePassword = async (userPasswordToken: UserPasswordToken) => {
     try {
         const response = await instance.post(`user`, userPasswordToken);
-        return response;
+        return response.data;
     } catch (error) {
         return error.response;
     }
