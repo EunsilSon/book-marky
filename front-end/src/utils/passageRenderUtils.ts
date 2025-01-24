@@ -141,12 +141,12 @@ const setUpdateButtonEventListeners = (passage: Passage) => {
             timer: 1000
         })
         .then(() => {
-            window.location.href = '/html/passage/detail.html?id=' + passage.id; // detail로 이동
+            window.location.href = '/html/passage/detail.html?id=' + passage.id;
         })
     });
 
     cancelButton.addEventListener('click', () => {
-        window.location.href = '/html/passage/detail.html?id=' + passage.id; // detail로 이동
+        window.location.href = '/html/passage/detail.html?id=' + passage.id;
     });
 } 
 
@@ -294,37 +294,49 @@ export const renderDeletedPassages = (passages: DeletedPassage[]) => {
 
     passages.forEach((passage) => {
         const itemDiv = document.createElement('div');
-        itemDiv.className = 'passage-item';
+        const passageDiv = document.createElement('div');
+        itemDiv.className = 'deleted-passage-item';
+        passageDiv.className = 'passage-div';
 
-        const bookDiv = document.createElement('div');
-        bookDiv.className = 'book';
         const bookP = document.createElement('p');
+        bookP.id = 'deleted-book-title';
         bookP.textContent = `${passage.title}`;
-        bookDiv.appendChild(bookP);
 
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'content';
         const contentP = document.createElement('p');
+        contentP.id = 'deleted-content';
         contentP.textContent = passage.content;
-        contentDiv.appendChild(contentP);
 
-        const restoreDiv = document.createElement('div');
-        restoreDiv.className = 'restore';
         const restoreBtn = document.createElement('button');
+        restoreBtn.id = 'restore';
         restoreBtn.innerText = '복구';
-        restoreDiv.appendChild(restoreBtn);
-
         restoreBtn.addEventListener('click', () => {
-            const confirm = window.confirm('복구하시겠습니까?');
-
+            swal({
+                title: "복구하시겠습니까?",
+                icon: "info",
+                buttons: true,
+            })
+            .then((confirm) => {
             if (confirm) {
                 restorePassageProcess(passage.id);
+                swal({
+                    position: "top-end",
+                    icon: "success",
+                    title: "삭제 완료",
+                    timer: 1000
+                })
+                .then(() => {
+                    window.location.reload();
+                })
             }
+            });
         });
 
-        itemDiv.appendChild(bookDiv);
-        itemDiv.appendChild(contentDiv);
-        itemDiv.appendChild(restoreDiv);
+        passageDiv.appendChild(bookP);
+        passageDiv.appendChild(contentP);
+
+        itemDiv.appendChild(passageDiv);
+        itemDiv.appendChild(restoreBtn);
+
         container.appendChild(itemDiv);
     });
 };

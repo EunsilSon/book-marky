@@ -6,6 +6,13 @@ html {
     background-color: #eeeeee;
 }
 
+#book-count {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    padding: 10px 10px;
+}
+
 #no-login-app-name {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -22,14 +29,29 @@ html {
     transform: translate(-50%, -50%);
     font-size: 24px;
     cursor: pointer;
+    color: #ff6b6b;
 }
 
 #top-menu-box {
     position: relative;
     height: 60px;
     background-color: #f8f9fa;
-    color: #ff6b6b;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#user-div p {
+    position: absolute;
+    left: 85px;
+    top: -5px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#user-div img {
+    position: absolute;
+    left: 30px;
+    top: 9px;
+    width: 40px;
 }
 
 #back {

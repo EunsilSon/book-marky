@@ -5,16 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" initial-scale="1.0">
     <title>Bookmarky</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/book.css">
+    <link rel="stylesheet" href="../../css/passage.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module" src="../../dist/components/PassageForm.js"></script>
 </head>
 
 <body>
-    <button type="click" id="back">◀ 뒤로가기</button>
-    <h1>최근 삭제된 하이라이트</h1>
-    <p>30일간의 삭제 기록이 저장됩니다. 시간이 지나면 자동으로 영구 삭제됩니다.</p>
-    <div id="deleted-passage-container"></div>
+    <div id="top-menu-box">
+        <button type="click" id="back">◀ 뒤로가기</button>
+        <h1 id="yes-login-app-name">BOOKMARKY</h1>
+    </div>
+    <div id="main-box">
+        <div id="sub-box">
+            <h1>최근 삭제된 하이라이트</h1>
+            <p>30일간의 삭제 기록이 저장됩니다. 시간이 지나면 자동으로 영구 삭제됩니다.</p>
+            <div id="deleted-passage-container"></div>
+        </div>
+    </div>
 </body>
 
 </html>

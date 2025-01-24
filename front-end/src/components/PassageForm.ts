@@ -3,7 +3,6 @@ import { getBookDetail } from "../services/bookService.js";
 import { showError } from "../utils/domUtils.js";
 import { renderBookDetail } from "../utils/bookRenderUtils.js";
 import { renderPassages, renderDetailForm, renderUpdateForm, renderPassageCreateForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
-import { showAlert } from "../utils/domUtils.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     const currentPath = window.location.pathname;
@@ -73,8 +72,6 @@ export const createPassageProcess = async (isbn: string, content: string, pageNu
 export const deletedPassageProcess = async () => {
     try {
         getDeletedPassages();
-        showAlert('삭제되었습니다. 이전 페이지로 이동합니다.');
-        window.history.back();
     } catch (error) {
         return showError(error);
     }
@@ -83,8 +80,6 @@ export const deletedPassageProcess = async () => {
 export const restorePassageProcess = async (passageId: string) => {
     try {
         restorePassage(passageId);
-        showAlert('복구되었습니다. 메인 페이지로 이동합니다.');
-        window.location.href = `../../html/book/index.html`;
     } catch (error) {
         return showError(error);
     }

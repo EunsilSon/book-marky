@@ -4,16 +4,15 @@ import { getElementById } from './domUtils.js';
 import { getNextBooksProcess, getPrevBooksProcess, getPageNumber } from '../components/BookForm.js';
 import { getBookCount } from '../services/bookService.js';
 
-export const renderNickname = (nickname: string) => {
-    const name = getElementById('nickname');
-    name.textContent = nickname + '님의 책장';
+export const renderBookCount = (count: number) => {
+    const bookCount = getElementById('book-count');
+    bookCount.innerText = '현재 저장된 책: ' + count +'권';
 }
 
 const setupNavigationButtons = (currentPage: number) => {
     const prevButton = document.getElementById('prev') as HTMLButtonElement;
     const nextButton = document.getElementById('next') as HTMLButtonElement;
 
-    // 클릭 이벤트 리스너 등록
     if (!prevButton.hasAttribute('data-listener')) {
         prevButton.addEventListener('click', async () => {
             await getPrevBooksProcess();

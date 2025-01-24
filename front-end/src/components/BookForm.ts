@@ -1,18 +1,23 @@
 declare var swal: any;
 
-import { getAllBooks } from '../services/bookService.js';
+import { getAllBooks, getBookCount } from '../services/bookService.js';
 import { logout, getNickname } from '../services/authService.js';
-import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
+import { renderUser } from '../utils/authRenderUtils.js';
+import { renderBookCount, renderBooks } from '../utils/bookRenderUtils.js';
 import { getElementById, getButtonElement } from '../utils/domUtils.js';
 
 let page = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const nameElement = getElementById('nickname');
-    if (nameElement) {
+    if (getElementById('user-div')) {
         const nicknameResponse = await getNickname();
-        renderNickname(nicknameResponse.data);
+        renderUser(nicknameResponse.data);
         renderBooks(await getAllBooks('id', page));
+    }
+
+    if (getElementById('book-count')) {
+        const bookCountRespose = await getBookCount();
+        renderBookCount(bookCountRespose.data);
     }
 
     const logoutElement = getButtonElement('logout');
@@ -48,7 +53,7 @@ const logoutProcess = async (event: Event) => {
 
     if (response.status == 200) {
         swal("로그아웃 되었습니다.", "Have A Book Day!", "success")
-        .then((value) => {
+        .then(() => {
             localStorage.removeItem('username');
             window.history.replaceState(null, '', '/html/auth/index.html');
             window.location.href = '/html/auth/index.html';
