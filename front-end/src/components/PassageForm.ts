@@ -2,7 +2,7 @@ import { getPassages, getPassageDetail, getDeletedPassages, updatePassage, delet
 import { getBookDetail } from "../services/bookService.js";
 import { showError } from "../utils/domUtils.js";
 import { renderBookDetail } from "../utils/bookRenderUtils.js";
-import { renderPassages, renderPassageDetail, renderPassageCreateForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
+import { renderPassages, renderDetailForm, renderUpdateForm, renderPassageCreateForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
 import { showAlert } from "../utils/domUtils.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -18,10 +18,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderPassages(passagesResponse.data);
     }
 
-    if (currentPath.endsWith('detail.html') || currentPath.endsWith('update.html')) {
+    if (currentPath.endsWith('detail.html')) {
         const passageId = new URLSearchParams(window.location.search).get('id');
         const passageResponse = await getPassageDetail(passageId);
-        renderPassageDetail(passageResponse.data, false);
+        renderDetailForm(passageResponse.data);
+    }
+
+    if (currentPath.endsWith('update.html')) {
+        const passageId = new URLSearchParams(window.location.search).get('id');
+        const passageResponse = await getPassageDetail(passageId);
+        renderUpdateForm(passageResponse.data);
     }
 
     if (currentPath.endsWith('create.html')) {

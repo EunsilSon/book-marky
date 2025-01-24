@@ -25,74 +25,72 @@ export const renderPassages = (passages: Passage[]) => {
     });
 };
 
-export const renderPassageDetail = (passage: Passage, isEditing: boolean) => {
-    getElementById('update').style.display = isEditing ? 'none' : 'block';
-    getElementById('delete').style.display = isEditing ? 'none' : 'block';
-    
-    if (isEditing) {
-        switchToEditMode(passage);
-    } else {
-        switchToViewMode(passage);
-    }
-
-    setupButtonEventListeners(passage);
+export const renderDetailForm = (passage: Passage) => {
+    renderDetailMode(passage);
+    setDetailButtonEventListeners(passage);
 };
 
-const switchToEditMode = (passage: Passage) => {
-    getElementById('cancel').style.display = 'block';
-    getElementById('save').style.display = 'block';
+export const renderUpdateForm = (passage: Passage) => {
+    renderUpdateMode(passage);
+    setUpdateButtonEventListeners(passage);
+}
 
+const renderDetailMode = (passage: Passage) => {
     const passageDetail = getElementById('passage-detail');
-    passageDetail.innerHTML = '';
-
     const pageDiv = document.createElement('div');
-    const pageNumInput = document.createElement('textarea');
-    const pageNumLabel = document.createElement('label');
-    pageNumInput.value = passage.pageNum;
-    pageNumInput.id = 'update-page-num';
-    pageNumLabel.innerText = '쪽수';
+    const pageNumP = document.createElement('p');
+    pageNumP.innerText = 'page. ' + passage.pageNum;
+    pageNumP.id = 'detail-page-num';
 
-    pageDiv.appendChild(pageNumLabel);
-    pageDiv.appendChild(pageNumInput);
+    pageDiv.appendChild(pageNumP);
 
     const contentDiv = document.createElement('div');
-    const contentInput = document.createElement('textarea');
+    const contentP = document.createElement('p');
+    contentP.innerText = passage.content;
+    contentP.id = 'detail-content';
+
+    contentDiv.appendChild(contentP);
+
+    passageDetail.appendChild(pageNumP);
+    passageDetail.appendChild(contentP);
+};
+
+const renderUpdateMode = (passage: Passage) => {
+    const passageDetail = getElementById('passage-update');
+    const pageDiv = document.createElement('div');
+    const pageNum = document.createElement('textarea');
+    const pageNumLabel = document.createElement('label');
+    pageNumLabel.innerText = '쪽수';
+    pageNum.innerText = passage.pageNum;
+    pageNum.id = 'update-page-num';
+
+    pageDiv.appendChild(pageNumLabel);
+    pageDiv.appendChild(pageNum);
+
+    const contentDiv = document.createElement('div');
+    const content = document.createElement('textarea');
     const contentLabel = document.createElement('label');
-    contentInput.value = passage.content;
-    contentInput.id = 'update-content';
+    content.innerText = passage.content;
+    content.id = 'update-content';
     contentLabel.innerText = '내용';
 
     contentDiv.appendChild(contentLabel);
-    contentDiv.appendChild(contentInput);
+    contentDiv.appendChild(content);
 
     passageDetail.appendChild(pageDiv);
     passageDetail.appendChild(contentDiv);
-};
 
-const switchToViewMode = (passage: Passage) => {
-    const passageDetail = getElementById('passage-detail');
-    passageDetail.innerHTML = '';
+    // 글자 수만큼 스크롤 길이 지정
+    const contentHeight = content.scrollHeight;
+    content.style.height = contentHeight + 'px';
+}
 
-    const pageNumText = document.createElement('p');
-    const contentText = document.createElement('p');
-    pageNumText.innerText = 'page.' + passage.pageNum;
-    contentText.innerText = passage.content;
-
-    pageNumText.id = 'passage-detail-page-num';
-    contentText.id = 'passage-detail-content';
-
-    passageDetail.appendChild(pageNumText);
-    passageDetail.appendChild(contentText);
-};
-
-const setupButtonEventListeners = (passage: Passage) => {
+const setDetailButtonEventListeners = (passage: Passage) => {
     const updateButton = getElementById('update');
     const deleteButton = getElementById('delete');
-    const saveButton = getElementById('save');
-    const cancelButton = getElementById('cancel');
-
+    
     updateButton.addEventListener('click', () => {
-        renderPassageDetail(passage, true);
+        window.location.href = '/html/passage/update.html?id=' + passage.id;
     });
 
     deleteButton.addEventListener('click', () => {
@@ -110,7 +108,7 @@ const setupButtonEventListeners = (passage: Passage) => {
                 position: "top-end",
                 icon: "success",
                 title: "삭제 완료",
-                timer: 1500
+                timer: 1000
             })
             .then(() => {
                 window.history.back();
@@ -118,6 +116,11 @@ const setupButtonEventListeners = (passage: Passage) => {
         }
         });
     });
+};
+
+const setUpdateButtonEventListeners = (passage: Passage) => {
+    const saveButton = getElementById('save');
+    const cancelButton = getElementById('cancel');
 
     saveButton.addEventListener('click', () => {
         const pageNumInput = getElementById('update-page-num') as HTMLTextAreaElement;
@@ -135,17 +138,17 @@ const setupButtonEventListeners = (passage: Passage) => {
             position: "top-end",
             icon: "success",
             title: "수정 완료",
-            timer: 1500
+            timer: 1000
         })
         .then(() => {
-            window.location.reload();
+            window.location.href = '/html/passage/detail.html?id=' + passage.id; // detail로 이동
         })
     });
 
     cancelButton.addEventListener('click', () => {
-        window.location.reload();
+        window.location.href = '/html/passage/detail.html?id=' + passage.id; // detail로 이동
     });
-};
+} 
 
 export const renderPassageCreateForm = () => {
     const container = getElementById('passage-creation-container');
