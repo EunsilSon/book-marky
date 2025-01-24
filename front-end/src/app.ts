@@ -18,3 +18,10 @@ if (getButtonElement('back')) {
         window.history.back();
     })
 }
+
+if (getButtonElement('yes-login-app-name')) {
+    const appBtn = getButtonElement('yes-login-app-name');
+    appBtn.addEventListener('click', () => {
+        window.location.href = '/html/book/index.html';
+    })
+}
