@@ -34,6 +34,7 @@ public class UserRegistrationController {
 
     @PostMapping("/registration/nickname")
     public ApiResponse<String> checkNickname(@RequestBody String nickname) {
+        System.out.println(nickname);
         if (userRegistrationService.isNicknameDuplicate(nickname)) {
             return ResponseUtil.createErrorResponse(HttpStatus.CONFLICT, "Nickname already exists.");
         }

@@ -15,12 +15,11 @@ import java.util.List;
 @RestController
 public class BookRecordController {
 
-    private static final int DEFAULT_BOOK_SIZE = 6;
     private final BookRecordService bookRecordService;
 
     @GetMapping("/books/saved")
     public ApiResponse<List<BookDTO>> getSavedBooks(@RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "0") int page) {
-        return ResponseUtil.createSuccessResponse(bookRecordService.getSavedBooks(page, order, DEFAULT_BOOK_SIZE));
+        return ResponseUtil.createSuccessResponse(bookRecordService.getSavedBooks(page, order));
     }
 
     @GetMapping("/books/titles")

@@ -9,7 +9,6 @@ public class UserVO {
     @Pattern(regexp = "^[a-z\\d._]+@[a-z._]+\\.[a-z]{2,6}$", message = "아이디는 이메일 형식입니다.")
     private String username;
 
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d{5,})(?=.*[~!@#$%^&*)]).{2,}$", message = "비밀번호는 대소문자, 숫자 5개 이상, 특수문자 2개 이상입니다.")
     @Size(min = 9, max = 15, message = "비밀번호는 최소 9자, 최대 15자입니다.")
     private String password;
 

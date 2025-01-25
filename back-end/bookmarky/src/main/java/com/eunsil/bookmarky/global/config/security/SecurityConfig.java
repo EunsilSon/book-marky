@@ -3,6 +3,7 @@ package com.eunsil.bookmarky.global.config.security;
 import com.eunsil.bookmarky.global.config.auth.handler.CustomAuthenticationFailureHandler;
 import com.eunsil.bookmarky.global.config.auth.handler.CustomAuthenticationSuccessHandler;
 import com.eunsil.bookmarky.global.config.auth.handler.CustomLogoutSuccessHandler;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -50,10 +51,11 @@ public class SecurityConfig {
                                 "/login",
                                 "/logout",
                                 "/registration",
-                                "/registration/username/{username}",
-                                "/registration/nickname/{nickname}",
-                                "/registration/telephone/{telephone}",
-                                "/user", "/user/mail/{username}",
+                                "/registration/username",
+                                "/registration/nickname",
+                                "/registration/telephone",
+                                "/user",
+                                "/user/mail/{username}",
                                 "/user/question/{username}",
                                 "/user/question"
                         ).permitAll()
@@ -83,5 +85,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 }
