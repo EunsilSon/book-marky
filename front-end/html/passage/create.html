@@ -5,16 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Bookmarky</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/passage.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module" src="../../dist/components/PassageForm.js"></script>
 </head>
 
 <body>
-    <button type="click" id="back">◀ 뒤로가기</button>
-    <h1>하이라이트 생성</h1>
-    <p>'나의 서재'에서 책을 선택하거나, 제목을 입력한 후 '찾기' 버튼을 눌러 책을 검색할 수 있습니다.</p>
-    <div id="passage-creation-container"></div>
+    <div id="top-menu-box">
+        <button type="click" id="back">◀ 메인페이지</button>
+        <h1 id="yes-login-app-name">BOOKMARKY</h1>
+    </div>
+    <div id="main-box">
+        <div id="sub-box">
+            <h1>하이라이트 생성</h1>
+            <p id="page-announce">'나의 서재'에서 책을 선택하거나, 제목을 입력한 후 '찾기' 버튼을 눌러 책을 검색할 수 있습니다.</p>
+            <div id="passage-creation-container">
+                <div id="book">
+                    <div id="button-box"></div>
+                </div>
+                <div id="passage"></div>
+            </div>
+        </div>
+    </div>  
 </body>
 
 </html>

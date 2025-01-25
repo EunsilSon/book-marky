@@ -85,3 +85,9 @@ html {
 #main-box h1 {
     margin-bottom: 10px;
 }
+
+#page-announce {
+    font-size: 20px;
+    margin-top: 0px;
+    margin-bottom: 30px;
+}

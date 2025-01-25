@@ -3,7 +3,7 @@ import { getElementById } from './domUtils.js';
 export const renderUser = (nickname: string) => {
     const userDiv = getElementById('user-div');
     const icon = document.createElement('img');
-    icon.src = '/img/account.png';
+    icon.src = '/img/user.png';
     const name = document.createElement('p');
     name.innerText = nickname;
 

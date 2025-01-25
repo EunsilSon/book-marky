@@ -2,7 +2,7 @@ import { getPassages, getPassageDetail, getDeletedPassages, updatePassage, delet
 import { getBookDetail } from "../services/bookService.js";
 import { showError } from "../utils/domUtils.js";
 import { renderBookDetail } from "../utils/bookRenderUtils.js";
-import { renderPassages, renderDetailForm, renderUpdateForm, renderPassageCreateForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
+import { renderPassages, renderDetailForm, renderUpdateForm, renderPassageCreationForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     const currentPath = window.location.pathname;
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (currentPath.endsWith('create.html')) {
-        renderPassageCreateForm();
+        renderPassageCreationForm();
     }
 
     if (currentPath.endsWith('deleted.html')) {

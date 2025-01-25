@@ -148,19 +148,15 @@ const setUpdateButtonEventListeners = (passage: Passage) => {
     cancelButton.addEventListener('click', () => {
         window.location.href = '/html/passage/detail.html?id=' + passage.id;
     });
-} 
+}
 
-export const renderPassageCreateForm = () => {
+export const renderPassageCreationForm = () => {
     const container = getElementById('passage-creation-container');
 
-    // 책 제목
-    const bookTitleDiv = document.createElement('div');
-
-    const bookTitleLabel = document.createElement('label');
-    bookTitleLabel.innerText = '책 제목';
-
+    const bookDiv = getElementById('book'); 
     const bookTitleInput = document.createElement('input');
     bookTitleInput.id = 'book-title';
+    bookTitleInput.placeholder = '책을 선택하세요';
 
     if (localStorage.getItem('title')) {
         bookTitleInput.id = localStorage.getItem('title');
@@ -173,23 +169,20 @@ export const renderPassageCreateForm = () => {
         bookTitleInput.value = selectedTitle;
     }
 
-    bookTitleDiv.appendChild(bookTitleLabel);
-    bookTitleDiv.appendChild(bookTitleInput);
+    const buttonBox = getElementById('button-box');
+    const getBookButton = document.createElement('button');
+    getBookButton.innerText = '저장된 책 보기';
+    getBookButton.id = 'get-book';
 
-    // 이미 저장된 책 버튼
-    const getBookDiv = document.createElement('div');
-    const getBookBtn = document.createElement('button');
-    getBookBtn.innerText = '저장된 책 보기';
-    getBookBtn.addEventListener('click', async () => {
-        await renderOptions();
+    getBookButton.addEventListener('click', async () => {
+        await renderBookOptions();
     });
-    getBookDiv.appendChild(getBookBtn);
 
-    // 찾기 버튼
-    const searchBookDiv = document.createElement('div');
-    const searchBookBtn = document.createElement('button');
-    searchBookBtn.innerText = '찾기';
-    searchBookBtn.addEventListener('click', () => {
+    const searchBookButton = document.createElement('button');
+    searchBookButton.innerText = '찾기';
+    searchBookButton.id = 'search-book';
+
+    searchBookButton.addEventListener('click', () => {
         const title = bookTitleInput.value;
         if (title) {
             window.location.href = `../book/search.html?title=${bookTitleInput.value}`;
@@ -197,40 +190,48 @@ export const renderPassageCreateForm = () => {
             showAlert('검색할 책 제목을 입력하세요.');
         }
     });
-    searchBookDiv.appendChild(searchBookBtn);
 
-    // 구절 내용
-    const contentDiv = document.createElement('div');
-    const contentTextarea = document.createElement('textarea');
-    contentTextarea.placeholder = '구절 내용을 입력하세요.';
-    contentTextarea.rows = 4;
-    contentTextarea.style.resize = 'none';
-    contentDiv.appendChild(contentTextarea);
+    buttonBox.appendChild(getBookButton);
+    buttonBox.appendChild(searchBookButton);
 
-    // 쪽수
-    const pageDiv = document.createElement('div');
+    bookDiv.appendChild(bookTitleInput);
+    bookDiv.appendChild(buttonBox);
+
+    const passageDiv = getElementById('passage');
+    const contentInput = document.createElement('input');
+    contentInput.id = 'passage-content-input';
+    contentInput.placeholder = '구절 내용을 입력하세요';
     const pageNumInput = document.createElement('input');
     pageNumInput.placeholder = '쪽수를 입력하세요';
-    pageDiv.appendChild(pageNumInput);
+    pageNumInput.id = 'page-num-input';
 
-    // 저장 버튼
-    const saveDiv = document.createElement('div');
+    passageDiv.appendChild(contentInput);
+    passageDiv.appendChild(pageNumInput);
+
     const saveButton = document.createElement('button');
-    saveButton.innerText = '저장';
+    saveButton.innerText = '완료';
+    saveButton.id = 'save';
+
     saveButton.addEventListener('click', () => {
         const isbn = localStorage.getItem('isbn');
-        const content = contentTextarea.value;
+        const content = contentInput.value;
         const pageNum = pageNumInput.value;
 
         localStorage.removeItem('isbn');
 
         createPassageProcess(isbn, content, pageNum)
         .then(response => {
+            console.log(response);
             if (response.status == 200) {
-                showAlert('생성이 완료되었습니다. 메인 페이지로 이동합니다.');
-                window.location.href = `../book/index.html`;
-            } else {
-                console.log(response);
+                swal({
+                    position: "top-end",
+                    icon: "success",
+                    title: "작성 완료",
+                    timer: 800
+                })
+                .then(() => {
+                    window.location.href = `../book/index.html`;
+                })
             }
         })
         .catch((error) => {
@@ -238,28 +239,23 @@ export const renderPassageCreateForm = () => {
         })
     });
 
-    saveDiv.appendChild(saveButton);
-    container.appendChild(bookTitleDiv);
-    container.appendChild(searchBookDiv);
-    container.appendChild(getBookDiv);
-    container.appendChild(contentDiv);
-    container.appendChild(pageDiv);
-    container.appendChild(saveDiv);
+    container.appendChild(bookDiv);
+    container.appendChild(passageDiv);
+    container.appendChild(saveButton);
 
-    // 옵션 렌더링 함수
-    const renderOptions = async () => {
+    const renderBookOptions = async () => {
         try {
             const response = await getSavedBooks();
             const bookTitles = response.data;
 
-            const existingSelect = getElementById('book-title-options');
+            const existingSelect = document.getElementById('book-title-options');
             if (existingSelect) {
                 existingSelect.remove();
             }
 
             const selectElement = document.createElement('select');
             selectElement.id = 'book-title-options';
-            selectElement.innerHTML = '<option value="">책을 선택하세요</option>';
+            selectElement.innerHTML = '<option value="">선택</option>';
 
             bookTitles.forEach((item: { isbn: string; title: string; }) => {
                 const option = document.createElement('option');
@@ -268,7 +264,7 @@ export const renderPassageCreateForm = () => {
                 selectElement.appendChild(option);
             });
 
-            getBookDiv.appendChild(selectElement);
+            bookDiv.appendChild(selectElement);
 
             selectElement.addEventListener('change', (event) => {
                 const target = event.target as HTMLSelectElement; // 타입 단언
@@ -288,7 +284,6 @@ export const renderPassageCreateForm = () => {
         }
     };
 };
-
 export const renderDeletedPassages = (passages: DeletedPassage[]) => {
     const container = getElementById('deleted-passage-container');
 
@@ -321,7 +316,7 @@ export const renderDeletedPassages = (passages: DeletedPassage[]) => {
                 swal({
                     position: "top-end",
                     icon: "success",
-                    title: "삭제 완료",
+                    title: "복구 완료",
                     timer: 1000
                 })
                 .then(() => {
