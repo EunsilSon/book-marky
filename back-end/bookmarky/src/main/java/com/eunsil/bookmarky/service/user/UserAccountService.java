@@ -26,37 +26,24 @@ public class UserAccountService {
 
     public boolean sendResetEmailWithToken(String username) {
         if (userRepository.existsByUsername(username)) {
-            String token = generateToken(username);
-            return sendResetEmail(username, token);
+            String token = resetTokenService.generateToken(username);
+            return mailService.generateEmail(username, token);
         }
         return false;
-    }
-    private String generateToken(String username) {
-        return resetTokenService.generateToken(username);
-    }
-
-    private boolean sendResetEmail(String username, String token) {
-        return mailService.generateEmail(username, token);
     }
 
     @Transactional
     public boolean resetPwWithToken(PasswordVO passwordVO) {
-        if (isTokenValid(passwordVO.getToken())) {
+        String token = passwordVO.getToken();
+
+        if (resetTokenService.isValidToken(token)) {
             resetPassword(passwordVO.getUsername(), passwordVO.getPassword());
-            inValidateToken(passwordVO.getToken());
+            resetTokenService.invalidateToken(token);
 
             log.info("[{}] Reset Password Completed", passwordVO.getUsername());
             return true;
         }
         return false;
-    }
-
-    private boolean isTokenValid(String token) {
-        return resetTokenService.isValidToken(token);
-    }
-
-    private void inValidateToken(String token) {
-        resetTokenService.invalidateToken(token);
     }
 
     private void resetPassword(String username, String newPassword) {

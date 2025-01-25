@@ -1,9 +1,13 @@
 server:
   port: 8000
+  servlet:
+    session:
+      cookie:
+        max-age: 3600
 
 spring:
   application:
-    name: BookMarky
+    name: Bookmarky
 
   jpa:
     show-sql: false

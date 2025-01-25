@@ -34,6 +34,6 @@ public class Book {
     @Column(nullable = false, length = 20)
     private String isbn;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 5000)
     private String description;
 }

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class BookRecordService {
 
     private static final String DEFAULT_BOOK_TITLE_LIST_TYPE = "id";
-    private static final int DEFAULT_BOOK_TITLE_LIST_SIZE = 10;
+    private static final int DEFAULT_BOOK_SIZE = 5;
 
     private final FilterManager filterManager;
     private final SecurityUtil securityUtil;
@@ -78,9 +78,9 @@ public class BookRecordService {
         return bookRecordRepository.countByIsDeletedAndUser(false, user);
     }
 
-    public List<BookDTO> getSavedBooks(int page, String order, int size) {
+    public List<BookDTO> getSavedBooks(int page, String order) {
         User user = userRepository.findByUsername(securityUtil.getCurrentUsername()).orElseThrow(() -> new UsernameNotFoundException("Username Not Found"));
-        Pageable pageable = PageRequest.of(page, size, Sort.by(order).descending());
+        Pageable pageable = PageRequest.of(page, DEFAULT_BOOK_SIZE, Sort.by(order).descending());
 
         filterManager.enableFilter("deletedBookRecordFilter", "isDeleted", false);
         Page<BookRecord> userBookRecords = bookRecordRepository.findByUserId(user.getId(), pageable);
@@ -105,7 +105,7 @@ public class BookRecordService {
 
     public List<BookSimpleDTO> getSavedBookTitles(int page) {
         filterManager.enableFilter("deletedBookRecordFilter", "isDeleted", false);
-        List<BookDTO> bookList = getSavedBooks(page, DEFAULT_BOOK_TITLE_LIST_TYPE, DEFAULT_BOOK_TITLE_LIST_SIZE); // 책의 모든 정보
+        List<BookDTO> bookList = getSavedBooks(page, DEFAULT_BOOK_TITLE_LIST_TYPE); // 책의 모든 정보
         filterManager.disableFilter("deletedBookRecordFilter");
 
         return bookList.stream()
