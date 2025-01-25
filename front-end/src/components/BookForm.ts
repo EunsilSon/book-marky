@@ -1,18 +1,39 @@
-import { getAllBooks } from '../services/bookService.js';
-import { logout, getNickname } from '../services/authService.js';
-import { renderNickname, renderBooks } from '../utils/bookRenderUtils.js';
-import { getButtonElement, showAlert } from '../utils/domUtils.js';
+declare var swal: any;
 
-const logoutElement = getButtonElement('logout');
-const createPassageBtn = getButtonElement('create-passage');
-const deletedPassageBtn = getButtonElement('deleted-passage');
+import { getAllBooks, getBookCount } from '../services/bookService.js';
+import { logout, getNickname } from '../services/authService.js';
+import { renderUser } from '../utils/authRenderUtils.js';
+import { renderBookCount, renderBooks } from '../utils/bookRenderUtils.js';
+import { getElementById, getButtonElement } from '../utils/domUtils.js';
+
+let page = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const nicknameResponse = await getNickname();
-    renderNickname('nickname', nicknameResponse.data);
+    if (getElementById('user-div')) {
+        const nicknameResponse = await getNickname();
+        renderUser(nicknameResponse.data);
+        renderBooks(await getAllBooks('id', page));
+    }
 
-    const booksResponse = await getAllBooks('id', 0);
-    renderBooks(booksResponse);
+    if (getElementById('book-count')) {
+        const bookCountRespose = await getBookCount();
+        renderBookCount(bookCountRespose.data);
+    }
+
+    const logoutElement = getButtonElement('logout');
+    if (logoutElement) {
+        logoutElement.addEventListener('click', logoutProcess);
+    }
+
+    const createPassageBtn = getButtonElement('create-passage');
+    if (createPassageBtn) {
+        createPassageBtn.addEventListener('click', moveToCreatePassage);
+    }
+
+    const deletedPassageBtn = getButtonElement('deleted-passage');
+    if (deletedPassageBtn) {
+        deletedPassageBtn.addEventListener('click', moveToDeletedPassage);
+    }
 })
 
 const moveToCreatePassage = (event: Event) => {
@@ -26,19 +47,30 @@ const moveToDeletedPassage = (event: Event) => {
 }
 
 const logoutProcess = async (event: Event) => {
-    event.preventDefault();
+    event.preventDefault(); 
 
     const response = await logout();
 
     if (response.status == 200) {
-        showAlert('로그아웃 되었습니다.');
-
-        localStorage.removeItem('username');
-        window.history.replaceState(null, '', '/front-end/html/auth/index.html');
-        window.location.href = '/front-end/html/auth/index.html';
+        swal("로그아웃 되었습니다.", "Have A Book Day!", "success")
+        .then(() => {
+            localStorage.removeItem('username');
+            window.history.replaceState(null, '', '/html/auth/index.html');
+            window.location.href = '/html/auth/index.html';
+        });
     }
 }
 
-logoutElement.addEventListener('click', logoutProcess);
-createPassageBtn.addEventListener('click', moveToCreatePassage);
-deletedPassageBtn.addEventListener('click', moveToDeletedPassage);
+export const getNextBooksProcess = async () => {
+    const booksResponse = await getAllBooks('id', ++page);
+    renderBooks(booksResponse);
+}
+
+export const getPrevBooksProcess = async () => {
+    const booksResponse = await getAllBooks('id', --page);
+    renderBooks(booksResponse);
+}
+
+export function getPageNumber(): number {
+    return page;
+}

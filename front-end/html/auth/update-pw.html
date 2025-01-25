@@ -5,40 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Bookmarky</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/auth.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module" src="../../dist/components/PasswordForm.js"></script>
 </head>
 
 <body>
-    <h1>Update New Password</h1>
-    <p>비밀번호를 변경할 이메일을 입력하세요.
-        <br>
-        보안 질문 검증 후 새 비밀번호 설정이 가능합니다.
-    </p>
+    <h1 id="no-login-app-name">BOOKMARKY</h1>
+    <h1 id="page-title">비밀번호 변경</h1>
+    <div id="main-box">
+        <div id="sub-box">
+            <p>
+                비밀번호를 변경할 이메일을 입력하세요.
+                <br>
+                보안 질문 검증 후 새 비밀번호 설정이 가능합니다.
+            </p>
 
-    <input type="email" id="username" name="username" placeholder="EMAIL" required>
-    <br>
-    <button id="update-pw-username">Enter</button>
+            <div id="input-box">
+                <input type="email" id="username" name="username" placeholder="이메일" required>
+                <button id="update-pw-username">Enter</button>
 
-    <br>
+                <div id="question-container"></div>
 
-    <p>보안 질문</p>
-    <div id="question-container"></div>
-    <input type="text" id="answer" name="answer" placeholder="ANSWER" required disabled>
-    <br>
-    <button id="update-pw-answer" disabled>Enter</button>
+                <input type="text" id="answer" name="answer" placeholder="답변" required disabled>
+                <button id="update-pw-answer" disabled>Enter</button>
 
-    <br>
-
-    <p>새 비밀번호를 입력하세요</p>
-    <input type="password" id="password" name="password" placeholder="PASSWORD" required disabled>
-    <button id="update-pw" disabled>Enter</button>
-    
-    <br>
-    <br>
-
-    <button id="move-to-login">Back to login</button>
-
+                <div></div>
+                
+                <input type="password" id="password" name="password" placeholder="새 비밀번호" required disabled>
+                <button id="update-pw" disabled>Enter</button>
+            </div>
+            <div id="btn-box">
+                <button id="move-to-login">← Login</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

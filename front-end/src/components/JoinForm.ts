@@ -1,3 +1,5 @@
+declare var swal: any;
+
 import { join, checkDuplicateUsername, checkDuplicateNickname, checkDuplicateTel } from '../services/authService.js';
 import { getFormElement, getInputElement, getInputValue, showError, showAlert } from '../utils/domUtils.js';
 
@@ -13,9 +15,10 @@ const checkUsername = async (event: Event) => {
 
     try {
         const response = await checkDuplicateUsername(usernameInput.value);
+        console.log(response);
 
-        if (response) {
-            showAlert('중복되는 아이디입니다. 다시 입력하세요.')
+        if (response.status == 409) {
+            swal("중복되는 아이디입니다. 다시 입력하세요.", "warning");
             usernameInput.value = '';
         }
 
@@ -32,9 +35,9 @@ const checkNickname = async (event: Event) => {
     try {
         const response = await checkDuplicateNickname(nicknameInput.value);
 
-        if (response) {
-            showAlert('중복되는 닉네임입니다. 다시 입력하세요.')
-            usernameInput.value = '';
+        if (response.status == 409) {
+            swal("중복되는 닉네임입니다. 다시 입력하세요.", "warning");
+            nicknameInput.value = '';
         }
 
     } catch (error) {
@@ -50,9 +53,9 @@ const checkTelephone = async (event: Event) => {
     try {
         const response = await checkDuplicateTel(telephoneInput.value);
 
-        if (response) {
-            showAlert('중복되는 연락처입니다. 다시 입력하세요.')
-            usernameInput.value = '';
+        if (response.status == 409) {
+            swal("중복되는 연락처입니다. 다시 입력하세요.", "warning");
+            telephoneInput.value = '';
         }
 
     } catch (error) {
@@ -70,7 +73,7 @@ const joinFormProcess = async (event: Event) => {
     const telephoneValue = telephoneInput.value;
     const passwordValue = getInputValue('password');
     const secureQuestionIdValue = getInputValue('secure-question-id');
-    const answerContentValue = getInputValue('answer-content');
+    const answerValue = getInputValue('answer');
 
     try {
         const response = await join({
@@ -79,9 +82,13 @@ const joinFormProcess = async (event: Event) => {
             nickname: nicknameValue,
             telephone: telephoneValue,
             secureQuestionId: secureQuestionIdValue,
-            answerContent: answerContentValue,
+            answerContent: answerValue,
         });
-        console.log('Join Result:', response);
+
+        if (response.status == 200) {
+            swal("회원가입 완료", "로그인 페이지로 이동합니다.", "success");
+            window.location.href = '/html/auth/index.html';
+        }
 
     } catch (error) {
         showError('Join failed. Please check your credentials.');

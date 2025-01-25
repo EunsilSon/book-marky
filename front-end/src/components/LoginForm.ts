@@ -1,5 +1,7 @@
+declare var swal: any;
+
 import { login } from '../services/authService.js';
-import { getButtonElement, getFormElement, getInputElement, getInputValue, showAlert } from '../utils/domUtils.js';
+import { getButtonElement, getFormElement, getInputElement, getInputValue } from '../utils/domUtils.js';
 
 const loginForm = getFormElement('login-form');
 const joinButton = getButtonElement('move-to-join');
@@ -16,18 +18,16 @@ const loginFormProcess = async (event: Event) => {
             username: usernameValue,
             password: passwordValue,
         });
-        console.log('Login Result:', response);
 
         if (response.status == 200) {
             localStorage.setItem('username', response.data);
-            showAlert('로그인에 성공했습니다. 메인 페이지로 이동합니다.');
-            window.location.href = '/front-end/html/book/index.html';
+            window.location.href = '/html/book/index.html';
         }
 
         if (response.status == 401) {
             getInputElement('username').value = '';
             getInputElement('password').value = '';
-            showAlert('아이디 또는 비밀번호가 맞지 않습니다. 다시 입력하세요.');
+            swal("로그인 실패", "아이디 또는 비밀번호가 맞지 않습니다.", "error");
         }
 
     } catch (error) {
@@ -37,12 +37,12 @@ const loginFormProcess = async (event: Event) => {
 
 const moveToJoin = (event: Event) => {
     event.preventDefault();
-    window.location.href = '/front-end/html/auth/join.html';
+    window.location.href = '/html/auth/join.html';
 }
 
 const moveToPw = (event: Event) => {
     event.preventDefault();
-    window.location.href = '/front-end/html/auth/request-pw.html';
+    window.location.href = '/html/auth/request-pw.html';
 }
 
 loginForm.addEventListener('submit', loginFormProcess);

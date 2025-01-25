@@ -35,9 +35,8 @@ if (usernameBtn) {
 
         try {
             const response = await getSecureQuestion(getInputValue('username'));
-
+            console.log(response);
             if (response.status == 200) {
-                showAlert('보안 질문의 답변을 입력하세요.');
                 renderSecureQuestion('title-container', response.data);
 
                 getInputElement('answer').disabled = false;
@@ -64,6 +63,8 @@ if (answerBtn) {
                 username: getInputValue('username'),
                 answer: answerValue,
             });
+
+            console.log(response);
 
             if (response.status == 200) {
                 getInputElement('password').disabled = false;
@@ -93,12 +94,15 @@ if (updateBtn) {
                 token: urlParams.get('token'),
             });
 
+            console.log(response);
+
             if (response.status == 200) {
                 showAlert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
-                window.location.href = '/front-end/html/auth/index.html';
-            } else {
-                showAlert('토큰이 만료되었습니다.');
-                console.log(response.data);
+                window.location.href = '/html/auth/index.html';
+            } 
+            
+            if (response.status == 401) {
+                showAlert('토큰이 만료되었습니다. 다시 메일을 받아주세요.');
             }
 
         } catch (error) {

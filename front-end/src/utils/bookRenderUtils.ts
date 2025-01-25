@@ -1,33 +1,75 @@
-import { getElementById } from './domUtils.js';
-import { searchBooksProcess } from '../components/SearchBookForm.js';
+declare var swal: any;
 
-export const renderNickname = (elementId: string, nickname: string) => {
-    const element = getElementById(elementId);
-    element.textContent = nickname + '님의 Bookmarky';
+import { getElementById } from './domUtils.js';
+import { getNextBooksProcess, getPrevBooksProcess, getPageNumber } from '../components/BookForm.js';
+import { getBookCount } from '../services/bookService.js';
+
+export const renderBookCount = (count: number) => {
+    const bookCount = getElementById('book-count');
+    bookCount.innerText = '현재 저장된 책: ' + count +'권';
 }
 
-export const renderBooks = (books: Book[]) => {
-    const container = getElementById('book-list-container');
+const setupNavigationButtons = (currentPage: number) => {
+    const prevButton = document.getElementById('prev') as HTMLButtonElement;
+    const nextButton = document.getElementById('next') as HTMLButtonElement;
+
+    if (!prevButton.hasAttribute('data-listener')) {
+        prevButton.addEventListener('click', async () => {
+            await getPrevBooksProcess();
+        });
+        prevButton.setAttribute('data-listener', 'true');
+    }
+
+    if (!nextButton.hasAttribute('data-listener')) {
+        nextButton.addEventListener('click', async () => {
+            await getNextBooksProcess();
+        });
+        nextButton.setAttribute('data-listener', 'true');
+    }
+
+    // 현재 페이지에 따라 버튼 활성화 상태 변경
+    prevButton.disabled = currentPage <= 0;
+
+    getBookCount()
+    .then(bookCount => {
+        const totalPages = Math.round(bookCount.data / 5);
+        nextButton.disabled = currentPage >= totalPages;
+    })
+    .catch(error => {
+        console.error('ERROR total book page:', error);
+    });
+};
+
+const renderBookList = (container: HTMLElement, books: Book[]) => {
     container.innerHTML = '';
 
-    books.forEach(book => {
-        const bookDiv = document.createElement('div');
-        bookDiv.classList.add('book-item');
+    if (books) {
+        const div = document.createElement('div');
+        div.classList.add('book-list');
 
-        const imgElement = document.createElement('img');
-        imgElement.src = book.image;
-        imgElement.alt = book.title;
-        imgElement.style.width = '150px';
-        imgElement.id = book.id;
+        books.forEach(book => {
+            const imgElement = document.createElement('img');
+            imgElement.src = book.image;
+            imgElement.alt = book.title;
 
-        bookDiv.addEventListener('click', () => {
-            window.location.href = `../passage/all.html?id=${book.id}`;
+            imgElement.addEventListener('click', () => {
+                window.location.href = `../passage/all.html?id=${book.id}`;
+            });
+
+            div.appendChild(imgElement);
         });
 
-        bookDiv.appendChild(imgElement);
-        container.appendChild(bookDiv);
-    })
-}
+        container.appendChild(div);
+    } else {
+        container.innerHTML = '<p>비어있음</p>';
+    }
+};
+
+export const renderBooks = (books: Book[]) => {
+    const container = document.getElementById('book-list-container');
+    setupNavigationButtons(getPageNumber());
+    renderBookList(container, books);
+};
 
 export const renderBookDetail = (book: Book) => {
     const container = document.getElementById('book-detail-container');
@@ -35,96 +77,138 @@ export const renderBookDetail = (book: Book) => {
 
     const bookDiv = document.createElement('div');
     bookDiv.id = book.id;
-    bookDiv.className = 'book-item';
+    bookDiv.id = 'book-detail';
 
+    // 표지
     const imgElement = document.createElement('img');
     imgElement.src = book.image;
     imgElement.alt = book.title;
-    imgElement.style.width = '150px';
     imgElement.id = book.id;
 
+    imgElement.addEventListener('click', () => {
+        window.open(book.link, '_blank');
+    });
+
+    // 제목
     const titleElement = document.createElement('h3');
     titleElement.innerText = `${book.title}`;
 
-    // 설명 100자만 출력 + 더보기를 통해 전체 출력
-    const descriptionElement = document.createElement('span');
-    const shortContent = book.description.length > 100 ? book.description.substring(0, 100) + '...   ' : book.description;
-    descriptionElement.innerText = shortContent;
 
-    // 더보기
+    // 저자
+    const authorBox = document.createElement('div');
+    authorBox.classList.add('detail-item');
+    const authorLabel = document.createElement('label');
+    authorLabel.innerText = '✍️ 저자';
+    const authorElement = document.createElement('p');
+    authorElement.innerText = `${book.author}`;
+
+    authorBox.appendChild(authorLabel);
+    authorBox.appendChild(authorElement);
+
+    // 출판
+    const publisherBox = document.createElement('div');
+    publisherBox.classList.add('detail-item');
+    const publisherLabel = document.createElement('label');
+    publisherLabel.innerText = '📚 출판사';
+    const publisherElement = document.createElement('p');
+    publisherElement.innerText = `${book.publisher}`;
+
+    publisherBox.appendChild(publisherLabel);
+    publisherBox.appendChild(publisherElement);
+
+    // 설명
+    const descriptionBox = document.createElement('div');
+    descriptionBox.id = 'description';
+    const descriptionLabel = document.createElement('label');
+    descriptionLabel.innerText = '📄 설명';
+    
+    const description = document.createElement('div');
+    description.id ='description-content';
+
+    const shortContent = book.description.length > 100 ? book.description.substring(0, 100) + '...   ' : book.description;
+    description.innerText = shortContent;
+
     const moreContent = document.createElement('a');
     moreContent.innerText = '더보기';
-    moreContent.style.cursor = 'pointer';
+    moreContent.id = 'more-btn';
 
-    // 닫기
     const closeContent = document.createElement('a');
     closeContent.innerText = '닫기';
-    closeContent.style.cursor = 'pointer';
+    closeContent.id = 'close-btn';
     closeContent.style.display = 'none';
 
     moreContent.addEventListener('click', () => {
-        descriptionElement.innerText = book.description + '   ';
+        description.innerText = book.description + '   ';
         moreContent.style.display = 'none';
         closeContent.style.display = 'inline';
     });
 
     closeContent.addEventListener('click', () => {
-        descriptionElement.innerText = shortContent;
+        description.innerText = shortContent;
         moreContent.style.display = 'inline';
-        closeContent.style.display = 'none';
+        closeContent.style.display = 'none'; 
     });
 
-    const authorElement = document.createElement('p');
-    authorElement.innerText = `✍️ 저자: ${book.author}`;
-
-    const publisherElement = document.createElement('p');
-    publisherElement.innerText = `📚 출판사: ${book.publisher}`;
-
-    const linkElement = document.createElement('a');
-    linkElement.href = book.link;
-    linkElement.innerText = '🔗 Connect to link';
-    linkElement.target = '_blank';
+    descriptionBox.appendChild(descriptionLabel);
+    descriptionBox.appendChild(description);
+    descriptionBox.appendChild(moreContent);
+    descriptionBox.appendChild(closeContent);
 
     bookDiv.appendChild(imgElement);
     bookDiv.appendChild(titleElement);
-    bookDiv.appendChild(descriptionElement);
-    bookDiv.appendChild(moreContent);
-    bookDiv.appendChild(closeContent);
-    bookDiv.appendChild(authorElement);
-    bookDiv.appendChild(publisherElement);
-    bookDiv.appendChild(linkElement);
+    bookDiv.appendChild(authorBox);
+    bookDiv.appendChild(publisherBox);
+    bookDiv.appendChild(descriptionBox);
     container.appendChild(bookDiv);
 }
 
 export const renderSearchBooks = (title: string, books: Book[]) => {
-    const titleDiv = document.getElementById('search-title-div');
-    
-    if (titleDiv.children.length == 0) { // 페이지의 제목은 한 번만 출력
-        const titleH = document.createElement('h1');
-        titleH.innerText = title;
-        const noticeMessage = document.createElement('p');
-        noticeMessage.innerText = '연관도가 높은 순으로 조회되며, 선택한 책은 자동 등록됩니다.';
+    localStorage.setItem('search-title', title);
+    renderSearchBookTitle(title); // 제목은 한 번만 출력
+    renderSearchBookResult(books); // 검색 결과
 
-        titleDiv.appendChild(titleH);
-        titleDiv.appendChild(noticeMessage);
-    }
+    let pageBtn = document.getElementById('search-page-btn');
+    pageBtn.addEventListener('click', async () => {
+        const { searchBooksProcess } = await import('../components/SearchBookForm.js');
+        renderSearchBookResult(await searchBooksProcess(localStorage.getItem('search-title')));
+    });
+}
 
-    const resultDiv = document.getElementById('search-result-div');
+const renderSearchBookTitle = (title: string) => {
+    const bookTitle = getElementById('search-title');
+    bookTitle.innerText = '제목: ' + title;
+}
+
+const renderSearchBookResult = (books: Book[]) => {
+    const resultContainer = getElementById('search-container');
 
     books.forEach((book) => {
-        const bookDiv = document.createElement('div');
-        bookDiv.className = 'book-item';
+        const bookItem = document.createElement('div');
+        bookItem.className = 'book-search-item';
+
+        // cover: 책 표지 영역
+        const cover = document.createElement('div');
+        cover.className = 'search-cover';
 
         const img = document.createElement('img');
         img.src = book.image;
         img.alt = book.title;
-        img.style.cursor = 'pointer';
         img.addEventListener('click', () => {
-            window.open(book.link, '_blank'); // 이미지 클릭 시 link로 이동
+            window.open(book.link, '_blank');
         });
 
-        const title = document.createElement('p');
-        title.innerText = book.title;
+        cover.appendChild(img);
+
+        // info: 책 정보 영역
+        const info = document.createElement('div');
+        info.className = 'search-info';
+
+        const titleDiv = document.createElement('div');
+        const titleLabel = document.createElement('label');
+        titleLabel.innerText = book.title;
+        titleLabel.id = 'book-title';
+
+        titleDiv.appendChild(titleLabel);
 
         const authorDiv = document.createElement('div');
         const authorLabel = document.createElement('label');
@@ -144,47 +228,40 @@ export const renderSearchBooks = (title: string, books: Book[]) => {
         publisherDiv.appendChild(publisherLabel);
         publisherDiv.appendChild(publisherP);
 
-        const checkboxLabel = document.createElement('label');
-        checkboxLabel.innerText = 'Select';
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkboxLabel.appendChild(checkbox);
 
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
-                const confirm = window.confirm("책을 선택했습니다. 이전 페이지로 이동하시겠습니까?");
-                if (confirm) {
-                    localStorage.setItem('title', book.title);
-                    localStorage.setItem('isbn', book.isbn);
-                    window.history.back();
-                } else {
-                    localStorage.removeItem('title');
-                    localStorage.removeItem('isbn');
-                }
+                swal({
+                    title: "책 선택 완료",
+                    text: "이전 페이지로 이동하시겠습니까?",
+                    icon: "success",
+                    buttons: ["다시 선택하기", "OK"]
+                  })
+                  .then((willMove) => {
+                    if (willMove) {
+                        localStorage.setItem('title', book.title);
+                        localStorage.setItem('isbn', book.isbn);
+                        localStorage.removeItem('search-title');
+                        window.location.href = '/html/passage/create.html';
+                    } else {
+                        localStorage.removeItem('title');
+                        localStorage.removeItem('isbn');
+                        checkbox.checked = false;
+                    }
+                  });
             }
         });
 
-        bookDiv.appendChild(img);
-        bookDiv.appendChild(title);
-        bookDiv.appendChild(authorDiv);
-        bookDiv.appendChild(publisherDiv);
-        bookDiv.appendChild(checkboxLabel);
+        info.appendChild(titleDiv);
+        info.appendChild(authorDiv);
+        info.appendChild(publisherDiv);
 
-        resultDiv.appendChild(bookDiv);
-
+        bookItem.appendChild(checkbox);
+        bookItem.appendChild(cover);
+        bookItem.appendChild(info);
+        resultContainer.appendChild(bookItem);
     });
 
-    // 더보기 버튼
-    let pageBtn = document.getElementById('page-btn');
-    if (!pageBtn) {
-        pageBtn = document.createElement('button');
-        pageBtn.id = 'page-btn';
-        pageBtn.innerText = '더보기';
-
-        pageBtn.addEventListener('click', async () => {
-            renderSearchBooks(title, await searchBooksProcess(title));
-        });
-    }
-
-    resultDiv.appendChild(pageBtn);
 };

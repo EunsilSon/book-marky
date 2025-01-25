@@ -4,6 +4,10 @@
   "type": "module",
   "dependencies": {
     "@types/node": "^22.7.5",
-    "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "sweetalert": "^2.1.2"
+  },
+  "devDependencies": {
+    "@types/sweetalert": "^1.1.28"
   }
 }

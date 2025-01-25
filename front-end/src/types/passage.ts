@@ -13,6 +13,7 @@ interface NewPassage {
 interface DeletedPassage {
     id: string;
     bookId: string;
+    title: string;
     content: string;
     pageNum: string;
 }

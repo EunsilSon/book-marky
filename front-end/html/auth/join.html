@@ -5,34 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Bookmarky</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/auth.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module"src="../../dist/components/JoinForm.js"></script>
 </head>
 
 <body>
-    <h1>Join</h1>
-    <form id="join-form">
-        <input type="email" id="username" name="username" placeholder="EMAIL" required>
-        <br>
-        <input type="password" id="password" name="password" placeholder="PASSWORD" required>
-        <br>
-        <input type="text" id="nickname" name="nickname" placeholder="NICKNAME" required>
-        <br>
-        <input type="tel" id="telephone" name="telephone" placeholder="PHONE" required>
-        <br>
-        <select id="secure-question-id" name="secure-question-id" required>
-            <option value="" disabled selected>QUESTION</option>
-            <option value="1">당신의 초등학교 이름은?</option>
-            <option value="2">가장 좋아하는 것은?</option>
-            <option value="3">가장 싫어하는 것은?</option>
-        </select>
-        <br>
-        <input type="text" id="answer" name="answer" placeholder="ANSWER" required>
-        <br>
-        <button id="join-submit" type="submit">Enter</button>
-    </form>
-    <button id="move-to-login">뒤로가기</button>
+    <h1 id="no-login-app-name">BOOKMARKY</h1>
+    <div id="main-box">
+        <div id="sub-box">
+            <h1>회원가입</h1>
+            <div id="input-box">
+                <form id="join-form">
+                    <input type="email" id="username" name="username" placeholder="이메일" required>
+                    <input type="password" id="password" name="password" placeholder="비밀번호 (9자~15자 이내)" required>
+                    <input type="text" id="nickname" name="nickname" placeholder="이름 (한글과 영문, 3자~10자 이내)" required>
+                    <input type="tel" id="telephone" name="telephone" placeholder="휴대전화번호 (010-0000-0000 하이픈 포함)" required>
+                    <select id="secure-question-id" name="secure-question-id" required>
+                        <option value="" disabled selected>보안 질문</option>
+                        <option value="1">당신의 초등학교 이름은?</option>
+                        <option value="2">가장 좋아하는 것은?</option>
+                        <option value="3">가장 싫어하는 것은?</option>
+                    </select>
+                    <input type="text" id="answer" name="answer" placeholder="답변" required>
+                    <button id="join-submit" type="submit">Enter</button>
+                </form>
+                <div id="btn-box">
+                    <button id="move-to-login">뒤로가기</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 

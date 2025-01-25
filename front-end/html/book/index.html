@@ -5,19 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <title>Bookmarky</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/book.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="../../dist/app.js"></script>
     <script type="module" src="../../dist/components/BookForm.js"></script>
 </head>
 
 <body>
-    <div id="title-container">
-        <span id="nickname"></span>
+    <div id="top-menu-box">
+        <h1 id="yes-login-app-name">BOOKMARKY</h1>
+        <div id="user-div"></div>
+        <button type="click" id="logout">Logout</button>
     </div>
-    <button type="click" id="logout">로그아웃</button>
-    <div id="book-list-container"></div>
-    <button type="click" id="create-passage">구절 생성</button>
-    <button type="click" id="deleted-passage">최근 삭제된 구절</button>
+    <div id="main-box">
+        <div id="sub-box">
+            <p id="book-count"></p>
+            <div id="book-menu-box">
+                <button type="click" id="create-passage">하이라이트 생성</button>
+                <button type="click" id="deleted-passage">최근 삭제 내역 보기</button>
+            </div>
+            <div id="book-list-container"></div>
+            <div id="page-navigate-box">
+                <button id="prev">◀ 이전</button>
+                <button id="next">다음 ▶</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

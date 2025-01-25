@@ -2,8 +2,7 @@ import { getPassages, getPassageDetail, getDeletedPassages, updatePassage, delet
 import { getBookDetail } from "../services/bookService.js";
 import { showError } from "../utils/domUtils.js";
 import { renderBookDetail } from "../utils/bookRenderUtils.js";
-import { renderPassages, renderPassageDetail, renderPassageForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
-import { showAlert } from "../utils/domUtils.js";
+import { renderPassages, renderDetailForm, renderUpdateForm, renderPassageCreationForm, renderDeletedPassages } from "../utils/passageRenderUtils.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     const currentPath = window.location.pathname;
@@ -12,20 +11,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         const bookId = new URLSearchParams(window.location.search).get('id');
 
         const bookResponse = await getBookDetail(bookId);
-        renderBookDetail(bookResponse);
+        renderBookDetail(bookResponse.data);
 
         const passagesResponse = await getPassages(bookId, 0);
         renderPassages(passagesResponse.data);
     }
 
-    if (currentPath.endsWith('detail.html') || currentPath.endsWith('update.html')) {
+    if (currentPath.endsWith('detail.html')) {
         const passageId = new URLSearchParams(window.location.search).get('id');
         const passageResponse = await getPassageDetail(passageId);
-        renderPassageDetail(passageResponse.data, false);
+        renderDetailForm(passageResponse.data);
+    }
+
+    if (currentPath.endsWith('update.html')) {
+        const passageId = new URLSearchParams(window.location.search).get('id');
+        const passageResponse = await getPassageDetail(passageId);
+        renderUpdateForm(passageResponse.data);
     }
 
     if (currentPath.endsWith('create.html')) {
-        renderPassageForm();
+        renderPassageCreationForm();
     }
 
     if (currentPath.endsWith('deleted.html')) {
@@ -58,7 +63,7 @@ export const createPassageProcess = async (isbn: string, content: string, pageNu
             content,
             pageNum,
         };
-        createPassage(newPassage);
+        return createPassage(newPassage);
     } catch (error) {
         return showError(error);
     }
@@ -66,9 +71,7 @@ export const createPassageProcess = async (isbn: string, content: string, pageNu
 
 export const deletedPassageProcess = async () => {
     try {
-        const response = getDeletedPassages();
-        showAlert('삭제되었습니다. 이전 페이지로 이동합니다.');
-        window.history.back();
+        getDeletedPassages();
     } catch (error) {
         return showError(error);
     }
@@ -76,9 +79,7 @@ export const deletedPassageProcess = async () => {
 
 export const restorePassageProcess = async (passageId: string) => {
     try {
-        const response = restorePassage(passageId);
-        showAlert('복구되었습니다. 메인 페이지로 이동합니다.');
-        window.location.href = `../../html/book/index.html`;
+        restorePassage(passageId);
     } catch (error) {
         return showError(error);
     }
