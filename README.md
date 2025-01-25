@@ -1,6 +1,6 @@
 # 북마키 (BookMarky)
 - 개발 완료 된 사항들은 `main` 브랜치에서 확인 가능합니다.
-- Front-end: 서버 연동, 응답 데이터 렌더링 완료
+- Front-end: 서버 연동, 응답 데이터 렌더링, CSS 완료
 - Back-end: 인증, CRUD, Soft Delete, 예외 처리, 로깅, 캐싱 완료
 
 <br>
