@@ -1,4 +1,6 @@
 # 북마키 (BookMarky)
+![bookmarky](https://github.com/user-attachments/assets/46b23ae1-0d8a-457d-827d-d78602d265ea)
+
 - 개발 완료 된 사항들은 `main` 브랜치에서 확인 가능합니다.
 - Front-end: 서버 연동, 응답 데이터 렌더링, CSS 완료
 - Back-end: 인증, CRUD, Soft Delete, 예외 처리, 로깅, 캐싱 완료
